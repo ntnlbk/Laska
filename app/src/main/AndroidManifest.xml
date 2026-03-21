@@ -10,7 +10,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Laska" >
+        android:theme="@style/Theme.Laska"
+        android:name=".LaskaApplication">
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true" >
