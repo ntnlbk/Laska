@@ -63,9 +63,13 @@ dependencies {
 
     // Test
     testImplementation(libs.junit)
-
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // ROOM
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx) // Essential for Coroutines support
+    kapt(libs.androidx.room.compiler)      // Annotation processor
 }
 
 kapt {
