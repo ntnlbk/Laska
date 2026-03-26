@@ -13,7 +13,7 @@ constraintlayout = "2.2.1"
 retrofit = "3.0.0"
 kotlin = "2.1.0"
 hilt = "2.51.1"
-room = "2.6.1"
+room = "2.8.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
