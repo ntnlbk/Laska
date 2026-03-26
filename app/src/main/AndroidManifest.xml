@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Laska"
-        android:name=".LaskaApplication">
+        android:name=".di.LaskaApplication">
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true" >
