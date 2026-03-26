@@ -25,13 +25,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        lifecycleScope.launch {
-            val item = GetReadingUseCase(ReadingRepositoryImpl(application)).invoke(
-                date = "21112004",
-                Language.RU
-            )
-            Log.d("TEST", item.reflectionTextFirst)
-        }
+
 
     }
 }

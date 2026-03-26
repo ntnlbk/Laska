@@ -70,6 +70,10 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx) // Essential for Coroutines support
     kapt(libs.androidx.room.compiler)      // Annotation processor
+
+    //Jetpack Navigation
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
 }
 
 kapt {
