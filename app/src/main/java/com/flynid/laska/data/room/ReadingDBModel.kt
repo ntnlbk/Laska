@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "readings_table")
 data class ReadingDBModel(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     val date: String,
     val dateFormatted: String,
     val language: String,

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Laska</string>
+    <string name="russian_language_name">RU</string>
+    <string name="belarusian_language_name">BY</string>
 </resources>
