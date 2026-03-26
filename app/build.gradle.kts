@@ -74,6 +74,9 @@ dependencies {
     //Jetpack Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
+    //Splash Screen
+    implementation(libs.androidx.core.splashscreen)
 }
 
 kapt {
