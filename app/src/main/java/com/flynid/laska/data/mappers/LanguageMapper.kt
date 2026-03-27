@@ -3,8 +3,9 @@ package com.flynid.laska.data.mappers
 import android.app.Application
 import com.flynid.laska.R
 import com.flynid.laska.domain.Language
+import javax.inject.Inject
 
-class LanguageToDbStringMapper(
+class LanguageMapper @Inject constructor(
     private val context: Application
 ) {
     fun mapLanguageToString(language: Language): String {

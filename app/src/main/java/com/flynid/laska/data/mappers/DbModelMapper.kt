@@ -3,8 +3,9 @@ package com.flynid.laska.data.mappers
 import android.app.Application
 import com.flynid.laska.data.room.ReadingDBModel
 import com.flynid.laska.domain.ReadingItem
+import javax.inject.Inject
 
-class ReadingDbModelToDataMapper(
+class DbModelMapper @Inject constructor(
     private val context: Application
 ) {
 
@@ -13,7 +14,7 @@ class ReadingDbModelToDataMapper(
             id = readingDBModel.id,
             date = readingDBModel.date,
             dateFormatted = readingDBModel.dateFormatted,
-            language = LanguageToDbStringMapper(context).mapStringToLanguage(readingDBModel.language),
+            language = LanguageMapper(context).mapStringToLanguage(readingDBModel.language),
             bibleReference = readingDBModel.bibleReference,
             bibleText = readingDBModel.bibleText,
             bibleTextPlain = readingDBModel.bibleTextPlain,

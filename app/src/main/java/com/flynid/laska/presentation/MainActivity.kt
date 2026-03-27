@@ -12,12 +12,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.flynid.laska.R
-import com.flynid.laska.data.ReadingRepositoryImpl
-import com.flynid.laska.domain.GetReadingUseCase
-import com.flynid.laska.domain.Language
-import com.flynid.laska.domain.ReadingRepository
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private var isReady = false
@@ -25,10 +23,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         splashScreen.setOnExitAnimationListener { splashView ->
-            splashView.view.animate()
-                .alpha(0f)
-                .setDuration(700)
-                .withEndAction {
+            splashView.view.animate().alpha(0f).setDuration(700).withEndAction {
                     splashView.remove()
                 }
         }

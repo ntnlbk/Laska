@@ -2,17 +2,19 @@ package com.flynid.laska.data
 
 import android.app.Application
 import android.util.Log
-import com.flynid.laska.data.mappers.LanguageToDbStringMapper
-import com.flynid.laska.data.mappers.ReadingDbModelToDataMapper
+import com.flynid.laska.data.mappers.LanguageMapper
+import com.flynid.laska.data.mappers.DbModelMapper
 import com.flynid.laska.data.room.ReadingDBModel
 import com.flynid.laska.data.room.ReadingRoomDatabase
-import com.flynid.laska.di.LaskaApplication
 import com.flynid.laska.domain.Language
 import com.flynid.laska.domain.ReadingItem
 import com.flynid.laska.domain.ReadingRepository
+import javax.inject.Inject
 
-class ReadingRepositoryImpl (
-    private val application: Application
+class ReadingRepositoryImpl @Inject constructor(
+    private val application: Application,
+    private val dbMapper: DbModelMapper,
+    private val languageMapper: LanguageMapper
 ): ReadingRepository {
 
     override suspend fun getReading(
@@ -22,17 +24,13 @@ class ReadingRepositoryImpl (
 
         val dbDao = ReadingRoomDatabase.getDatabase(application).readingDao()
 
-        val languageMapper = LanguageToDbStringMapper(application)
-
         val languageString = languageMapper.mapLanguageToString(language)
 
         val readingItemFromDb = dbDao.getReadingByDateAndLanguage(date, languageString)
 
-        val readingItemDbMapper = ReadingDbModelToDataMapper(application)
-
         val readingItem =  if(readingItemFromDb != null){
             Log.d("TEST", "FROM DB")
-            readingItemDbMapper.mapDbModelToDataModel(readingItemFromDb)
+            dbMapper.mapDbModelToDataModel(readingItemFromDb)
 
         }
         else {
@@ -42,7 +40,7 @@ class ReadingRepositoryImpl (
                 ReadingDBModel(
                     date = date,
                     dateFormatted = "da",
-                    language = "RU",
+                    language = languageString,
                     bibleReference = "eq",
                     bibleText = "weqe",
                     bibleTextPlain = "qwe",
@@ -66,7 +64,7 @@ class ReadingRepositoryImpl (
                 bibleText = "3",
                 bibleTextPlain = "4",
                 feastName = "5",
-                reflectionTextFirst = "Anton HIIII",
+                reflectionTextFirst = "i am from API",
                 reflectionTextSecond = "12",
                 authorName = "32",
                 audioURL = "123",
