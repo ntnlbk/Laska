@@ -1,10 +1,9 @@
 package com.flynid.laska.data
 
 import android.app.Application
-import android.util.Log
-import com.flynid.laska.data.mappers.LanguageMapper
 import com.flynid.laska.data.mappers.DbModelMapper
-import com.flynid.laska.data.room.ReadingDBModel
+import com.flynid.laska.data.mappers.LanguageMapper
+import com.flynid.laska.data.retrofit.LaskaApiService
 import com.flynid.laska.data.room.ReadingRoomDatabase
 import com.flynid.laska.domain.Language
 import com.flynid.laska.domain.ReadingItem
@@ -15,7 +14,7 @@ class ReadingRepositoryImpl @Inject constructor(
     private val application: Application,
     private val dbMapper: DbModelMapper,
     private val languageMapper: LanguageMapper
-): ReadingRepository {
+) : ReadingRepository {
 
     override suspend fun getReading(
         date: String,
@@ -23,12 +22,23 @@ class ReadingRepositoryImpl @Inject constructor(
     ): ReadingItem {
 
         val dbDao = ReadingRoomDatabase.getDatabase(application).readingDao()
-
         val languageString = languageMapper.mapLanguageToString(language)
 
+        val readingFromDB = dbDao.getReadingByDateAndLanguage(
+            date, languageString
+        )
 
+        if (readingFromDB == null) {
+            val readingsFromApi = LaskaApiService.LaskaApi.retrofitService.getReadings()
+            readingsFromApi.data.forEach {
+                dbDao.insertReadings(
+                    dbMapper.mapDtoToDbModel(it)
+                )
+            }
+            return getReading(date, language)
+        }
 
-        return TODO("")
+        return dbMapper.mapDbModelToDataModel(readingFromDB)
 
     }
 

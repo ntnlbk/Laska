@@ -1,5 +1,7 @@
 package com.flynid.laska.domain
 
-class GetReadingUseCase(private val repository: ReadingRepository) {
+import javax.inject.Inject
+
+class GetReadingUseCase @Inject constructor(private val repository: ReadingRepository) {
     suspend operator fun invoke(date: String, language: Language) = repository.getReading(date, language)
 }
