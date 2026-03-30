@@ -37,7 +37,7 @@ class LaskaApiService {
         ): ReadingsDTO
 
         @GET("languages")
-        suspend fun getLanguages(): String
+        suspend fun getLanguages(): List<LanguagesDTO>
 
     }
 

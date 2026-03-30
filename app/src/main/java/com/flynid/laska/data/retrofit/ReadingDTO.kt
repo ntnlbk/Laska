@@ -24,7 +24,8 @@ data class ReadingDTO(
     val reflectionBody: String?,
     @SerialName("has_reflection")
     val hasReflection: Boolean,
-    //DEPRECATED
+
+    //DEPRECATED, TODO("remove")
     @SerialName("reflection_text")
     val reflectionText: String?,
 

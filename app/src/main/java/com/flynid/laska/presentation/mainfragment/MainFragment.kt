@@ -65,12 +65,12 @@ class MainFragment : Fragment() {
 //            Log.d("TEST", item.reflectionTextFirst)
 
             val test = try {
-                val temp = LaskaApiService.LaskaApi.retrofitService.getReadings()
-                temp.data.size.toString()
+                val temp = LaskaApiService.LaskaApi.retrofitService.getLanguages()
+                temp.size
             } catch (e: Exception) {
-                e.message
+                1233
             }
-            Log.d("TEST", test ?: "test is null")
+            Log.d("TEST", test.toString())
 
         }
 

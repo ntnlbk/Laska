@@ -26,56 +26,9 @@ class ReadingRepositoryImpl @Inject constructor(
 
         val languageString = languageMapper.mapLanguageToString(language)
 
-        val readingItemFromDb = dbDao.getReadingByDateAndLanguage(date, languageString)
 
-        val readingItem =  if(readingItemFromDb != null){
-            Log.d("TEST", "FROM DB")
-            dbMapper.mapDbModelToDataModel(readingItemFromDb)
 
-        }
-        else {
-            //get from API
-            Log.d("TEST", "FROM API")
-            dbDao.insertReadings(
-                ReadingDBModel(
-                    date = date,
-                    dateFormatted = "da",
-                    language = languageString,
-                    bibleReference = "eq",
-                    bibleText = "weqe",
-                    bibleTextPlain = "qwe",
-                    feastName = "ewqe",
-                    reflectionTextFirst = "i am from db",
-                    reflectionTextSecond = "dsa",
-                    authorName = "ds",
-                    audioURL = "sd",
-                    imageURL = "dsa",
-                    audioLocalPath = "sda",
-                    imageLocalPath = "ad",
-                    permalink = "sad"
-                )
-            )
-            ReadingItem(
-                id = 1,
-                date = date,
-                dateFormatted = "1",
-                language = Language.RU,
-                bibleReference = "2",
-                bibleText = "3",
-                bibleTextPlain = "4",
-                feastName = "5",
-                reflectionTextFirst = "i am from API",
-                reflectionTextSecond = "12",
-                authorName = "32",
-                audioURL = "123",
-                imageURL = "23",
-                audioLocalPath = "123",
-                imageLocalPath = "321",
-                permalink = "132"
-            )
-        }
-
-        return readingItem
+        return TODO("")
 
     }
 
