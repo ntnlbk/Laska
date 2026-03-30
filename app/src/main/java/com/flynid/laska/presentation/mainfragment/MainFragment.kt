@@ -2,15 +2,14 @@ package com.flynid.laska.presentation.mainfragment
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.flynid.laska.R
-import com.flynid.laska.domain.GetReadingUseCase
-import com.flynid.laska.domain.Language
+import com.flynid.laska.data.retrofit.LaskaApiService
 import com.flynid.laska.domain.ReadingRepository
 import com.flynid.laska.presentation.textfragment.TextFragmentBottomSheet
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,9 +60,18 @@ class MainFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            val usecase = GetReadingUseCase(repository)
-            val item = usecase("21112004", Language.RU)
-            Log.d("TEST", item.reflectionTextFirst)
+//            val usecase = GetReadingUseCase(repository)
+//            val item = usecase("21112004", Language.RU)
+//            Log.d("TEST", item.reflectionTextFirst)
+
+            val test = try {
+                val temp = LaskaApiService.LaskaApi.retrofitService.getReading("20260401")
+                temp.reflectionBody
+            } catch (e: Exception) {
+                e.message
+            }
+            Log.d("TEST", test ?: "test is null")
+
         }
 
     }

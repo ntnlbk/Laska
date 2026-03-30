@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.kapt)
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
 }
 
 android {
@@ -51,8 +52,16 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-    implementation(libs.converter.scalars)
+    // Retrofit with scalar Converter
+    implementation(libs.converter.scalars.v290)
+    // Retrofit with Kotlin serialization Converter
 
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.okhttp)
+
+    // Kotlin serialization
+    // Kotlin serialization
+    implementation(libs.kotlinx.serialization.json.v151)
 
     //Coroutines
     implementation(libs.kotlinx.coroutines.android)
