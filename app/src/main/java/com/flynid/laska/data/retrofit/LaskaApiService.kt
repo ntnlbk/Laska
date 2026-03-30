@@ -12,15 +12,12 @@ class LaskaApiService {
 
     companion object {
         private const val BASE_URL = "https://new2.laska.mobi/wp-json/daily-readings/v1/"
-
         private val retrofit =
             Retrofit.Builder()
                 .addConverterFactory(
                     Json.asConverterFactory("application/json".toMediaType())
                 )
                 .baseUrl(BASE_URL).build()
-
-
     }
 
     interface LaskaApiService {
@@ -37,7 +34,7 @@ class LaskaApiService {
             @Query("to") to: String? = null,
             @Query("lang") lang: String? = null,
             @Query("per_page") perPage: Int? = null,
-        ): String
+        ): ReadingsDTO
 
         @GET("languages")
         suspend fun getLanguages(): String
