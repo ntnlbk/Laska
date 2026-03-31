@@ -1,81 +1,88 @@
 package com.flynid.laska.presentation.mainfragment
 
-import android.content.Context
 import androidx.annotation.OptIn
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.MediaItem
-import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.DataSource
-import androidx.media3.datasource.DefaultHttpDataSource
-import androidx.media3.datasource.cache.Cache
-import androidx.media3.datasource.cache.CacheDataSource
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import com.flynid.laska.data.audio.DownloadRepository
 import com.flynid.laska.domain.GetReadingUseCase
 import com.flynid.laska.domain.Language
+import com.flynid.laska.domain.audio.AudioDownloadState
+import com.flynid.laska.domain.audio.CheckAudioDownloadedUseCase
+import com.flynid.laska.domain.audio.DownloadAudioUseCase
+import com.flynid.laska.domain.audio.ObserveDownloadAudioUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainFragmentViewModel @OptIn(UnstableApi::class)
-@Inject constructor(
+class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     private val getReadingUseCase: GetReadingUseCase,
-    private val repository: DownloadRepository,
-    private val cache: Cache,
-    private val httpDataSourceFactory: DefaultHttpDataSource.Factory,
-    @ApplicationContext private val context: Context
+    private val downloadAudioUseCase: DownloadAudioUseCase,
+    private val observeDownloadAudioUseCase: ObserveDownloadAudioUseCase,
+    private val checkAudioDownloadedUseCase: CheckAudioDownloadedUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<MainFragmentState>(MainFragmentState.Progress)
+    private val _mainUIState = MutableStateFlow<MainFragmentState>(MainFragmentState.Progress)
+    private val _playerState = MutableStateFlow<AudioPlayerState>(AudioPlayerState.Initial)
 
-    val state = _state.asStateFlow()
+    val mainUIState = _mainUIState.asStateFlow()
+    val playerState = _playerState.asStateFlow()
 
     fun showReadingText(date: String, language: Language) {
 
-        _state.value = MainFragmentState.Progress
+        _mainUIState.value = MainFragmentState.Progress
 
         viewModelScope.launch {
             val item = getReadingUseCase(date, language)
-            _state.value =
-                MainFragmentState.Content(item.reflectionTextBody)
+            _mainUIState.value = MainFragmentState.Content(item.reflectionTextBody)
         }
 
     }
 
+    fun updatePlayerState(
+        isPlaying: Boolean
+    ) {
+        _playerState.value =
+            if (isPlaying)
+                AudioPlayerState.Playing(0, "")
+            else
+                AudioPlayerState.Paused
+    }
+
     @OptIn(UnstableApi::class)
-    suspend fun play(date: String, language: Language) {
-        val item = getReadingUseCase(date, language)
-        Log.d("MY_TEST", item.audioURL)
-        val url = item.audioURL
-        repository.downloadMp3(
-            url
-        )
-        val cacheDataSourceFactory: DataSource.Factory =
-            CacheDataSource.Factory()
-                .setCache(cache)
-                .setUpstreamDataSourceFactory(httpDataSourceFactory)
-                .setCacheWriteDataSinkFactory(null) // Disable writing.
+    fun play(date: String, language: Language) {
+        viewModelScope.launch {
+            try {
+                // 1. Get the URL
+                val item = getReadingUseCase(date, language)
+                val url = item.audioURL
 
-        val player =
-            ExoPlayer.Builder(context)
-                .setMediaSourceFactory(
-                    DefaultMediaSourceFactory(context).setDataSourceFactory(
-                        cacheDataSourceFactory
-                    )
-                )
-                .build()
+                // 2. CHECK IF ALREADY DOWNLOADED IN CACHE
+                val isDownloaded = checkAudioDownloadedUseCase(url)
+                if (isDownloaded) {
+                    // It's already fully downloaded! Jump straight to playing offline!
+                    _playerState.value = AudioPlayerState.Downloaded(url)
+                    return@launch // Stop here, do not start a new download!
+                }
 
+                // 3. IF NOT DOWNLOADED, START DOWNLOAD AND OBSERVE
+                downloadAudioUseCase(url)
 
-        player.setMediaItem(MediaItem.fromUri(url))
-        player.prepare()
-        player.play()
+                observeDownloadAudioUseCase(url).collect { domainStatus ->
+                    _playerState.value = when (domainStatus) {
+                        is AudioDownloadState.Idle -> AudioPlayerState.Initial
+                        is AudioDownloadState.Downloading -> AudioPlayerState.Downloading(domainStatus.progress)
+                        is AudioDownloadState.Completed -> AudioPlayerState.Downloaded(url)
+                        is AudioDownloadState.Failed -> AudioPlayerState.Error("Failed to download audio")
+                    }
+                }
+            } catch (e: Exception) {
+                // If the user is offline and `getReadingUseCase` fails
+                _playerState.value = AudioPlayerState.Error("Network error: Could not fetch reading")
+            }
+        }
     }
 
 }

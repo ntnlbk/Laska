@@ -6,9 +6,12 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.cache.Cache
+import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.NoOpCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.offline.DownloadManager
+import com.flynid.laska.data.audio.AudioRepositoryImpl
+import com.flynid.laska.domain.audio.AudioDownloadRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,6 +25,25 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DownloadManagerModule {
+
+    @Provides
+    @Singleton
+    @OptIn(UnstableApi::class)
+    fun provideCacheDataSourceFactory(
+        cache: Cache, // Hilt injects your singleton cache here
+        httpDataSourceFactory: DefaultHttpDataSource.Factory
+    ): CacheDataSource.Factory {
+        return CacheDataSource.Factory()
+            .setCache(cache)
+            .setUpstreamDataSourceFactory(httpDataSourceFactory)
+            .setCacheWriteDataSinkFactory(null)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAudioDownloadRepository(impl: AudioRepositoryImpl): AudioDownloadRepository {
+        return impl
+    }
 
     @OptIn(UnstableApi::class)
     @Provides

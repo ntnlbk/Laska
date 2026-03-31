@@ -71,7 +71,7 @@
         <Button
             android:layout_width="100dp"
             android:layout_height="50dp"
-            android:text="play"
+            android:text=""
             android:id="@+id/test_play"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
