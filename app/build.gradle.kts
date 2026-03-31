@@ -54,12 +54,11 @@ dependencies {
     implementation(libs.converter.gson)
     // Retrofit with scalar Converter
     implementation(libs.converter.scalars.v290)
-    // Retrofit with Kotlin serialization Converter
 
+    // Retrofit with Kotlin serialization Converter
     implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.okhttp)
 
-    // Kotlin serialization
     // Kotlin serialization
     implementation(libs.kotlinx.serialization.json.v151)
 
@@ -86,6 +85,12 @@ dependencies {
 
     //Splash Screen
     implementation(libs.androidx.core.splashscreen)
+
+    //ExoPlayer
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.dash)
+    implementation(libs.androidx.media3.ui)
+    implementation(libs.androidx.media3.ui.compose)
 }
 
 kapt {
