@@ -41,6 +41,12 @@ class MainFragment : Fragment() {
         binding.button.setOnClickListener {
             viewModel.showReadingText("20260330", Language.BY)
         }
+        binding.testPlay.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.play("20260330", Language.BY)
+            }
+
+        }
     }
 
     private fun observeViewModel() {
