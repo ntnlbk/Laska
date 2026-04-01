@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -15,7 +16,6 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.flynid.laska.databinding.FragmentMainBinding
 import com.flynid.laska.domain.Language
-import com.flynid.laska.presentation.textfragment.TextFragmentBottomSheet
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -52,8 +52,7 @@ class MainFragment : Fragment() {
 
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(layoutInflater)
         return binding.root
@@ -62,12 +61,17 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
+        chooseReading("20260401", Language.BY)
         setupViews()
     }
 
+    private fun chooseReading(date: String, lang: Language) {
+        viewModel.setReading(date, lang)
+    }
+
     private fun setupViews() {
-        binding.button.setOnClickListener {
-            viewModel.showReadingText("20260330", Language.BY)
+        binding.testPlay.setOnClickListener {
+            viewModel.playButtonClicked()
         }
     }
 
@@ -76,11 +80,16 @@ class MainFragment : Fragment() {
             viewModel.mainUIState.collect {
                 when (it) {
                     is MainFragmentState.Content -> {
-                        showTextFragment(it.readingText)
+                        binding.testTv.text = it.textToShow
                     }
 
                     is MainFragmentState.Progress -> {
+                        Toast.makeText(requireContext(), "Progress", Toast.LENGTH_SHORT).show()
+                    }
 
+                    is MainFragmentState.Error -> {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                        Log.d("MY_TEST", it.message)
                     }
                 }
             }
@@ -88,80 +97,72 @@ class MainFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.playerState.collect {
                 when (it) {
+                    is AudioPlayerState.Downloaded -> {
+                        Log.d("MY_TEST", "PLAYER DOWNLOADED")
+                        preparePlayer(it.fileUrl)
+                    }
+
                     is AudioPlayerState.Downloading -> {
-                        Log.d("TEST", "downloading")
+                        Log.d("MY_TEST", "PLAYER DOWNLOADING")
                     }
+
                     is AudioPlayerState.Error -> {
-                        Log.d("TEST", "error")
+                        Log.d("MY_TEST", "PLAYER ERROR")
                     }
+
+                    is AudioPlayerState.Initial -> {
+                        Log.d("MY_TEST", "PLAYER INITIAL")
+
+                    }
+
                     is AudioPlayerState.Paused -> {
-                        Log.d("TEST", "paused")
-                        binding.testPlay.text = "play"
-                        binding.testPlay.setOnClickListener {
-                            resumePlayer()
-                        }
+                        Log.d("MY_TEST", "PLAYER PAUSED")
+                        pausePlayer()
                     }
 
                     is AudioPlayerState.Playing -> {
-                        Log.d("TEST", "playing")
-                        binding.testPlay.text = "pause"
-                        binding.testPlay.setOnClickListener {
-                            pausePlayer()
-                        }
-                    }
-
-                    AudioPlayerState.Initial -> {
-                        binding.testPlay.text = "play"
-                        Log.d("TEST", "init")
-                        binding.testPlay.setOnClickListener {
-                            viewModel.play("20260330", Language.BY)
-                        }
-                    }
-
-                    is AudioPlayerState.Downloaded -> {
-                        startPlayer(it.fileUrl)
+                        Log.d("MY_TEST", "PLAYER PLAYING")
+                        resumePlayer()
                     }
                 }
             }
+
         }
     }
 
     private fun resumePlayer() {
         player?.play()
-        viewModel.updatePlayerState(true)
     }
+//
+//    private fun showTextFragment(readingText: String) {
+//        val instance = TextFragmentBottomSheet.newInstance(readingText)
+//        instance.show(requireActivity().supportFragmentManager, TextFragmentBottomSheet.TAG)
+//    }
 
-    private fun showTextFragment(readingText: String) {
-        val instance = TextFragmentBottomSheet.newInstance(readingText)
-        instance.show(requireActivity().supportFragmentManager, TextFragmentBottomSheet.TAG)
-    }
 
-    override fun onStop() {
-        super.onStop()
-        releasePlayer()
-    }
-
-    private fun startPlayer(url: String) {
+    private fun preparePlayer(url: String) {
         val mediaItem = MediaItem.fromUri(url)
         player?.setMediaItem(mediaItem)
         player?.prepare()
-        player?.play()
-        Log.d("TEST", player.toString())
-        viewModel.updatePlayerState(true)
     }
-    private fun pausePlayer(){
-        player?.pause()
-        viewModel.updatePlayerState(false)
-    }
-    private fun releasePlayer() {
-        player?.release()
-        player = null
+        private fun pausePlayer() {
+            player?.pause()
+        }
+
+
+        override fun onStop() {
+            super.onStop()
+            releasePlayer()
+        }
+
+        private fun releasePlayer() {
+            player?.release()
+            player = null
+        }
+
+        override fun onDestroyView() {
+            _binding = null
+            super.onDestroyView()
+        }
 
     }
-
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
-    }
-
-}

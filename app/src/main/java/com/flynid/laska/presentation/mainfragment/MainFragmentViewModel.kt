@@ -6,11 +6,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.util.UnstableApi
 import com.flynid.laska.domain.GetReadingUseCase
 import com.flynid.laska.domain.Language
+import com.flynid.laska.domain.ReadingItem
 import com.flynid.laska.domain.audio.AudioDownloadState
 import com.flynid.laska.domain.audio.CheckAudioDownloadedUseCase
 import com.flynid.laska.domain.audio.DownloadAudioUseCase
 import com.flynid.laska.domain.audio.ObserveDownloadAudioUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -27,62 +29,79 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     private val _mainUIState = MutableStateFlow<MainFragmentState>(MainFragmentState.Progress)
     private val _playerState = MutableStateFlow<AudioPlayerState>(AudioPlayerState.Initial)
 
+    private var actualReading: ReadingItem? = null
+
     val mainUIState = _mainUIState.asStateFlow()
     val playerState = _playerState.asStateFlow()
 
-    fun showReadingText(date: String, language: Language) {
 
+    fun setReading(date: String, language: Language) {
         _mainUIState.value = MainFragmentState.Progress
-
-        viewModelScope.launch {
-            val item = getReadingUseCase(date, language)
-            _mainUIState.value = MainFragmentState.Content(item.reflectionTextBody)
-        }
-
-    }
-
-    fun updatePlayerState(
-        isPlaying: Boolean
-    ) {
-        _playerState.value =
-            if (isPlaying)
-                AudioPlayerState.Playing(0, "")
-            else
-                AudioPlayerState.Paused
-    }
-
-    @OptIn(UnstableApi::class)
-    fun play(date: String, language: Language) {
         viewModelScope.launch {
             try {
-                // 1. Get the URL
-                val item = getReadingUseCase(date, language)
-                val url = item.audioURL
-
-                // 2. CHECK IF ALREADY DOWNLOADED IN CACHE
-                val isDownloaded = checkAudioDownloadedUseCase(url)
-                if (isDownloaded) {
-                    // It's already fully downloaded! Jump straight to playing offline!
-                    _playerState.value = AudioPlayerState.Downloaded(url)
-                    return@launch // Stop here, do not start a new download!
-                }
-
-                // 3. IF NOT DOWNLOADED, START DOWNLOAD AND OBSERVE
-                downloadAudioUseCase(url)
-
-                observeDownloadAudioUseCase(url).collect { domainStatus ->
-                    _playerState.value = when (domainStatus) {
-                        is AudioDownloadState.Idle -> AudioPlayerState.Initial
-                        is AudioDownloadState.Downloading -> AudioPlayerState.Downloading(domainStatus.progress)
-                        is AudioDownloadState.Completed -> AudioPlayerState.Downloaded(url)
-                        is AudioDownloadState.Failed -> AudioPlayerState.Error("Failed to download audio")
-                    }
-                }
+                actualReading = getReadingUseCase(date, language)
+                _mainUIState.value = MainFragmentState.Content(
+                    actualReading?.bibleText ?: throw Exception("Reading is null")
+                )
             } catch (e: Exception) {
-                // If the user is offline and `getReadingUseCase` fails
-                _playerState.value = AudioPlayerState.Error("Network error: Could not fetch reading")
+                _mainUIState.value = MainFragmentState.Error(e.message ?: "Reading is null")
             }
         }
     }
 
+    fun playButtonClicked() {
+        when (_playerState.value) {
+            is AudioPlayerState.Downloaded -> {
+                _playerState.value = AudioPlayerState.Playing(
+                    0
+                )
+            }
+            AudioPlayerState.Downloading -> {}
+            is AudioPlayerState.Error -> {
+                viewModelScope.launch {
+                    _playerState.value = AudioPlayerState.Downloading
+                    getReadyItemToPlay()
+                }
+            }
+
+            AudioPlayerState.Initial -> {
+                viewModelScope.launch {
+                    _playerState.value = AudioPlayerState.Downloading
+                    getReadyItemToPlay()
+                }
+            }
+
+            is AudioPlayerState.Paused -> {
+                _playerState.value = AudioPlayerState.Playing(0)
+            }
+            is AudioPlayerState.Playing -> {
+                _playerState.value = AudioPlayerState.Paused(0)
+            }
+        }
+    }
+
+    private suspend fun getReadyItemToPlay() {
+        val readingUrl = actualReading?.audioURL
+        if (readingUrl == null) {
+            _playerState.value = AudioPlayerState.Error("Reading is null")
+        } else {
+            val isDownloaded = checkAudioDownloadedUseCase(readingUrl)
+            if (isDownloaded) {
+                _playerState.value = AudioPlayerState.Downloaded(readingUrl)
+                delay(100)
+                playButtonClicked()
+            } else {
+                downloadAudioUseCase(readingUrl)
+                observeDownloadAudioUseCase(readingUrl).collect { domainStatus ->
+                    if (domainStatus is AudioDownloadState.Completed) {
+                        _playerState.value = AudioPlayerState.Downloaded(readingUrl)
+                        delay(100)
+                        playButtonClicked()
+                    } else if (domainStatus is AudioDownloadState.Failed) {
+                        _playerState.value = AudioPlayerState.Error("Failed to download audio")
+                    }
+                }
+            }
+        }
+    }
 }

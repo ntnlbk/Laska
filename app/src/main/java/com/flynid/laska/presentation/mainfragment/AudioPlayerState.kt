@@ -3,23 +3,22 @@ package com.flynid.laska.presentation.mainfragment
 sealed class AudioPlayerState {
 
     data class Playing(
-        val currentPosition: Int,
-        val songName: String
+        val currentPosition: Int
     ) : AudioPlayerState()
 
-    data class Downloading(
-        val progress: Float
-    ) : AudioPlayerState()
+    object Downloading : AudioPlayerState()
 
     data class Downloaded(
         val fileUrl: String
     ): AudioPlayerState()
 
-    object Paused : AudioPlayerState()
+    data class Paused(
+        val currentPosition: Int
+    ) : AudioPlayerState()
 
     object Initial : AudioPlayerState()
 
-    class Error(
+    data class Error(
         val message: String
     ) : AudioPlayerState()
 }

@@ -35,11 +35,19 @@ class ReadingRepositoryImpl @Inject constructor(
                     dbMapper.mapDtoToDbModel(it)
                 )
             }
-            return getReading(date, language)
+            val readingFromApiReadings =
+                dbDao.getReadingByDateAndLanguage(
+                    date, languageString
+                )
+            if (readingFromApiReadings == null) {
+                throw Exception("Reading is null")
+            } else {
+                return dbMapper.mapDbModelToDataModel(readingFromApiReadings)
+            }
+
+        } else {
+            return dbMapper.mapDbModelToDataModel(readingFromDB)
         }
 
-        return dbMapper.mapDbModelToDataModel(readingFromDB)
-
     }
-
 }
