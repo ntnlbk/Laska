@@ -136,7 +136,7 @@ class MainFragment : Fragment() {
                     }
 
                     is MainFragmentState.Error -> {
-                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                        //Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
                         Log.d("MY_TEST", it.message)
                     }
 

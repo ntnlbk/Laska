@@ -8,11 +8,11 @@
     <style name="Theme.Laska" parent="Base.Theme.Laska" />
 
     <style name="Theme.Laska.Splash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenBackground">@color/C1</item>
 
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/icon</item>
+        <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
 
-        <item name="windowSplashScreenIconBackgroundColor">@color/white</item>
 
         <item name="postSplashScreenTheme">@style/Theme.Laska</item>
     </style>
