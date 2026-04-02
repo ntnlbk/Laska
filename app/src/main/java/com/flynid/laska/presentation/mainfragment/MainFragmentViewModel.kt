@@ -41,7 +41,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
             try {
                 actualReading = getReadingUseCase(date, language)
                 _mainUIState.value = MainFragmentState.Content(
-                    actualReading?.bibleText ?: throw Exception("Reading is null")
+                    actualReading?.dateFormatted ?: throw Exception("Reading is null")
                 )
             } catch (e: Exception) {
                 _mainUIState.value = MainFragmentState.Error(e.message ?: "Reading is null")
@@ -49,13 +49,31 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         }
     }
 
+    fun showTextButtonClicked() {
+        if (actualReading != null) {
+            _mainUIState.value = MainFragmentState.TextShowed(
+                TextsToShow(
+                    actualReading?.bibleText ?: "",
+                    feastName = actualReading?.feastName ?: "",
+                    reflectionTextIntro = actualReading?.reflectionTextIntro ?: "",
+                    reflectionTextBody = actualReading?.reflectionTextBody ?: ""
+                )
+
+            )
+            _mainUIState.value = MainFragmentState.Content(actualReading?.dateFormatted ?: "")
+        } else {
+            _mainUIState.value = MainFragmentState.Error("No text to show for now")
+        }
+    }
+
     fun playButtonClicked() {
-        when (_playerState.value) {
+        when (val it = _playerState.value) {
             is AudioPlayerState.Downloaded -> {
                 _playerState.value = AudioPlayerState.Playing(
                     0
                 )
             }
+
             AudioPlayerState.Downloading -> {}
             is AudioPlayerState.Error -> {
                 viewModelScope.launch {
@@ -72,10 +90,11 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
             }
 
             is AudioPlayerState.Paused -> {
-                _playerState.value = AudioPlayerState.Playing(0)
+                _playerState.value = AudioPlayerState.Playing(it.currentPosition)
             }
+
             is AudioPlayerState.Playing -> {
-                _playerState.value = AudioPlayerState.Paused(0)
+                _playerState.value = AudioPlayerState.Paused(it.currentPosition)
             }
         }
     }
@@ -104,4 +123,5 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
             }
         }
     }
+
 }

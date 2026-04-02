@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -16,7 +17,9 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.flynid.laska.databinding.FragmentMainBinding
 import com.flynid.laska.domain.Language
+import com.flynid.laska.presentation.textfragment.TextFragmentBottomSheet
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -48,6 +51,21 @@ class MainFragment : Fragment() {
                 .setMediaSourceFactory(mediaSourceFactory)
                 .build()
         }
+        viewLifecycleOwner.lifecycleScope.launch {
+            while (player != null) {
+                val posSec = ((player?.currentPosition ?: 0) / 1000).toInt()
+                val durSec =
+                    if ((player?.duration ?: 0) < 0) 0 else ((player?.duration ?: 0) / 1000).toInt()
+                binding.songTimeTv.text = formatTime(durSec)
+                binding.actualTimeTv.text = formatTime(posSec)
+
+                binding.songSeekbar.max = player?.duration?.toInt() ?: 0
+                binding.songSeekbar.progress = player?.currentPosition?.toInt() ?: 0
+                delay(300)
+
+            }
+        }
+
     }
 
 
@@ -70,8 +88,38 @@ class MainFragment : Fragment() {
     }
 
     private fun setupViews() {
-        binding.testPlay.setOnClickListener {
+        binding.testPlayBtn.setOnClickListener {
             viewModel.playButtonClicked()
+        }
+
+        binding.songSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(
+                p0: SeekBar?,
+                p1: Int,
+                p2: Boolean,
+            ) {
+                //player?.seekTo(binding.songSeekbar.progress.toLong())
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+                //player?.seekTo(binding.songSeekbar.progress.toLong())
+            }
+
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+                player?.seekTo(binding.songSeekbar.progress.toLong())
+            }
+        })
+
+        binding.plusFiveBtn.setOnClickListener {
+            player?.seekTo((player?.currentPosition ?: 5000) + 5000)
+        }
+
+        binding.minusFiveBtn.setOnClickListener {
+            player?.seekTo((player?.currentPosition ?: 5000) - 5000)
+        }
+
+        binding.showTextBtn.setOnClickListener {
+            viewModel.showTextButtonClicked()
         }
     }
 
@@ -80,7 +128,7 @@ class MainFragment : Fragment() {
             viewModel.mainUIState.collect {
                 when (it) {
                     is MainFragmentState.Content -> {
-                        binding.testTv.text = it.textToShow
+                        binding.testTv.text = it.date
                     }
 
                     is MainFragmentState.Progress -> {
@@ -90,6 +138,12 @@ class MainFragment : Fragment() {
                     is MainFragmentState.Error -> {
                         Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
                         Log.d("MY_TEST", it.message)
+                    }
+
+                    is MainFragmentState.TextShowed -> {
+                        showTextFragment(
+                            it.textsToShow
+                        )
                     }
                 }
             }
@@ -112,16 +166,17 @@ class MainFragment : Fragment() {
 
                     is AudioPlayerState.Initial -> {
                         Log.d("MY_TEST", "PLAYER INITIAL")
-
                     }
 
                     is AudioPlayerState.Paused -> {
                         Log.d("MY_TEST", "PLAYER PAUSED")
+                        binding.testPlayBtn.text = "Play"
                         pausePlayer()
                     }
 
                     is AudioPlayerState.Playing -> {
                         Log.d("MY_TEST", "PLAYER PLAYING")
+                        binding.testPlayBtn.text = "Pause"
                         resumePlayer()
                     }
                 }
@@ -131,13 +186,24 @@ class MainFragment : Fragment() {
     }
 
     private fun resumePlayer() {
-        player?.play()
+        if (player?.isPlaying == false) {
+            player?.play()
+        }
     }
-//
-//    private fun showTextFragment(readingText: String) {
-//        val instance = TextFragmentBottomSheet.newInstance(readingText)
-//        instance.show(requireActivity().supportFragmentManager, TextFragmentBottomSheet.TAG)
-//    }
+
+    private fun formatTime(seconds: Int): String {
+        val m = seconds / 60
+        val s = seconds % 60
+        return "%02d:%02d".format(m, s)
+    }
+
+    private fun showTextFragment(it: TextsToShow
+    ) {
+        val instance = TextFragmentBottomSheet.newInstance(
+            it
+        )
+        instance.show(requireActivity().supportFragmentManager, TextFragmentBottomSheet.TAG)
+    }
 
 
     private fun preparePlayer(url: String) {
@@ -145,24 +211,25 @@ class MainFragment : Fragment() {
         player?.setMediaItem(mediaItem)
         player?.prepare()
     }
-        private fun pausePlayer() {
-            player?.pause()
-        }
 
-
-        override fun onStop() {
-            super.onStop()
-            releasePlayer()
-        }
-
-        private fun releasePlayer() {
-            player?.release()
-            player = null
-        }
-
-        override fun onDestroyView() {
-            _binding = null
-            super.onDestroyView()
-        }
-
+    private fun pausePlayer() {
+        player?.pause()
     }
+
+
+    override fun onStop() {
+        super.onStop()
+        releasePlayer()
+    }
+
+    private fun releasePlayer() {
+        player?.release()
+        player = null
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
+}

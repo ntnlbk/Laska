@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.flynid.laska.databinding.FragmentTextBottomSheetBinding
+import com.flynid.laska.presentation.mainfragment.TextsToShow
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class TextFragmentBottomSheet : BottomSheetDialogFragment() {
@@ -12,12 +13,13 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
     private var _binding: FragmentTextBottomSheetBinding? = null
     private val binding: FragmentTextBottomSheetBinding
         get() = _binding ?: throw Exception("FragmentTextBottomSheetBinding is null")
-    private var readingText: String = EMPTY_STRING
+
+    private var textsToShow: TextsToShow = TextsToShow()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            readingText = it.getString(READING_TEXT_KEY) ?: EMPTY_STRING
+            textsToShow = (it.getSerializable(TEXTS_TO_SHOW_KEY)) as TextsToShow
         }
     }
 
@@ -36,7 +38,14 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun setupViews() {
-        binding.lyricsText.text = readingText
+        binding.lyricsText.text = "Bible Text:\n" +
+            textsToShow.bibleTextPlain +
+                "\nReflection Intro:\n" +
+                textsToShow.reflectionTextIntro +
+                "\nReflection Body:\n" +
+                textsToShow.reflectionTextBody +
+                "\nFeast name:\n" +
+                textsToShow.feastName
     }
 
     override fun onDestroyView() {
@@ -46,14 +55,18 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
 
     companion object {
         private const val EMPTY_STRING = ""
-        private const val READING_TEXT_KEY = "textReadingParam"
+
+        private const val TEXTS_TO_SHOW_KEY = "textsToShowKey"
 
         const val TAG = "TextFragmentBottomSheet"
+
         @JvmStatic
-        fun newInstance(readingText: String) =
+        fun newInstance(
+            texts: TextsToShow
+        ) =
             TextFragmentBottomSheet().apply {
                 arguments = Bundle().apply {
-                    putString(READING_TEXT_KEY, readingText)
+                    putSerializable(TEXTS_TO_SHOW_KEY, texts)
                 }
             }
     }
