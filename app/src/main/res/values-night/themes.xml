@@ -1,7 +1,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Laska" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <style name="Base.Theme.Laska" parent="Theme.Material3.DayNight.NoActionBar">\
+        <item name="android:statusBarColor">@android:color/transparent</item>\
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+
+
+    <style name="Theme.Laska" parent="Base.Theme.Laska" />
+
+    <style name="Theme.Laska.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/C1</item>
+
+        <item name="windowSplashScreenAnimatedIcon">@drawable/icon</item>
+        <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+
+
+        <item name="postSplashScreenTheme">@style/Theme.Laska</item>
     </style>
 </resources>

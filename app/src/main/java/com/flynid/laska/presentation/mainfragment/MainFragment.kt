@@ -88,7 +88,7 @@ class MainFragment : Fragment() {
     }
 
     private fun setupViews() {
-        binding.testPlayBtn.setOnClickListener {
+        binding.playBtn.setOnClickListener {
             viewModel.playButtonClicked()
         }
 
@@ -110,11 +110,11 @@ class MainFragment : Fragment() {
             }
         })
 
-        binding.plusFiveBtn.setOnClickListener {
+        binding.plusBtn.setOnClickListener {
             player?.seekTo((player?.currentPosition ?: 5000) + 5000)
         }
 
-        binding.minusFiveBtn.setOnClickListener {
+        binding.minusBtn.setOnClickListener {
             player?.seekTo((player?.currentPosition ?: 5000) - 5000)
         }
 
@@ -128,11 +128,11 @@ class MainFragment : Fragment() {
             viewModel.mainUIState.collect {
                 when (it) {
                     is MainFragmentState.Content -> {
-                        binding.testTv.text = it.date
+                        binding.dateTv.text = it.date
                     }
 
                     is MainFragmentState.Progress -> {
-                        Toast.makeText(requireContext(), "Progress", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(requireContext(), "Progress", Toast.LENGTH_SHORT).show()
                     }
 
                     is MainFragmentState.Error -> {
@@ -170,13 +170,13 @@ class MainFragment : Fragment() {
 
                     is AudioPlayerState.Paused -> {
                         Log.d("MY_TEST", "PLAYER PAUSED")
-                        binding.testPlayBtn.text = "Play"
+                        //binding.playBtn.text = "Play"
                         pausePlayer()
                     }
 
                     is AudioPlayerState.Playing -> {
                         Log.d("MY_TEST", "PLAYER PLAYING")
-                        binding.testPlayBtn.text = "Pause"
+                        //binding.playBtn.text = "Pause"
                         resumePlayer()
                     }
                 }

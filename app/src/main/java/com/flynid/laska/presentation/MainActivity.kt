@@ -1,14 +1,17 @@
 package com.flynid.laska.presentation
 
 import android.content.Context
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.flynid.laska.R
@@ -21,23 +24,31 @@ class MainActivity : AppCompatActivity() {
     private var isReady = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //WindowCompat.setDecorFitsSystemWindows(window, false)
+
         val splashScreen = installSplashScreen()
         splashScreen.setOnExitAnimationListener { splashView ->
             splashView.view.animate().alpha(0f).setDuration(700).withEndAction {
                     splashView.remove()
                 }
         }
-        super.onCreate(savedInstanceState)
         splashScreen.setKeepOnScreenCondition {
             !isReady
         }
+
+        super.onCreate(savedInstanceState)
+
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
+        )
+
         setContentView(R.layout.activity_main)
-        enableEdgeToEdge()
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+//            insets
+//        }
 
         initApp()
 
