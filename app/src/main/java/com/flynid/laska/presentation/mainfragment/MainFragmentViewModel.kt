@@ -37,11 +37,14 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
 
     fun setReading(date: String, language: Language) {
         _mainUIState.value = MainFragmentState.Progress
+        _playerState.value = AudioPlayerState.Initial
         viewModelScope.launch {
             try {
                 actualReading = getReadingUseCase(date, language)
                 _mainUIState.value = MainFragmentState.Content(
-                    actualReading?.dateFormatted ?: throw Exception("Reading is null")
+                    actualReading?.dateFormatted ?: throw Exception("Reading is null"),
+                    actualReading?.bibleReference ?: throw Exception("Reading is null"),
+                    actualReading?.feastName ?: throw Exception("Reading is null")
                 )
             } catch (e: Exception) {
                 _mainUIState.value = MainFragmentState.Error(e.message ?: "Reading is null")
@@ -60,7 +63,11 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                 )
 
             )
-            _mainUIState.value = MainFragmentState.Content(actualReading?.dateFormatted ?: "")
+            _mainUIState.value = MainFragmentState.Content(
+                actualReading?.dateFormatted ?: throw Exception("Reading is null"),
+                actualReading?.bibleReference ?: throw Exception("Reading is null"),
+                actualReading?.feastName ?: throw Exception("Reading is null")
+            )
         } else {
             _mainUIState.value = MainFragmentState.Error("No text to show for now")
         }
@@ -122,6 +129,18 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                 }
             }
         }
+    }
+
+    fun goForward() {
+        val tomorrow =
+            DateUtils.getNextDay(actualReading?.date ?: throw Exception("Reading is null"))
+        setReading(tomorrow, actualReading?.language ?: throw Exception("Reading is null"))
+    }
+
+    fun goBack() {
+        val yesterday =
+            DateUtils.getPreviousDay(actualReading?.date ?: throw Exception("Reading is null"))
+        setReading(yesterday, actualReading?.language ?: throw Exception("Reading is null"))
     }
 
 }

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -121,6 +120,14 @@ class MainFragment : Fragment() {
         binding.showTextBtn.setOnClickListener {
             viewModel.showTextButtonClicked()
         }
+
+        binding.forwardBtn.setOnClickListener {
+            viewModel.goForward()
+        }
+
+        binding.backBtn.setOnClickListener {
+            viewModel.goBack()
+        }
     }
 
     private fun observeViewModel() {
@@ -129,14 +136,13 @@ class MainFragment : Fragment() {
                 when (it) {
                     is MainFragmentState.Content -> {
                         binding.dateTv.text = it.date
+                        binding.feastNameTv.text = it.bibleReference
+                        binding.tvSubtitle.text = it.feastName
                     }
 
-                    is MainFragmentState.Progress -> {
-                        //Toast.makeText(requireContext(), "Progress", Toast.LENGTH_SHORT).show()
-                    }
+                    is MainFragmentState.Progress -> {}
 
                     is MainFragmentState.Error -> {
-                        //Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
                         Log.d("MY_TEST", it.message)
                     }
 
@@ -166,6 +172,7 @@ class MainFragment : Fragment() {
 
                     is AudioPlayerState.Initial -> {
                         Log.d("MY_TEST", "PLAYER INITIAL")
+                        playerReset()
                     }
 
                     is AudioPlayerState.Paused -> {
@@ -185,6 +192,11 @@ class MainFragment : Fragment() {
         }
     }
 
+    private fun playerReset() {
+        player?.clearMediaItems()
+        player?.seekTo(0)
+    }
+
     private fun resumePlayer() {
         if (player?.isPlaying == false) {
             player?.play()
@@ -197,7 +209,8 @@ class MainFragment : Fragment() {
         return "%02d:%02d".format(m, s)
     }
 
-    private fun showTextFragment(it: TextsToShow
+    private fun showTextFragment(
+        it: TextsToShow
     ) {
         val instance = TextFragmentBottomSheet.newInstance(
             it

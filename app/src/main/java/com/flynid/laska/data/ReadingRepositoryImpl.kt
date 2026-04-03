@@ -29,7 +29,7 @@ class ReadingRepositoryImpl @Inject constructor(
         )
 
         if (readingFromDB == null) {
-            val readingsFromApi = LaskaApiService.LaskaApi.retrofitService.getReadings()
+            val readingsFromApi = LaskaApiService.LaskaApi.retrofitService.getReadings(date)
             readingsFromApi.data.forEach {
                 dbDao.insertReadings(
                     dbMapper.mapDtoToDbModel(it)
