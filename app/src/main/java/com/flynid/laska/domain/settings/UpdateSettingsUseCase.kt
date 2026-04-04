@@ -1,5 +1,7 @@
 package com.flynid.laska.domain.settings
 
-class UpdateSettingsUseCase(private val repository: SettingsRepository) {
+import javax.inject.Inject
+
+class UpdateSettingsUseCase @Inject constructor(private val repository: SettingsRepository) {
     operator fun invoke(newSetting: Settings) = repository.updateSettings(newSetting)
 }
