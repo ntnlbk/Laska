@@ -10,10 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import com.flynid.laska.R
 import com.flynid.laska.databinding.FragmentMainBinding
 import com.flynid.laska.domain.Language
 import com.flynid.laska.presentation.textfragment.TextFragmentBottomSheet
@@ -80,6 +82,27 @@ class MainFragment : Fragment() {
         observeViewModel()
         chooseReading("20260401", Language.BY)
         setupViews()
+
+        val playerView = binding.playerView
+
+        val player2 = ExoPlayer.Builder(requireContext()).build()
+        playerView.player = player2
+
+        val mediaItem = MediaItem.fromUri(
+            "android.resource://${requireContext().getPackageName()}/${R.raw.background}"
+        )
+
+        player2.setMediaItem(mediaItem)
+
+        // LOOP
+        player2.repeatMode = Player.REPEAT_MODE_ALL
+
+        // MUTE
+        player2.volume = 0f
+
+        player2.prepare()
+        player2.play()
+
     }
 
     private fun chooseReading(date: String, lang: Language) {

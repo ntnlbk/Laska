@@ -8,13 +8,12 @@
     android:background="#121212">
 
     <!-- Background Image -->
-    <ImageView
-        android:id="@+id/backgroundImage"
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/playerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/main_back_image" /> <!-- Replace with your actual image drawable -->
-
+        app:use_controller="false"
+        app:resize_mode="zoom" />
     <!-- Dark Gradient Overlay (makes text readable) -->
     <View
         android:layout_width="match_parent"
