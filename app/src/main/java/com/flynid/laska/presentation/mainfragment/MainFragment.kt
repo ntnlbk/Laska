@@ -37,6 +37,7 @@ class MainFragment : Fragment() {
     @Inject
     lateinit var cacheDataSourceFactory: CacheDataSource.Factory
     private var player: ExoPlayer? = null
+    private var backgroundVidePlayer: ExoPlayer? = null
 
     override fun onStart() {
         super.onStart()
@@ -82,27 +83,25 @@ class MainFragment : Fragment() {
         observeViewModel()
         chooseReading("20260401", Language.BY)
         setupViews()
+    }
 
+    private fun setupBackgroundPlayer() {
         val playerView = binding.playerView
-
-        val player2 = ExoPlayer.Builder(requireContext()).build()
-        playerView.player = player2
-
+        backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build()
+        playerView.player = backgroundVidePlayer
         val mediaItem = MediaItem.fromUri(
-            "android.resource://${requireContext().getPackageName()}/${R.raw.background}"
+            "android.resource://${requireContext().packageName}/${R.raw.background}"
         )
+        backgroundVidePlayer?.setMediaItem(mediaItem)
+        backgroundVidePlayer?.repeatMode = Player.REPEAT_MODE_ALL
+        backgroundVidePlayer?.volume = 0f
+        backgroundVidePlayer?.prepare()
+        backgroundVidePlayer?.play()
+    }
 
-        player2.setMediaItem(mediaItem)
-
-        // LOOP
-        player2.repeatMode = Player.REPEAT_MODE_ALL
-
-        // MUTE
-        player2.volume = 0f
-
-        player2.prepare()
-        player2.play()
-
+    override fun onPause() {
+        super.onPause()
+        backgroundVidePlayer?.pause()
     }
 
     private fun chooseReading(date: String, lang: Language) {
@@ -110,6 +109,7 @@ class MainFragment : Fragment() {
     }
 
     private fun setupViews() {
+        setupBackgroundPlayer()
         binding.playBtn.setOnClickListener {
             viewModel.playButtonClicked()
         }
@@ -120,11 +120,11 @@ class MainFragment : Fragment() {
                 p1: Int,
                 p2: Boolean,
             ) {
-                //player?.seekTo(binding.songSeekbar.progress.toLong())
+
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {
-                //player?.seekTo(binding.songSeekbar.progress.toLong())
+
             }
 
             override fun onStopTrackingTouch(p0: SeekBar?) {
@@ -253,17 +253,14 @@ class MainFragment : Fragment() {
     }
 
 
-    override fun onStop() {
-        super.onStop()
-        releasePlayer()
-    }
-
-    private fun releasePlayer() {
-        player?.release()
-        player = null
+    override fun onResume() {
+        backgroundVidePlayer?.play()
+        super.onResume()
     }
 
     override fun onDestroyView() {
+        backgroundVidePlayer?.release()
+        player?.release()
         _binding = null
         super.onDestroyView()
     }
