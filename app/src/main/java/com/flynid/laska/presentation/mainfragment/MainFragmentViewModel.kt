@@ -16,6 +16,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,7 +37,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     val playerState = _playerState.asStateFlow()
 
 
-    fun setReading(date: String, language: Language) {
+    fun setReading(date: String = todayFormatted(), language: Language) {
         _mainUIState.value = MainFragmentState.Progress
         _playerState.value = AudioPlayerState.Initial
         viewModelScope.launch {
@@ -107,6 +109,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     }
 
     private suspend fun getReadyItemToPlay() {
+
         val readingUrl = actualReading?.audioURL
         if (readingUrl == null) {
             _playerState.value = AudioPlayerState.Error("Reading is null")
@@ -129,6 +132,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                 }
             }
         }
+        TODO("не забыть добавить очистку кеша")
     }
 
     fun goForward() {
@@ -142,5 +146,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
             DateUtils.getPreviousDay(actualReading?.date ?: throw Exception("Reading is null"))
         setReading(yesterday, actualReading?.language ?: throw Exception("Reading is null"))
     }
+
+    private fun todayFormatted(): String = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
 
 }

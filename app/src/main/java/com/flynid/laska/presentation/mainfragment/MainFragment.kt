@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -22,6 +23,8 @@ import com.flynid.laska.presentation.textfragment.TextFragmentBottomSheet
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @UnstableApi
@@ -81,7 +84,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
-        chooseReading("20260401", Language.BY)
+        viewModel.setReading(language = Language.BY)
         setupViews()
     }
 
@@ -102,10 +105,6 @@ class MainFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         backgroundVidePlayer?.pause()
-    }
-
-    private fun chooseReading(date: String, lang: Language) {
-        viewModel.setReading(date, lang)
     }
 
     private fun setupViews() {
@@ -158,15 +157,19 @@ class MainFragment : Fragment() {
             viewModel.mainUIState.collect {
                 when (it) {
                     is MainFragmentState.Content -> {
+                        binding.progressBar.visibility = View.INVISIBLE
                         binding.dateTv.text = it.date
                         binding.feastNameTv.text = it.bibleReference
                         binding.tvSubtitle.text = it.feastName
                     }
 
-                    is MainFragmentState.Progress -> {}
+                    is MainFragmentState.Progress -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
 
                     is MainFragmentState.Error -> {
-                        Log.d("MY_TEST", it.message)
+                        binding.progressBar.visibility = View.INVISIBLE
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                     }
 
                     is MainFragmentState.TextShowed -> {
