@@ -12,4 +12,6 @@ interface AudioDownloadRepository {
 
     suspend fun isAudioDownloaded(url: String): Boolean
 
+    fun deleteAllCachedAudio()
+
 }

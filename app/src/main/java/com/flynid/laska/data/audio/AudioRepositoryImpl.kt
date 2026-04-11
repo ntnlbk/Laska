@@ -32,7 +32,7 @@ class AudioRepositoryImpl @OptIn(UnstableApi::class)
         val uri = url.toUri()
 
         val request = DownloadRequest.Builder(
-            url, // contentId
+            url,
             uri
         )
             .setMimeType(MimeTypes.AUDIO_MPEG)
@@ -97,13 +97,20 @@ class AudioRepositoryImpl @OptIn(UnstableApi::class)
 
     @OptIn(UnstableApi::class)
     override suspend fun isAudioDownloaded(url: String): Boolean {
-        // Wait for ExoPlayer to load the local database from disk
         while (!downloadManager.isInitialized) {
             kotlinx.coroutines.delay(100) // Small delay to prevent blocking
         }
 
-        // Check the database for this specific URL
         val download = downloadManager.downloadIndex.getDownload(url)
         return download != null && download.state == Download.STATE_COMPLETED
+    }
+
+    @OptIn(UnstableApi::class)
+    override fun deleteAllCachedAudio() {
+        DownloadService.sendRemoveAllDownloads(
+            context,
+            LaskaDownloadService::class.java,
+            false
+        )
     }
 }
