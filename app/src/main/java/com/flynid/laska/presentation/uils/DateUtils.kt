@@ -1,4 +1,4 @@
-package com.flynid.laska.presentation.mainfragment
+package com.flynid.laska.presentation.uils
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -22,5 +22,7 @@ class DateUtils {
 
             return previousDate.format(formatter)
         }
+        fun todayFormatted(): String = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+
     }
 }

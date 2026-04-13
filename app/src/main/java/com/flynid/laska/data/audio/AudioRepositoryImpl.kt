@@ -58,7 +58,7 @@ class AudioRepositoryImpl @OptIn(UnstableApi::class)
 
     @OptIn(UnstableApi::class)
     override fun observeDownload(url: String): Flow<AudioDownloadState> = callbackFlow {
-        val initialDownload = downloadManager.currentDownloads.find { it.request.id == url }
+        val initialDownload = downloadManager.downloadIndex.getDownload(url)
         trySend(mapToDomainStatus(initialDownload))
 
         val listener = object : DownloadManager.Listener {

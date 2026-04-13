@@ -11,13 +11,14 @@ import com.flynid.laska.domain.audio.AudioDownloadState
 import com.flynid.laska.domain.audio.CheckAudioDownloadedUseCase
 import com.flynid.laska.domain.audio.DownloadAudioUseCase
 import com.flynid.laska.domain.audio.ObserveDownloadAudioUseCase
+import com.flynid.laska.presentation.uils.ConnectionUtils
+import com.flynid.laska.presentation.uils.DateUtils
+import com.flynid.laska.presentation.uils.DateUtils.Companion.todayFormatted
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,7 +26,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     private val getReadingUseCase: GetReadingUseCase,
     private val downloadAudioUseCase: DownloadAudioUseCase,
     private val observeDownloadAudioUseCase: ObserveDownloadAudioUseCase,
-    private val checkAudioDownloadedUseCase: CheckAudioDownloadedUseCase
+    private val checkAudioDownloadedUseCase: CheckAudioDownloadedUseCase,
+    private val connectionUtils: ConnectionUtils
 ) : ViewModel() {
 
     private val _mainUIState = MutableStateFlow<MainFragmentState>(MainFragmentState.Progress)
@@ -87,6 +89,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
             is AudioPlayerState.Error -> {
                 viewModelScope.launch {
                     _playerState.value = AudioPlayerState.Downloading
+                    delay(100)
                     getReadyItemToPlay()
                 }
             }
@@ -120,19 +123,23 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                 delay(100)
                 playButtonClicked()
             } else {
-                downloadAudioUseCase(readingUrl)
-                observeDownloadAudioUseCase(readingUrl).collect { domainStatus ->
-                    if (domainStatus is AudioDownloadState.Completed) {
-                        _playerState.value = AudioPlayerState.Downloaded(readingUrl)
-                        delay(100)
-                        playButtonClicked()
-                    } else if (domainStatus is AudioDownloadState.Failed) {
-                        _playerState.value = AudioPlayerState.Error("Failed to download audio")
+                if (connectionUtils.isInternetAvailable()) {
+                    downloadAudioUseCase(readingUrl)
+                    observeDownloadAudioUseCase(readingUrl).collect { domainStatus ->
+                        if (domainStatus is AudioDownloadState.Completed) {
+                            _playerState.value = AudioPlayerState.Downloaded(readingUrl)
+                            delay(100)
+                            playButtonClicked()
+                        } else if (domainStatus is AudioDownloadState.Failed) {
+                            _playerState.value = AudioPlayerState.Error("Failed to download audio")
+                        }
                     }
+                }
+                else{
+                    _playerState.value = AudioPlayerState.Error("No file and no connection")
                 }
             }
         }
-        TODO("не забыть добавить очистку кеша")
     }
 
     fun goForward() {
@@ -146,7 +153,5 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
             DateUtils.getPreviousDay(actualReading?.date ?: throw Exception("Reading is null"))
         setReading(yesterday, actualReading?.language ?: throw Exception("Reading is null"))
     }
-
-    private fun todayFormatted(): String = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
 
 }

@@ -19,7 +19,6 @@
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="invisible"/>
 
-    <!-- Background Image -->
     <androidx.media3.ui.PlayerView
         android:id="@+id/playerView"
         android:layout_width="match_parent"
@@ -29,13 +28,11 @@
 
 
     </androidx.media3.ui.PlayerView>
-    <!-- Dark Gradient Overlay (makes text readable) -->
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg_bottom_gradient" />
 
-    <!-- Top Share Button -->
     <ImageView
         android:id="@+id/btnShare"
         android:layout_width="40dp"
@@ -48,7 +45,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Top Menu Button -->
     <ImageView
         android:id="@+id/btnMenu"
         android:layout_width="40dp"
@@ -61,7 +57,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <!-- Read Text (Bottom Anchor) -->
     <LinearLayout
         android:id="@+id/show_text_btn"
         android:layout_width="wrap_content"
@@ -88,7 +83,6 @@
             app:tint="#80FFFFFF" />
     </LinearLayout>
 
-    <!-- Audio Player Card -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/audioPlayerCard"
         android:layout_width="match_parent"
@@ -99,7 +93,6 @@
         android:padding="20dp"
         app:layout_constraintBottom_toTopOf="@id/show_text_btn">
 
-        <!-- Progress Bar -->
         <SeekBar
             android:id="@+id/song_seekbar"
             android:layout_width="match_parent"
@@ -111,7 +104,6 @@
             android:thumbTint="@android:color/white"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Time Indicators -->
         <TextView
             android:id="@+id/actual_time_tv"
             android:layout_width="wrap_content"
@@ -134,7 +126,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/song_seekbar" />
 
-        <!-- Play Controls -->
         <ImageView
             android:id="@+id/play_btn"
             android:layout_width="64dp"
@@ -180,35 +171,33 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Subtitle Text -->
     <TextView
         android:id="@+id/tvSubtitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="24dp"
-        android:text="Feast of the Holy Spirit"
+        tools:text="Feast of the Holy Spirit"
         android:textColor="#B3FFFFFF"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/audioPlayerCard"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Reference Text -->
     <TextView
         android:id="@+id/feast_name_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="4dp"
-        android:text="Matthew 21:21–35"
+        tools:text="Matthew 21:21–35"
         android:textColor="#B3FFFFFF"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/tvSubtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Date Title -->
+
     <TextView
         android:id="@+id/date_tv"
         android:layout_width="0dp"
@@ -216,7 +205,7 @@
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif-medium"
-        android:text="Суббота, 24 февраля"
+        tools:text="Суббота, 24 февраля"
         android:textColor="@android:color/white"
         android:textSize="24sp"
         android:textStyle="bold"

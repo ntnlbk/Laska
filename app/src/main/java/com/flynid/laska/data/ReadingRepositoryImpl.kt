@@ -9,7 +9,9 @@ import com.flynid.laska.domain.Language
 import com.flynid.laska.domain.ReadingItem
 import com.flynid.laska.domain.ReadingRepository
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ReadingRepositoryImpl @Inject constructor(
     private val application: Application,
     private val dbMapper: DbModelMapper,

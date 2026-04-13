@@ -1,7 +1,6 @@
 package com.flynid.laska.presentation.mainfragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,8 +22,6 @@ import com.flynid.laska.presentation.textfragment.TextFragmentBottomSheet
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @UnstableApi
@@ -184,32 +181,28 @@ class MainFragment : Fragment() {
             viewModel.playerState.collect {
                 when (it) {
                     is AudioPlayerState.Downloaded -> {
-                        Log.d("MY_TEST", "PLAYER DOWNLOADED")
+                        binding.progressBar.visibility = View.INVISIBLE
                         preparePlayer(it.fileUrl)
                     }
 
                     is AudioPlayerState.Downloading -> {
-                        Log.d("MY_TEST", "PLAYER DOWNLOADING")
+                        binding.progressBar.visibility = View.VISIBLE
                     }
 
                     is AudioPlayerState.Error -> {
-                        Log.d("MY_TEST", "PLAYER ERROR")
+                        binding.progressBar.visibility = View.INVISIBLE
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                     }
 
                     is AudioPlayerState.Initial -> {
-                        Log.d("MY_TEST", "PLAYER INITIAL")
                         playerReset()
                     }
 
                     is AudioPlayerState.Paused -> {
-                        Log.d("MY_TEST", "PLAYER PAUSED")
-                        //binding.playBtn.text = "Play"
                         pausePlayer()
                     }
 
                     is AudioPlayerState.Playing -> {
-                        Log.d("MY_TEST", "PLAYER PLAYING")
-                        //binding.playBtn.text = "Pause"
                         resumePlayer()
                     }
                 }
