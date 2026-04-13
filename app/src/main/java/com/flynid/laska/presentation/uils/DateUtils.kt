@@ -22,7 +22,7 @@ class DateUtils {
 
             return previousDate.format(formatter)
         }
-        fun todayFormatted(): String = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+        fun todayFormatted(): String = "20260416" //LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
 
     }
 }
