@@ -5,7 +5,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212">
+    android:background="#151515"> <!-- Match dark background -->
+
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/playerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:use_controller="false"
+        app:resize_mode="zoom" >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_bottom_gradient" />
+
+    </androidx.media3.ui.PlayerView>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -19,49 +33,38 @@
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="invisible"/>
 
-    <androidx.media3.ui.PlayerView
-        android:id="@+id/playerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:use_controller="false"
-        app:resize_mode="zoom" >
-
-
-    </androidx.media3.ui.PlayerView>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_bottom_gradient" />
-
+    <!-- TOP BAR -->
     <ImageView
         android:id="@+id/btnShare"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="31dp"
         android:background="@drawable/bg_circle_dark"
-        android:padding="8dp"
+        android:padding="9dp"
         android:src="@drawable/ic_share"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <ImageView
         android:id="@+id/btnMenu"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="24dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="31dp"
         android:background="@drawable/bg_circle_dark"
         android:padding="8dp"
-        android:src="@drawable/ic_more_vert"
+        android:src="@drawable/ic_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <!-- BOTTOM BUTTON -->
     <LinearLayout
         android:id="@+id/show_text_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="28.6dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -72,15 +75,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Читать текст"
-            android:textColor="@android:color/white"
-            android:textSize="14sp" />
+            android:textColor="#FBEECE"
+            android:textStyle="bold"
+            android:textSize="16sp" />
 
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="4dp"
-            android:src="@drawable/ic_arrow_down"
-            app:tint="#80FFFFFF" />
+            android:layout_width="12dp"
+            android:layout_height="7.4dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_arrow_down" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -90,39 +93,48 @@
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/bg_audio_card"
-        android:padding="20dp"
+        android:paddingTop="32dp"
+        android:paddingBottom="32dp"
         app:layout_constraintBottom_toTopOf="@id/show_text_btn">
 
         <SeekBar
             android:id="@+id/song_seekbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:progress="30"
-            android:progressTint="#72C6DB"
+            android:paddingStart="7dp"
+            android:paddingEnd="7dp"
+            android:progress="0"
+            android:layout_marginStart="17dp"
+            android:layout_marginEnd="17dp"
+            android:progressTint="#fbeece"
+            android:progressBackgroundTint="#353535"
             android:thumbTint="@android:color/white"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/actual_time_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="31dp"
+            android:layout_height="15dp"
             android:layout_marginTop="8dp"
-            android:text="02:45"
-            android:textColor="#80FFFFFF"
-            android:textSize="12sp"
+            android:layout_marginStart="24dp"
+            tools:text="02:45"
+            android:fontFamily="@font/inter"
+            android:textColor="#8d8677"
+            android:textSize="11sp"
+            android:gravity="center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/song_seekbar" />
 
         <TextView
             android:id="@+id/song_time_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="15dp"
+            android:layout_marginEnd="24dp"
             android:layout_marginTop="8dp"
-            android:text="08:12"
-            android:textColor="#80FFFFFF"
-            android:textSize="12sp"
+            tools:text="02:45"
+            android:fontFamily="@font/inter"
+            android:textColor="#8d8677"
+            android:textSize="11sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/song_seekbar" />
 
@@ -130,40 +142,56 @@
             android:id="@+id/play_btn"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="24dp"
             android:background="@drawable/bg_play_button"
-            android:padding="20dp"
+            android:padding="23dp"
             android:src="@drawable/ic_play"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/actual_time_tv"/>
 
-        <TextView
+        <!-- Re-styled to match pill buttons using compound drawables to keep TextView ID -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/minus_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_pill_button"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            android:text="-5"
-            android:textColor="#B3FFFFFF"
-            android:textSize="13sp"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="76dp"
+            android:layout_height="50dp"
+            android:text="15"
+            android:textColor="#8d8677"
+            android:textSize="14sp"
+            app:backgroundTint="#2660544D"
+            android:layout_marginStart="24dp"
+            app:cornerRadius="24dp"
+            android:fontFamily="@font/inter"
+            app:icon="@drawable/back_15_ic"
+            app:iconSize="18dp"
+            app:iconGravity="textEnd"
+            android:insetTop="0dp"
+            app:iconTint="#FBEECE"
+            android:insetBottom="0dp"
             app:layout_constraintBottom_toBottomOf="@id/play_btn"
             app:layout_constraintEnd_toStartOf="@id/play_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/play_btn" />
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/plus_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_pill_button"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            android:text="+5"
-            android:textColor="#B3FFFFFF"
-            android:textSize="13sp"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="76dp"
+            android:layout_height="50dp"
+            android:text="15"
+            app:iconTint="#FBEECE"
+            android:fontFamily="@font/inter"
+            android:textSize="14sp"
+            android:textColor="#8d8677"
+            app:backgroundTint="#2660544D"
+            app:cornerRadius="24dp"
+            app:icon="@drawable/forward_ic"
+            android:layout_marginEnd="24dp"
+            app:iconSize="18dp"
+            app:iconGravity="textStart"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             app:layout_constraintBottom_toBottomOf="@id/play_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/play_btn"
@@ -171,71 +199,68 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- NEW: DOTS / BULLET POINTS -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutDots"
+        android:layout_width="wrap_content"
+        android:layout_height="12dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:color/transparent"
+        app:tabBackground="@drawable/tab_dot_selector"
+        app:tabGravity="center"
+        app:tabIndicatorHeight="0dp"
+        app:tabPaddingEnd="4dp"
+        app:tabPaddingStart="4dp"
+        app:layout_constraintBottom_toTopOf="@id/audioPlayerCard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- TITLES (Re-ordered logically) -->
     <TextView
         android:id="@+id/tvSubtitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="12dp"
         tools:text="Feast of the Holy Spirit"
-        android:textColor="#B3FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/audioPlayerCard"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tabLayoutDots"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/feast_name_tv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="4dp"
-        tools:text="Matthew 21:21–35"
-        android:textColor="#B3FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/tvSubtitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
 
     <TextView
         android:id="@+id/date_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="8dp"
-        android:fontFamily="sans-serif-medium"
-        tools:text="Суббота, 24 февраля"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/feast_name_tv"
+        android:layout_marginBottom="4dp"
+        tools:text="Matthew 21:21–35"
+        android:textColor="#AAAAAA"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/tvSubtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- EXISTING SWIPE BUTTONS (Hidden to prevent UI block, read below!) -->
     <Button
         android:id="@+id/forward_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="0dp"
         android:background="@android:color/transparent"
-        android:text="->"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteX="339dp"
-        tools:layout_editor_absoluteY="311dp" />
-
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="@id/playerView"
+        app:layout_constraintTop_toTopOf="@id/playerView"
+        app:layout_constraintEnd_toEndOf="parent" />
     <Button
         android:id="@+id/back_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="0dp"
         android:background="@android:color/transparent"
-        android:text="&lt;-"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="311dp" />
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="@id/playerView"
+        app:layout_constraintTop_toTopOf="@id/playerView"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -116,7 +117,7 @@ class MainFragment : Fragment() {
                 p1: Int,
                 p2: Boolean,
             ) {
-
+                player?.seekTo(binding.songSeekbar.progress.toLong())
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {
@@ -124,16 +125,23 @@ class MainFragment : Fragment() {
             }
 
             override fun onStopTrackingTouch(p0: SeekBar?) {
-                player?.seekTo(binding.songSeekbar.progress.toLong())
+
             }
         })
 
         binding.plusBtn.setOnClickListener {
-            player?.seekTo((player?.currentPosition ?: 5000) + 5000)
+            player?.seekTo(
+                (player?.currentPosition
+                    ?: PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS) + PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS
+            )
         }
 
         binding.minusBtn.setOnClickListener {
-            player?.seekTo((player?.currentPosition ?: 5000) - 5000)
+            val currentPosition = (player?.currentPosition ?: 0)
+            player?.seekTo(
+                if (currentPosition - PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS < 0L) 0L
+                else currentPosition - PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS
+            )
         }
 
         binding.showTextBtn.setOnClickListener {
@@ -156,7 +164,6 @@ class MainFragment : Fragment() {
                     is MainFragmentState.Content -> {
                         binding.progressBar.visibility = View.INVISIBLE
                         binding.dateTv.text = it.date
-                        binding.feastNameTv.text = it.bibleReference
                         binding.tvSubtitle.text = it.feastName
                     }
 
@@ -182,6 +189,8 @@ class MainFragment : Fragment() {
                 when (it) {
                     is AudioPlayerState.Downloaded -> {
                         binding.progressBar.visibility = View.INVISIBLE
+                        binding.minusBtn.isEnabled = true
+                        binding.plusBtn.isEnabled = true
                         preparePlayer(it.fileUrl)
                     }
 
@@ -195,14 +204,28 @@ class MainFragment : Fragment() {
                     }
 
                     is AudioPlayerState.Initial -> {
+                        binding.songTimeTv.text = "00:00"
+                        binding.actualTimeTv.text = "00:00"
+                        binding.minusBtn.isEnabled = false
+                        binding.plusBtn.isEnabled = false
+                        binding.songSeekbar.progress = 0
+                        binding.playBtn.setImageDrawable(
+                            ContextCompat.getDrawable(requireContext(), R.drawable.ic_play)
+                        )
                         playerReset()
                     }
 
                     is AudioPlayerState.Paused -> {
+                        binding.playBtn.setImageDrawable(
+                            ContextCompat.getDrawable(requireContext(), R.drawable.ic_play)
+                        )
                         pausePlayer()
                     }
 
                     is AudioPlayerState.Playing -> {
+                        binding.playBtn.setImageDrawable(
+                            ContextCompat.getDrawable(requireContext(), R.drawable.pause_ic)
+                        )
                         resumePlayer()
                     }
                 }
@@ -259,6 +282,10 @@ class MainFragment : Fragment() {
         player?.release()
         _binding = null
         super.onDestroyView()
+    }
+
+    companion object {
+        private const val PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS = 15000L
     }
 
 }
