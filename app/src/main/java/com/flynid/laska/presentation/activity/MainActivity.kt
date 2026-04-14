@@ -2,6 +2,7 @@ package com.flynid.laska.presentation.activity
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
@@ -12,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import com.flynid.laska.R
 import com.flynid.laska.presentation.uils.ConnectionUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,60 +25,51 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var connectionUtils: ConnectionUtils
-    private var isReady = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        val splashScreen = installSplashScreen()
-        splashScreen.setOnExitAnimationListener { splashView ->
-            splashView.view.animate().alpha(0f).setDuration(700).withEndAction {
-                splashView.remove()
-            }
-        }
-        splashScreen.setKeepOnScreenCondition {
-            !isReady
-        }
-
+        installSplashScreen()
         super.onCreate(savedInstanceState)
-
-        lifecycleScope.launch {
-            try {
-                viewModel.downloadActualReading()
-            } catch (e: Exception) {
-                if (connectionUtils.isInternetAvailable()) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Калі ласка, паспрабуйце пазней",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Калі ласка, праверце інтрэрнэт",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
 
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.Companion.dark(Color.TRANSPARENT)
         )
         setContentView(R.layout.activity_main)
-        initApp()
 
+        val splashOverlay = findViewById<View>(R.id.splash_overlay)
+        preloadDataAndManageSplash(splashOverlay)
     }
 
-    private fun initApp() {
+    private fun preloadDataAndManageSplash(splashOverlay: View) {
         lifecycleScope.launch {
-            if (viewModel.isReadyToPlay()) {
-                isReady = true
-            } else {
-                delay(2000)
-                isReady = true
-            }
+            val minimumSplashTimer = async { delay(1500L) }
+            val dataFetchJob = async {
+                try {
+                    viewModel.downloadActualReading()
 
+                    if (!viewModel.isReadyToPlay()) {
+                        delay(200L)
+                    }
+                } catch (e: Exception) {
+                    showNetworkError()
+                }
+            }
+            minimumSplashTimer.await()
+            dataFetchJob.await()
+            splashOverlay.animate()
+                .alpha(0f)
+                .setDuration(500)
+                .withEndAction {
+                    splashOverlay.visibility = View.GONE
+                }
         }
     }
 
+    private fun showNetworkError() {
+        val message = if (connectionUtils.isInternetAvailable()) {
+            "Калі ласка, паспрабуйце пазней"
+        } else {
+            "Калі ласка, праверце інтрэрнэт"
+        }
+        Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
+    }
 }

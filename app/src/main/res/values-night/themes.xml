@@ -5,17 +5,11 @@
         <item name="android:windowLightStatusBar">false</item>
     </style>
 
-
-
     <style name="Theme.Laska" parent="Base.Theme.Laska" />
 
-    <style name="Theme.Laska.Splash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/C1</item>
-
-        <item name="windowSplashScreenAnimatedIcon">@drawable/icon</item>
-        <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
-
-
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/main_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
         <item name="postSplashScreenTheme">@style/Theme.Laska</item>
     </style>
 </resources>
