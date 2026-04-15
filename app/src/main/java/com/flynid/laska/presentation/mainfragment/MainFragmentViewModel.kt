@@ -50,6 +50,12 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                     actualReading?.bibleReference ?: throw Exception("Reading is null"),
                     actualReading?.feastName ?: throw Exception("Reading is null")
                 )
+                actualReading?.let {
+                    val isDownloaded = checkAudioDownloadedUseCase(it.audioURL)
+                    if (isDownloaded) {
+                        _playerState.value = AudioPlayerState.Downloaded(it.audioURL)
+                    }
+                }
             } catch (e: Exception) {
                 _mainUIState.value = MainFragmentState.Error(e.message ?: "Reading is null")
             }
@@ -131,11 +137,11 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                             delay(100)
                             playButtonClicked()
                         } else if (domainStatus is AudioDownloadState.Failed) {
-                            _playerState.value = AudioPlayerState.Error("Failed to download audio")
+                            _playerState.value =
+                                AudioPlayerState.Error("Failed to download audio")
                         }
                     }
-                }
-                else{
+                } else {
                     _playerState.value = AudioPlayerState.Error("No file and no connection")
                 }
             }

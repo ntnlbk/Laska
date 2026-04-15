@@ -40,6 +40,8 @@ class MainFragment : Fragment() {
     private var player: ExoPlayer? = null
     private var backgroundVidePlayer: ExoPlayer? = null
 
+    private var isSeekBarTouched = false
+
     override fun onStart() {
         super.onStart()
         initPlayer()
@@ -61,11 +63,12 @@ class MainFragment : Fragment() {
                     if ((player?.duration ?: 0) < 0) 0 else ((player?.duration ?: 0) / 1000).toInt()
                 binding.songTimeTv.text = formatTime(durSec)
                 binding.actualTimeTv.text = formatTime(posSec)
+                if(!isSeekBarTouched){
+                    binding.songSeekbar.max = player?.duration?.toInt() ?: 0
+                    binding.songSeekbar.progress = player?.currentPosition?.toInt() ?: 0
+                }
 
-                binding.songSeekbar.max = player?.duration?.toInt() ?: 0
-                binding.songSeekbar.progress = player?.currentPosition?.toInt() ?: 0
-                delay(300)
-
+                delay(100)
             }
         }
 
@@ -117,15 +120,16 @@ class MainFragment : Fragment() {
                 p1: Int,
                 p2: Boolean,
             ) {
-                player?.seekTo(binding.songSeekbar.progress.toLong())
+
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {
-
+                isSeekBarTouched = true
             }
 
             override fun onStopTrackingTouch(p0: SeekBar?) {
-
+                player?.seekTo(binding.songSeekbar.progress.toLong())
+                isSeekBarTouched = false
             }
         })
 
@@ -204,8 +208,8 @@ class MainFragment : Fragment() {
                     }
 
                     is AudioPlayerState.Initial -> {
-                        binding.songTimeTv.text = "00:00"
-                        binding.actualTimeTv.text = "00:00"
+                        //binding.songTimeTv.text = "00:00"
+                        //binding.actualTimeTv.text = "00:00"
                         binding.minusBtn.isEnabled = false
                         binding.plusBtn.isEnabled = false
                         binding.songSeekbar.progress = 0
