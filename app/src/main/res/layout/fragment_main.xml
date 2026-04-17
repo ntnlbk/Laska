@@ -5,21 +5,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#151515"> <!-- Match dark background -->
+    android:background="@drawable/background_temp_gradient"> <!-- Match dark background -->
 
-    <androidx.media3.ui.PlayerView
-        android:id="@+id/playerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:use_controller="false"
-        app:resize_mode="zoom" >
+<!--    <androidx.media3.ui.PlayerView-->
+<!--        android:id="@+id/playerView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        app:use_controller="false"-->
+<!--        app:resize_mode="zoom" >-->
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_bottom_gradient" />
+<!--        <View-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="@drawable/background_temp_gradient" />-->
 
-    </androidx.media3.ui.PlayerView>
+<!--    </androidx.media3.ui.PlayerView>-->
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -217,12 +217,12 @@
 
     <!-- TITLES (Re-ordered logically) -->
     <TextView
-        android:id="@+id/tvSubtitle"
+        android:id="@+id/date_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="12dp"
-        tools:text="Feast of the Holy Spirit"
+        tools:text="1 cентября"
         android:textColor="#FFFFFF"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -231,15 +231,26 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/date_tv"
+        android:id="@+id/feast_name_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="4dp"
+        tools:text="Feast name"
+        android:textColor="#AAAAAA"
+        android:textSize="19sp"
+        app:layout_constraintBottom_toTopOf="@id/date_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/bible_ref_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
         tools:text="Matthew 21:21–35"
         android:textColor="#AAAAAA"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/tvSubtitle"
+        app:layout_constraintBottom_toTopOf="@id/feast_name_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -250,8 +261,8 @@
         android:layout_height="0dp"
         android:background="@android:color/transparent"
         android:text=""
-        app:layout_constraintBottom_toBottomOf="@id/playerView"
-        app:layout_constraintTop_toTopOf="@id/playerView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
     <Button
         android:id="@+id/back_btn"
@@ -259,8 +270,20 @@
         android:layout_height="0dp"
         android:background="@android:color/transparent"
         android:text=""
-        app:layout_constraintBottom_toBottomOf="@id/playerView"
-        app:layout_constraintTop_toTopOf="@id/playerView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        app:srcCompat="@drawable/icon_fullsize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnShare"
+        android:layout_marginTop="100dp"
+        tools:layout_editor_absoluteX="141dp"
+        tools:layout_editor_absoluteY="225dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

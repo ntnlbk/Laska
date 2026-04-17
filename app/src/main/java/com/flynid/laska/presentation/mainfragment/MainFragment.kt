@@ -89,19 +89,19 @@ class MainFragment : Fragment() {
         setupViews()
     }
 
-    private fun setupBackgroundPlayer() {
-        val playerView = binding.playerView
-        backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build()
-        playerView.player = backgroundVidePlayer
-        val mediaItem = MediaItem.fromUri(
-            "android.resource://${requireContext().packageName}/${R.raw.background}"
-        )
-        backgroundVidePlayer?.setMediaItem(mediaItem)
-        backgroundVidePlayer?.repeatMode = Player.REPEAT_MODE_ALL
-        backgroundVidePlayer?.volume = 0f
-        backgroundVidePlayer?.prepare()
-        backgroundVidePlayer?.play()
-    }
+//    private fun setupBackgroundPlayer() {
+//        val playerView = binding.playerView
+//        backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build()
+//        playerView.player = backgroundVidePlayer
+//        val mediaItem = MediaItem.fromUri(
+//            "android.resource://${requireContext().packageName}/${R.raw.background}"
+//        )
+//        backgroundVidePlayer?.setMediaItem(mediaItem)
+//        backgroundVidePlayer?.repeatMode = Player.REPEAT_MODE_ALL
+//        backgroundVidePlayer?.volume = 0f
+//        backgroundVidePlayer?.prepare()
+//        backgroundVidePlayer?.play()
+//    }
 
     override fun onPause() {
         super.onPause()
@@ -109,7 +109,7 @@ class MainFragment : Fragment() {
     }
 
     private fun setupViews() {
-        setupBackgroundPlayer()
+        //setupBackgroundPlayer()
         binding.playBtn.setOnClickListener {
             viewModel.playButtonClicked()
         }
@@ -168,7 +168,8 @@ class MainFragment : Fragment() {
                     is MainFragmentState.Content -> {
                         binding.progressBar.visibility = View.INVISIBLE
                         binding.dateTv.text = it.date
-                        binding.tvSubtitle.text = it.feastName
+                        binding.feastNameTv.text = it.feastName
+                        binding.bibleRefTv.text = it.bibleReference
                     }
 
                     is MainFragmentState.Progress -> {
@@ -195,6 +196,7 @@ class MainFragment : Fragment() {
                         binding.progressBar.visibility = View.INVISIBLE
                         binding.minusBtn.isEnabled = true
                         binding.plusBtn.isEnabled = true
+                        binding.songSeekbar.isEnabled = true
                         preparePlayer(it.fileUrl)
                     }
 
@@ -212,6 +214,7 @@ class MainFragment : Fragment() {
                         //binding.actualTimeTv.text = "00:00"
                         binding.minusBtn.isEnabled = false
                         binding.plusBtn.isEnabled = false
+                        binding.songSeekbar.isEnabled = false
                         binding.songSeekbar.progress = 0
                         binding.playBtn.setImageDrawable(
                             ContextCompat.getDrawable(requireContext(), R.drawable.ic_play)
