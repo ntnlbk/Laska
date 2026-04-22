@@ -338,6 +338,7 @@ class MainFragment : Fragment() {
 
 
     private fun preparePlayer(url: String) {
+        player?.pause()
         val mediaItem = MediaItem.fromUri(url)
         player?.setMediaItem(mediaItem)
         player?.prepare()
