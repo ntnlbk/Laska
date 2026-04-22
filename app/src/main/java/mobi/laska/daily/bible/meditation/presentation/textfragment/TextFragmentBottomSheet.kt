@@ -1,12 +1,16 @@
 package mobi.laska.daily.bible.meditation.presentation.textfragment
 
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.drawable.toDrawable
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import mobi.laska.daily.bible.meditation.databinding.FragmentTextBottomSheetBinding
 import mobi.laska.daily.bible.meditation.presentation.mainfragment.TextsToShow
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class TextFragmentBottomSheet : BottomSheetDialogFragment() {
 
@@ -32,20 +36,46 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
 
     }
 
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+
+        dialog.setOnShowListener {
+            //this line transparent your dialog background
+            (view?.parent as ViewGroup).background =
+                Color.parseColor("#F8F8F6").toDrawable()
+        }
+
+        return dialog
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val scrollView = binding.scrollView
+        val progressBar = binding.headerProgressBar
+
+        scrollView.viewTreeObserver.addOnScrollChangedListener {
+            val child = scrollView.getChildAt(0)
+
+            val scrollY = scrollView.scrollY
+            val totalHeight = child.height - scrollView.height
+
+            val progress = if (totalHeight > 0) {
+                (scrollY.toFloat() / totalHeight * 100).toInt()
+            } else {
+                0
+            }
+
+            progressBar.progress = progress
+        }
         setupViews()
     }
 
     private fun setupViews() {
-        binding.lyricsText.text = "Bible Text:\n" +
-            textsToShow.bibleTextPlain +
-                "\nReflection Intro:\n" +
-                textsToShow.reflectionTextIntro +
-                "\nReflection Body:\n" +
-                textsToShow.reflectionTextBody +
-                "\nFeast name:\n" +
-                textsToShow.feastName
+        binding.tv1.text = textsToShow.reflectionTextIntro
+        binding.tv2.text = textsToShow.bibleTextPlain
+        binding.tv3.text = textsToShow.reflectionTextBody
     }
 
     override fun onDestroyView() {

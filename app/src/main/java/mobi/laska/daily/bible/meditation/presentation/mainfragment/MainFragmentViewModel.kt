@@ -66,7 +66,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         if (actualReading != null) {
             _mainUIState.value = MainFragmentState.TextShowed(
                 TextsToShow(
-                    actualReading?.bibleText ?: "",
+                    actualReading?.bibleTextPlain ?: "",
                     feastName = actualReading?.feastName ?: "",
                     reflectionTextIntro = actualReading?.reflectionTextIntro ?: "",
                     reflectionTextBody = actualReading?.reflectionTextBody ?: ""

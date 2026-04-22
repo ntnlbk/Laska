@@ -39,7 +39,7 @@ class DbModelMapper @Inject constructor(
             language = readingDTO.language,
             bibleReference = readingDTO.bibleReference ?: EMPTY_STRING,
             bibleText = readingDTO.bibleText ?: EMPTY_STRING,
-            bibleTextPlain = readingDTO.bibleText ?: EMPTY_STRING,
+            bibleTextPlain = readingDTO.bibleTextPlain ?: EMPTY_STRING,
             feastName = readingDTO.feastName ?: EMPTY_STRING,
             reflectionTextIntro = readingDTO.reflectionIntro ?: EMPTY_STRING,
             reflectionTextBody = readingDTO.reflectionBody ?: EMPTY_STRING,
