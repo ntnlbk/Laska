@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.exoplayer.ExoPlayer
@@ -88,19 +89,19 @@ class MainFragment : Fragment() {
         setupViews()
     }
 
-//    private fun setupBackgroundPlayer() {
-//        val playerView = binding.playerView
-//        backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build()
-//        playerView.player = backgroundVidePlayer
-//        val mediaItem = MediaItem.fromUri(
-//            "android.resource://${requireContext().packageName}/${R.raw.background}"
-//        )
-//        backgroundVidePlayer?.setMediaItem(mediaItem)
-//        backgroundVidePlayer?.repeatMode = Player.REPEAT_MODE_ALL
-//        backgroundVidePlayer?.volume = 0f
-//        backgroundVidePlayer?.prepare()
-//        backgroundVidePlayer?.play()
-//    }
+    private fun setupBackgroundPlayer() {
+        val playerView = binding.playerView
+        backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build()
+        playerView.player = backgroundVidePlayer
+        val mediaItem = MediaItem.fromUri(
+            "android.resource://${requireContext().packageName}/${R.raw.background}"
+        )
+        backgroundVidePlayer?.setMediaItem(mediaItem)
+        backgroundVidePlayer?.repeatMode = Player.REPEAT_MODE_ALL
+        backgroundVidePlayer?.volume = 0f
+        backgroundVidePlayer?.prepare()
+        backgroundVidePlayer?.play()
+    }
 
     override fun onPause() {
         super.onPause()
@@ -108,7 +109,7 @@ class MainFragment : Fragment() {
     }
 
     private fun setupViews() {
-        //setupBackgroundPlayer()
+        setupBackgroundPlayer()
         binding.playBtn.setOnClickListener {
             viewModel.playButtonClicked()
         }
