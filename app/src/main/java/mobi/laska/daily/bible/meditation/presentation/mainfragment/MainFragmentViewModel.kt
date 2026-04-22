@@ -21,6 +21,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val ERROR_MESSAGE = "Паспрабуйце пазней"
+
 @HiltViewModel
 class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     private val getReadingUseCase: GetReadingUseCase,
@@ -46,9 +48,9 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
             try {
                 actualReading = getReadingUseCase(date, language)
                 _mainUIState.value = MainFragmentState.Content(
-                    actualReading?.dateFormatted ?: throw Exception("Reading is null"),
-                    actualReading?.bibleReference ?: throw Exception("Reading is null"),
-                    actualReading?.feastName ?: throw Exception("Reading is null")
+                    actualReading?.dateFormatted ?: throw Exception(ERROR_MESSAGE),
+                    actualReading?.bibleReference ?: throw Exception(ERROR_MESSAGE),
+                    actualReading?.feastName ?: throw Exception(ERROR_MESSAGE)
                 )
                 actualReading?.let {
                     val isDownloaded = checkAudioDownloadedUseCase(it.audioURL)
@@ -57,7 +59,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                _mainUIState.value = MainFragmentState.Error(e.message ?: "Reading is null")
+                _mainUIState.value = MainFragmentState.Error(ERROR_MESSAGE)
             }
         }
     }
@@ -74,9 +76,9 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
 
             )
             _mainUIState.value = MainFragmentState.Content(
-                actualReading?.dateFormatted ?: throw Exception("Reading is null"),
-                actualReading?.bibleReference ?: throw Exception("Reading is null"),
-                actualReading?.feastName ?: throw Exception("Reading is null")
+                actualReading?.dateFormatted ?: throw Exception(ERROR_MESSAGE),
+                actualReading?.bibleReference ?: throw Exception(ERROR_MESSAGE),
+                actualReading?.feastName ?: throw Exception(ERROR_MESSAGE)
             )
         } else {
             _mainUIState.value = MainFragmentState.Error("No text to show for now")
@@ -121,7 +123,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
 
         val readingUrl = actualReading?.audioURL
         if (readingUrl == null) {
-            _playerState.value = AudioPlayerState.Error("Reading is null")
+            _playerState.value = AudioPlayerState.Error(ERROR_MESSAGE)
         } else {
             val isDownloaded = checkAudioDownloadedUseCase(readingUrl)
             if (isDownloaded) {
@@ -150,14 +152,14 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
 
     fun goForward() {
         val tomorrow =
-            DateUtils.getNextDay(actualReading?.date ?: throw Exception("Reading is null"))
-        setReading(tomorrow, actualReading?.language ?: throw Exception("Reading is null"))
+            DateUtils.getNextDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
+        setReading(tomorrow, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
     }
 
     fun goBack() {
         val yesterday =
-            DateUtils.getPreviousDay(actualReading?.date ?: throw Exception("Reading is null"))
-        setReading(yesterday, actualReading?.language ?: throw Exception("Reading is null"))
+            DateUtils.getPreviousDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
+        setReading(yesterday, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
     }
 
 }

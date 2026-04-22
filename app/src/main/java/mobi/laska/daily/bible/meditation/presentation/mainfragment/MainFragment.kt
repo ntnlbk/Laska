@@ -1,7 +1,11 @@
 package mobi.laska.daily.bible.meditation.presentation.mainfragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.GestureDetector
+import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
@@ -40,6 +44,8 @@ class MainFragment : Fragment() {
     private var player: ExoPlayer? = null
     private var backgroundVidePlayer: ExoPlayer? = null
 
+    private lateinit var gestureDetector: GestureDetector
+
     private var isSeekBarTouched = false
 
     override fun onStart() {
@@ -63,7 +69,7 @@ class MainFragment : Fragment() {
                     if ((player?.duration ?: 0) < 0) 0 else ((player?.duration ?: 0) / 1000).toInt()
                 binding.songTimeTv.text = formatTime(durSec)
                 binding.actualTimeTv.text = formatTime(posSec)
-                if(!isSeekBarTouched){
+                if (!isSeekBarTouched) {
                     binding.songSeekbar.max = player?.duration?.toInt() ?: 0
                     binding.songSeekbar.progress = player?.currentPosition?.toInt() ?: 0
                 }
@@ -87,8 +93,65 @@ class MainFragment : Fragment() {
         observeViewModel()
         viewModel.setReading(language = Language.BY)
         setupViews()
+        initGestures()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initGestures() {
+        gestureDetector = GestureDetector(
+            requireContext(),
+            object : SimpleOnGestureListener() {
+
+                private val SWIPE_THRESHOLD = 100
+                private val SWIPE_VELOCITY_THRESHOLD = 100
+
+                override fun onFling(
+                    e1: MotionEvent?,
+                    e2: MotionEvent,
+                    velocityX: Float,
+                    velocityY: Float
+                ): Boolean {
+
+                    val diffX = e2.x - (e1?.x ?: 0f)
+                    val diffY = e2.y - (e1?.y ?: 0f)
+
+                    if (Math.abs(diffX) > Math.abs(diffY)) {
+                        if (Math.abs(diffX) > SWIPE_THRESHOLD &&
+                            Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD
+                        ) {
+                            if (diffX > 0) {
+                                onSwipeRight()
+                            } else {
+                                onSwipeLeft()
+                            }
+                            return true
+                        }
+                    }
+                    return false
+                }
+            })
+        val root = binding.root
+
+        root.setOnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            true
+        }
+    }
+    private fun onSwipeLeft() {
+        try {
+            viewModel.goForward()
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun onSwipeRight() {
+        try {
+            viewModel.goBack()
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+        }
+    }
     private fun setupBackgroundPlayer() {
         val playerView = binding.playerView
         backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build()
@@ -153,11 +216,19 @@ class MainFragment : Fragment() {
         }
 
         binding.forwardBtn.setOnClickListener {
-            viewModel.goForward()
+            try {
+                viewModel.goForward()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.backBtn.setOnClickListener {
-            viewModel.goBack()
+            try {
+                viewModel.goBack()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -210,8 +281,6 @@ class MainFragment : Fragment() {
                     }
 
                     is AudioPlayerState.Initial -> {
-                        //binding.songTimeTv.text = "00:00"
-                        //binding.actualTimeTv.text = "00:00"
                         binding.minusBtn.isEnabled = false
                         binding.plusBtn.isEnabled = false
                         binding.songSeekbar.isEnabled = false

@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"> <!-- Match dark background -->
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true"> <!-- Match dark background -->
 
     <androidx.media3.ui.PlayerView
         android:id="@+id/playerView"
@@ -12,11 +14,6 @@
         android:layout_height="match_parent"
         app:use_controller="false"
         app:resize_mode="zoom" >
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent" />
 
     </androidx.media3.ui.PlayerView>
 
@@ -220,24 +217,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="12dp"
         tools:text="1 cентября"
         android:textColor="#FFFFFF"
         android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/tabLayoutDots"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/feast_name_tv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        tools:text="Feast name"
-        android:textColor="#AAAAAA"
-        android:textSize="19sp"
-        app:layout_constraintBottom_toTopOf="@id/date_tv"
+        app:layout_constraintBottom_toTopOf="@id/bible_ref_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -247,9 +231,22 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         tools:text="Matthew 21:21–35"
+        android:textColor="#FFFFFF"
+        android:textSize="19sp"
+        app:layout_constraintBottom_toTopOf="@id/feast_name_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/feast_name_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        tools:text="Feast name"
+        android:layout_marginBottom="40dp"
         android:textColor="#AAAAAA"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/feast_name_tv"
+        app:layout_constraintBottom_toTopOf="@id/audioPlayerCard"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
