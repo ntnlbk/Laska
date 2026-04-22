@@ -1,0 +1,25 @@
+package mobi.laska.daily.bible.meditation.data.room
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "readings_table")
+data class ReadingDBModel(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val date: String,
+    val dateFormatted: String,
+    val language: String,
+    val bibleReference: String,
+    val bibleText: String,
+    val bibleTextPlain: String,
+    val feastName: String,
+    val reflectionTextIntro: String,
+    val reflectionTextBody: String,
+    val authorName: String,
+    val audioURL: String,
+    val imageURL: String,
+    val audioLocalPath: String?,
+    val imageLocalPath: String?,
+    val permalink: String
+)

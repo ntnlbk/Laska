@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.flynid.laska.presentation.mainfragment.MainFragment"
+        android:name="mobi.laska.daily.bible.meditation.presentation.mainfragment.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" />
 </navigation>

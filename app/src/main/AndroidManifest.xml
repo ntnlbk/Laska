@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name=".di.LaskaApplication"
+        android:name="mobi.laska.daily.bible.meditation.di.LaskaApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Laska">
         <activity
-            android:name=".presentation.activity.MainActivity"
+            android:name="mobi.laska.daily.bible.meditation.presentation.activity.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.App.Starting">
@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".data.audio.LaskaDownloadService"
+            android:name="mobi.laska.daily.bible.meditation.data.audio.LaskaDownloadService"
             android:exported="false"
             android:foregroundServiceType="dataSync">
             <intent-filter>

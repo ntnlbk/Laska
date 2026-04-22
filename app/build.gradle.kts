@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.flynid.laska"
+    namespace = "mobi.laska.daily.bible.meditation"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.flynid.laska"
+        applicationId = "mobi.laska.daily.bible.meditation"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
