@@ -151,11 +151,13 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     fun showTextButtonClicked() {
         if (actualReading != null) {
             _mainUIState.value = MainFragmentState.TextShowed(
-                TextsToShow(
+                DialogArguments(
                     actualReading?.bibleTextPlain ?: "",
-                    feastName = actualReading?.feastName ?: "",
+                    bibleRef = actualReading?.bibleReference ?: "",
                     reflectionTextIntro = actualReading?.reflectionTextIntro ?: "",
-                    reflectionTextBody = actualReading?.reflectionTextBody ?: ""
+                    reflectionTextBody = actualReading?.reflectionTextBody ?: "",
+                    songMaxProgress = player.duration.toInt(),
+                    actualProgress = player.currentPosition.toInt()
                 )
 
             )

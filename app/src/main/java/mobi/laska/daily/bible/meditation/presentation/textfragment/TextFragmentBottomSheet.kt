@@ -6,10 +6,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.coroutines.launch
+import mobi.laska.daily.bible.meditation.R
 import mobi.laska.daily.bible.meditation.databinding.FragmentTextBottomSheetBinding
-import mobi.laska.daily.bible.meditation.presentation.mainfragment.TextsToShow
+import mobi.laska.daily.bible.meditation.presentation.mainfragment.AudioPlayerState
+import mobi.laska.daily.bible.meditation.presentation.mainfragment.MainFragmentViewModel
+import mobi.laska.daily.bible.meditation.presentation.mainfragment.DialogArguments
+import kotlin.getValue
 
 class TextFragmentBottomSheet : BottomSheetDialogFragment() {
 
@@ -17,12 +25,14 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
     private val binding: FragmentTextBottomSheetBinding
         get() = _binding ?: throw Exception("FragmentTextBottomSheetBinding is null")
 
-    private var textsToShow: TextsToShow = TextsToShow()
+    private val viewModel: MainFragmentViewModel by activityViewModels()
+
+    private var dialogArguments: DialogArguments = DialogArguments()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            textsToShow = (it.getSerializable(TEXTS_TO_SHOW_KEY)) as TextsToShow
+            dialogArguments = (it.getSerializable(TEXTS_TO_SHOW_KEY)) as DialogArguments
         }
     }
 
@@ -40,7 +50,6 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
         val dialog = super.onCreateDialog(savedInstanceState)
 
         dialog.setOnShowListener {
-            //this line transparent your dialog background
             (view?.parent as ViewGroup).background =
                 Color.parseColor("#F8F8F6").toDrawable()
         }
@@ -51,9 +60,35 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeViewModel()
+        setupViews()
+    }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.playerUIState.collect {
+                when (it) {
+                    is AudioPlayerState.Paused -> {
+                        binding.dialogPlayerProgressBar.progress = it.progress
+                        binding.playBtn.setImageDrawable(
+                            ContextCompat.getDrawable(requireContext(), R.drawable.play_dialog_ic)
+                        )
+                    }
+                    is AudioPlayerState.Playing -> {
+                        binding.dialogPlayerProgressBar.progress = it.progress
+                        binding.playBtn.setImageDrawable(
+                            ContextCompat.getDrawable(requireContext(), R.drawable.pause_dialog_ic)
+                        )
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun setupViews() {
         val scrollView = binding.scrollView
         val progressBar = binding.headerProgressBar
-
         scrollView.viewTreeObserver.addOnScrollChangedListener {
             val child = scrollView.getChildAt(0)
 
@@ -68,16 +103,18 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
 
             progressBar.progress = progress
         }
-        setupViews()
-    }
-
-    private fun setupViews() {
-        binding.tv1.text = textsToShow.reflectionTextIntro
-        binding.tv2.text = textsToShow.bibleTextPlain
-        binding.tv3.text = textsToShow.reflectionTextBody
+        binding.tv1.text = dialogArguments.reflectionTextIntro
+        binding.tv2.text = dialogArguments.bibleTextPlain
+        binding.tv3.text = dialogArguments.reflectionTextBody
         binding.btnBack.setOnClickListener {
             dialog?.cancel()
         }
+        binding.feastNameTv.text = dialogArguments.bibleRef
+        binding.playBtn.setOnClickListener {
+            viewModel.playButtonClicked()
+        }
+        binding.dialogPlayerProgressBar.max = dialogArguments.songMaxProgress
+        binding.dialogPlayerProgressBar.progress = dialogArguments.actualProgress
     }
 
     override fun onDestroyView() {
@@ -94,7 +131,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
 
         @JvmStatic
         fun newInstance(
-            texts: TextsToShow
+            texts: DialogArguments
         ) =
             TextFragmentBottomSheet().apply {
                 arguments = Bundle().apply {

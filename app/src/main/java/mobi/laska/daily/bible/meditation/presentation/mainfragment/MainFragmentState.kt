@@ -9,7 +9,7 @@ sealed class MainFragmentState {
     ): MainFragmentState()
 
     data class TextShowed(
-        val textsToShow: TextsToShow
+        val dialogArguments: DialogArguments
     ): MainFragmentState()
 
     data class Error(

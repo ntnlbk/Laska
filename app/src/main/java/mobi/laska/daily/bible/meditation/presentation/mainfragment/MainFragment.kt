@@ -12,7 +12,7 @@ import android.widget.SeekBar
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -33,7 +33,7 @@ class MainFragment : Fragment() {
     private val binding: FragmentMainBinding
         get() = _binding ?: throw Exception("FragmentMainBinding is null")
 
-    private val viewModel: MainFragmentViewModel by viewModels()
+    private val viewModel: MainFragmentViewModel by activityViewModels()
 
     private var backgroundVidePlayer: ExoPlayer? = null
 
@@ -223,7 +223,7 @@ class MainFragment : Fragment() {
 
                     is MainFragmentState.TextShowed -> {
                         showTextFragment(
-                            it.textsToShow
+                            it.dialogArguments
                         )
                     }
                 }
@@ -286,7 +286,7 @@ class MainFragment : Fragment() {
 
 
     private fun showTextFragment(
-        it: TextsToShow
+        it: DialogArguments
     ) {
         val instance = TextFragmentBottomSheet.newInstance(
             it

@@ -3,10 +3,12 @@ package mobi.laska.daily.bible.meditation.presentation.mainfragment
 import java.io.Serializable
 
 
-data class TextsToShow(
+data class DialogArguments(
     val bibleTextPlain: String = "",
-    val feastName: String = "",
+    val bibleRef: String = "",
     val reflectionTextIntro: String = "",
-    val reflectionTextBody: String = ""
+    val reflectionTextBody: String = "",
+    val songMaxProgress: Int = 0,
+    val actualProgress: Int = 0
 ): Serializable
 
