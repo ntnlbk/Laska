@@ -17,17 +17,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import mobi.laska.daily.bible.meditation.R
 import mobi.laska.daily.bible.meditation.databinding.FragmentMainBinding
 import mobi.laska.daily.bible.meditation.domain.Language
 import mobi.laska.daily.bible.meditation.presentation.textfragment.TextFragmentBottomSheet
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @UnstableApi
 @AndroidEntryPoint
@@ -39,47 +35,10 @@ class MainFragment : Fragment() {
 
     private val viewModel: MainFragmentViewModel by viewModels()
 
-    @Inject
-    lateinit var cacheDataSourceFactory: CacheDataSource.Factory
-    private var player: ExoPlayer? = null
     private var backgroundVidePlayer: ExoPlayer? = null
 
-    private lateinit var gestureDetector: GestureDetector
-
     private var isSeekBarTouched = false
-
-    override fun onStart() {
-        super.onStart()
-        initPlayer()
-    }
-
-    private fun initPlayer() {
-        if (player == null) {
-            val mediaSourceFactory = DefaultMediaSourceFactory(requireContext())
-                .setDataSourceFactory(cacheDataSourceFactory)
-
-            player = ExoPlayer.Builder(requireContext())
-                .setMediaSourceFactory(mediaSourceFactory)
-                .build()
-        }
-        viewLifecycleOwner.lifecycleScope.launch {
-            while (player != null) {
-                val posSec = ((player?.currentPosition ?: 0) / 1000).toInt()
-                val durSec =
-                    if ((player?.duration ?: 0) < 0) 0 else ((player?.duration ?: 0) / 1000).toInt()
-                binding.songTimeTv.text = formatTime(durSec)
-                binding.actualTimeTv.text = formatTime(posSec)
-                if (!isSeekBarTouched) {
-                    binding.songSeekbar.max = player?.duration?.toInt() ?: 0
-                    binding.songSeekbar.progress = player?.currentPosition?.toInt() ?: 0
-                }
-
-                delay(100)
-            }
-        }
-
-    }
-
+    private lateinit var gestureDetector: GestureDetector
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -126,6 +85,15 @@ class MainFragment : Fragment() {
                             }
                             return true
                         }
+                    } else {
+                        if (Math.abs(diffY) > SWIPE_THRESHOLD &&
+                            Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD
+                        ) {
+                            if (diffY < 0) {
+                                onSwipeUp()
+                            }
+                            return true
+                        }
                     }
                     return false
                 }
@@ -137,12 +105,17 @@ class MainFragment : Fragment() {
             true
         }
     }
+
     private fun onSwipeLeft() {
         try {
             viewModel.goForward()
         } catch (e: Exception) {
             Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun onSwipeUp() {
+        viewModel.showTextButtonClicked()
     }
 
     private fun onSwipeRight() {
@@ -152,6 +125,7 @@ class MainFragment : Fragment() {
             Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
         }
     }
+
     private fun setupBackgroundPlayer() {
         val playerView = binding.playerView
         backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build()
@@ -191,24 +165,19 @@ class MainFragment : Fragment() {
             }
 
             override fun onStopTrackingTouch(p0: SeekBar?) {
-                player?.seekTo(binding.songSeekbar.progress.toLong())
+                viewModel.seekTo(binding.songSeekbar.progress.toLong())
                 isSeekBarTouched = false
+
             }
         })
 
+
         binding.plusBtn.setOnClickListener {
-            player?.seekTo(
-                (player?.currentPosition
-                    ?: PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS) + PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS
-            )
+            viewModel.goForward15Sec()
         }
 
         binding.minusBtn.setOnClickListener {
-            val currentPosition = (player?.currentPosition ?: 0)
-            player?.seekTo(
-                if (currentPosition - PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS < 0L) 0L
-                else currentPosition - PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS
-            )
+            viewModel.goBack15Sec()
         }
 
         binding.showTextBtn.setOnClickListener {
@@ -261,14 +230,13 @@ class MainFragment : Fragment() {
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.playerState.collect {
+            viewModel.playerUIState.collect {
                 when (it) {
                     is AudioPlayerState.Downloaded -> {
                         binding.progressBar.visibility = View.INVISIBLE
                         binding.minusBtn.isEnabled = true
                         binding.plusBtn.isEnabled = true
-                        binding.songSeekbar.isEnabled = true
-                        preparePlayer(it.fileUrl)
+                        binding.songSeekbar.isClickable = true
                     }
 
                     is AudioPlayerState.Downloading -> {
@@ -283,26 +251,32 @@ class MainFragment : Fragment() {
                     is AudioPlayerState.Initial -> {
                         binding.minusBtn.isEnabled = false
                         binding.plusBtn.isEnabled = false
-                        binding.songSeekbar.isEnabled = false
+                        binding.songSeekbar.isClickable = false
                         binding.songSeekbar.progress = 0
+                        binding.actualTimeTv.text="00:00"
                         binding.playBtn.setImageDrawable(
                             ContextCompat.getDrawable(requireContext(), R.drawable.ic_play)
                         )
-                        playerReset()
                     }
 
                     is AudioPlayerState.Paused -> {
+                        binding.songSeekbar.max = it.maxProgress
+                        binding.songTimeTv.text = it.songTime
+                        binding.actualTimeTv.text = it.currentPosition
+                        if(!isSeekBarTouched)
+                            binding.songSeekbar.progress = it.progress
                         binding.playBtn.setImageDrawable(
                             ContextCompat.getDrawable(requireContext(), R.drawable.ic_play)
                         )
-                        pausePlayer()
                     }
 
                     is AudioPlayerState.Playing -> {
+                        if(!isSeekBarTouched)
+                            binding.songSeekbar.progress = it.progress
+                        binding.actualTimeTv.text = it.currentPosition
                         binding.playBtn.setImageDrawable(
                             ContextCompat.getDrawable(requireContext(), R.drawable.pause_ic)
                         )
-                        resumePlayer()
                     }
                 }
             }
@@ -310,22 +284,6 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun playerReset() {
-        player?.clearMediaItems()
-        player?.seekTo(0)
-    }
-
-    private fun resumePlayer() {
-        if (player?.isPlaying == false) {
-            player?.play()
-        }
-    }
-
-    private fun formatTime(seconds: Int): String {
-        val m = seconds / 60
-        val s = seconds % 60
-        return "%02d:%02d".format(m, s)
-    }
 
     private fun showTextFragment(
         it: TextsToShow
@@ -337,17 +295,6 @@ class MainFragment : Fragment() {
     }
 
 
-    private fun preparePlayer(url: String) {
-        player?.pause()
-        val mediaItem = MediaItem.fromUri(url)
-        player?.setMediaItem(mediaItem)
-        player?.prepare()
-    }
-
-    private fun pausePlayer() {
-        player?.pause()
-    }
-
 
     override fun onResume() {
         backgroundVidePlayer?.play()
@@ -356,13 +303,10 @@ class MainFragment : Fragment() {
 
     override fun onDestroyView() {
         backgroundVidePlayer?.release()
-        player?.release()
         _binding = null
         super.onDestroyView()
     }
 
-    companion object {
-        private const val PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS = 15000L
-    }
+
 
 }

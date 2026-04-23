@@ -3,18 +3,22 @@ package mobi.laska.daily.bible.meditation.presentation.mainfragment
 sealed class AudioPlayerState {
 
     data class Playing(
-        val currentPosition: Int
+        val currentPosition: String,
+        val progress: Int
     ) : AudioPlayerState()
 
     object Downloading : AudioPlayerState()
 
-    data class Downloaded(
-        val fileUrl: String
-    ): AudioPlayerState()
+   object Downloaded: AudioPlayerState()
 
     data class Paused(
-        val currentPosition: Int
-    ) : AudioPlayerState()
+        val songTime: String,
+        val currentPosition: String,
+        val maxProgress: Int,
+        val progress: Int
+    ): AudioPlayerState(){
+
+    }
 
     object Initial : AudioPlayerState()
 

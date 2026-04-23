@@ -108,11 +108,11 @@
 
         <TextView
             android:id="@+id/actual_time_tv"
-            android:layout_width="31dp"
+            android:layout_width="wrap_content"
             android:layout_height="15dp"
             android:layout_marginTop="8dp"
             android:layout_marginStart="24dp"
-            tools:text="02:45"
+            android:text="00:00"
             android:fontFamily="@font/inter"
             android:textColor="#8d8677"
             android:textSize="11sp"
@@ -127,6 +127,7 @@
             android:layout_marginEnd="24dp"
             android:layout_marginTop="8dp"
             tools:text="02:45"
+            android:text="00:00"
             android:fontFamily="@font/inter"
             android:textColor="#8d8677"
             android:textSize="11sp"
