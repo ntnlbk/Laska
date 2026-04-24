@@ -18,6 +18,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import mobi.laska.daily.bible.meditation.R
@@ -202,6 +203,10 @@ class MainFragment : Fragment() {
         }
 
         binding.dotsIndicator.totalDots = TOTAL_DAYS_TO_SHOW
+
+        binding.btnMenu.setOnClickListener {
+            findNavController().navigate(MainFragmentDirections.actionMainFragmentToOptionsFragment())
+        }
     }
 
     private fun observeViewModel() {
@@ -310,7 +315,5 @@ class MainFragment : Fragment() {
         _binding = null
         super.onDestroyView()
     }
-
-
 
 }

@@ -17,10 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/main_navigation" />
-
-    <!-- ============================================== -->
-    <!-- SPLASH SCREEN OVERLAY -->
-    <!-- ============================================== -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/splash_overlay"
         android:layout_width="match_parent"

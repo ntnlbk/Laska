@@ -9,5 +9,13 @@
         android:id="@+id/mainFragment"
         android:name="mobi.laska.daily.bible.meditation.presentation.mainfragment.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_optionsFragment"
+            app:destination="@id/optionsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/optionsFragment"
+        android:name="mobi.laska.daily.bible.meditation.presentation.optionsfragment.OptionsFragment"
+        android:label="OptionsFragment" />
 </navigation>
