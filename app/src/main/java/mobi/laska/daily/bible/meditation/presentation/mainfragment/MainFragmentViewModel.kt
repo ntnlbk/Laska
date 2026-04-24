@@ -53,27 +53,29 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
 
     private var downloadJob: Job? = null
 
+    var currentDayIndex = 0
+
     private val player by lazy {
         val mediaSourceFactory =
             DefaultMediaSourceFactory(application).setDataSourceFactory(cacheDataSourceFactory)
 
         ExoPlayer.Builder(application).setMediaSourceFactory(mediaSourceFactory).build().apply {
-                addListener(object : Player.Listener {
-                    override fun onPlaybackStateChanged(playbackState: Int) {
-                        if (playbackState == Player.STATE_ENDED) {
-                            seekTo(0)
-                            pause()
-                            val duration = duration.coerceAtLeast(0)
-                            _playerUIState.value = AudioPlayerState.Paused(
-                                formatTime(duration),
-                                formatTime(0),
-                                duration.toInt(),
-                                currentPosition.toInt()
-                            )
-                        }
+            addListener(object : Player.Listener {
+                override fun onPlaybackStateChanged(playbackState: Int) {
+                    if (playbackState == Player.STATE_ENDED) {
+                        seekTo(0)
+                        pause()
+                        val duration = duration.coerceAtLeast(0)
+                        _playerUIState.value = AudioPlayerState.Paused(
+                            formatTime(duration),
+                            formatTime(0),
+                            duration.toInt(),
+                            currentPosition.toInt()
+                        )
                     }
-                })
-            }
+                }
+            })
+        }
     }
 
     init {
@@ -260,20 +262,32 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     }
 
     fun goForward() {
-        player.pause()
-        player.stop()
-        player.clearMediaItems()
-        val tomorrow = DateUtils.getNextDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
-        setReading(tomorrow, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
+        if (currentDayIndex == MAX_DAY_INDEX) {
+            _mainUIState.value = MainFragmentState.Error("Дальше нельзя!")
+        } else {
+            currentDayIndex += 1
+            player.pause()
+            player.stop()
+            player.clearMediaItems()
+            val tomorrow =
+                DateUtils.getNextDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
+            setReading(tomorrow, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
+        }
+
     }
 
     fun goBack() {
-        player.pause()
-        player.stop()
-        player.clearMediaItems()
-        val yesterday =
-            DateUtils.getPreviousDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
-        setReading(yesterday, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
+        if (currentDayIndex == MIN_DAY_INDEX) {
+            _mainUIState.value = MainFragmentState.Error("Дальше нельзя!")
+        } else {
+            currentDayIndex -= 1
+            player.pause()
+            player.stop()
+            player.clearMediaItems()
+            val yesterday =
+                DateUtils.getPreviousDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
+            setReading(yesterday, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
+        }
     }
 
     override fun onCleared() {
@@ -283,5 +297,10 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
 
     companion object {
         private const val PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS = 15000L
+
+        const val TOTAL_DAYS_TO_SHOW = 5
+        private const val MIN_DAY_INDEX = -2
+        private const val MAX_DAY_INDEX = 2
+
     }
 }

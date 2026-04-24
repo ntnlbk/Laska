@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import mobi.laska.daily.bible.meditation.R
 import mobi.laska.daily.bible.meditation.databinding.FragmentMainBinding
 import mobi.laska.daily.bible.meditation.domain.Language
+import mobi.laska.daily.bible.meditation.presentation.mainfragment.MainFragmentViewModel.Companion.TOTAL_DAYS_TO_SHOW
 import mobi.laska.daily.bible.meditation.presentation.textfragment.TextFragmentBottomSheet
 
 @UnstableApi
@@ -131,7 +132,7 @@ class MainFragment : Fragment() {
         backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build()
         playerView.player = backgroundVidePlayer
         val mediaItem = MediaItem.fromUri(
-            "android.resource://${requireContext().packageName}/${R.raw.background}"
+            "android.resource://${requireContext().packageName}/${R.raw.background_video}"
         )
         backgroundVidePlayer?.setMediaItem(mediaItem)
         backgroundVidePlayer?.repeatMode = Player.REPEAT_MODE_ALL
@@ -199,6 +200,8 @@ class MainFragment : Fragment() {
                 Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
             }
         }
+
+        binding.dotsIndicator.totalDots = TOTAL_DAYS_TO_SHOW
     }
 
     private fun observeViewModel() {
@@ -210,6 +213,7 @@ class MainFragment : Fragment() {
                         binding.dateTv.text = it.date
                         binding.feastNameTv.text = it.feastName
                         binding.bibleRefTv.text = it.bibleReference
+                        binding.dotsIndicator.animateTo(viewModel.currentDayIndex + 2)
                     }
 
                     is MainFragmentState.Progress -> {

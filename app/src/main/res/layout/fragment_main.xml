@@ -196,23 +196,15 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- NEW: DOTS / BULLET POINTS -->
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayoutDots"
+    <mobi.laska.daily.bible.meditation.presentation.mainfragment.DotsIndicatorView
+        android:id="@+id/dotsIndicator"
         android:layout_width="wrap_content"
-        android:layout_height="12dp"
-        android:layout_marginBottom="16dp"
-        android:background="@android:color/transparent"
-        app:tabBackground="@drawable/tab_dot_selector"
-        app:tabGravity="center"
-        app:tabIndicatorHeight="0dp"
-        app:tabPaddingEnd="4dp"
-        app:tabPaddingStart="4dp"
+        android:layout_height="20dp"
         app:layout_constraintBottom_toTopOf="@id/audioPlayerCard"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="23dp"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- TITLES (Re-ordered logically) -->
     <TextView
         android:id="@+id/date_tv"
         android:layout_width="0dp"
