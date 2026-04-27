@@ -43,6 +43,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     @param:ApplicationContext private val application: Context
 ) : ViewModel() {
 
+
     private val _mainUIState = MutableStateFlow<MainFragmentState>(MainFragmentState.Progress)
     private var actualReading: ReadingItem? = null
 
@@ -89,7 +90,9 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                 if (isPlaying) {
                     _playerUIState.value = AudioPlayerState.Playing(
                         currentPosition = formatTime(currentPosition),
-                        progress = currentPosition.toInt()
+                        progress = currentPosition.toInt(),
+                        max = duration.toInt(),
+                        songTime = formatTime(duration),
                     )
                 } else if (duration != C.TIME_UNSET && duration > 0) {
                     val state = player.playbackState
@@ -264,7 +267,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     fun goForward() {
         if (currentDayIndex == MAX_DAY_INDEX) {
             _mainUIState.value = MainFragmentState.Error("Дальше нельзя!")
-        } else {
+        } else if (!player.isPlaying) {
             currentDayIndex += 1
             player.pause()
             player.stop()
@@ -279,7 +282,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     fun goBack() {
         if (currentDayIndex == MIN_DAY_INDEX) {
             _mainUIState.value = MainFragmentState.Error("Дальше нельзя!")
-        } else {
+        } else if (!player.isPlaying) {
             currentDayIndex -= 1
             player.pause()
             player.stop()

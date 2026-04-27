@@ -10,6 +10,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.launch
 import mobi.laska.daily.bible.meditation.R
@@ -45,6 +47,40 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
 
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        val dialog = dialog as? BottomSheetDialog
+        val bottomSheet = dialog?.findViewById<View>(
+            com.google.android.material.R.id.design_bottom_sheet
+        )
+
+        bottomSheet?.let {
+            val behavior = BottomSheetBehavior.from(it)
+
+            behavior.maxWidth = ViewGroup.LayoutParams.MATCH_PARENT
+
+            behavior.skipCollapsed = true
+
+            it.layoutParams = it.layoutParams.apply {
+                height = ViewGroup.LayoutParams.MATCH_PARENT
+                width = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+
+            val parent = it.parent as View
+            parent.layoutParams = parent.layoutParams.apply {
+                width = ViewGroup.LayoutParams.MATCH_PARENT
+                height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+        }
+
+        dialog?.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+    }
+
+    override fun getTheme(): Int = R.style.FullScreenBottomSheetDialog
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
@@ -70,13 +106,13 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
                 when (it) {
                     is AudioPlayerState.Paused -> {
                         binding.dialogPlayerProgressBar.progress = it.progress
-                        binding.playBtn.setImageDrawable(
+                        binding.playBtnIc.setImageDrawable(
                             ContextCompat.getDrawable(requireContext(), R.drawable.play_dialog_ic)
                         )
                     }
                     is AudioPlayerState.Playing -> {
                         binding.dialogPlayerProgressBar.progress = it.progress
-                        binding.playBtn.setImageDrawable(
+                        binding.playBtnIc.setImageDrawable(
                             ContextCompat.getDrawable(requireContext(), R.drawable.pause_dialog_ic)
                         )
                     }
@@ -123,7 +159,6 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
     }
 
     companion object {
-        private const val EMPTY_STRING = ""
 
         private const val TEXTS_TO_SHOW_KEY = "textsToShowKey"
 

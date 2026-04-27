@@ -1,6 +1,8 @@
 package mobi.laska.daily.bible.meditation.domain.settings
 
+import kotlinx.coroutines.flow.Flow
+
 interface SettingsRepository {
-    fun getSettings(): Settings
-    fun updateSettings(newSettings: Settings)
+    fun getSettings(): Flow<Settings>
+    suspend fun updateSettings(newSettings: Settings)
 }

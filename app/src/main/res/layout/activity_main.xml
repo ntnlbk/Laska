@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
 
 
     <androidx.fragment.app.FragmentContainerView
@@ -58,7 +59,7 @@
             android:id="@+id/tv_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="60dp"
             android:text="@string/splash_screen_version"
             android:textColor="@color/text_gray"
             android:textSize="12sp"

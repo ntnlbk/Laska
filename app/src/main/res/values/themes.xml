@@ -1,8 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Base.Theme.Laska" parent="Theme.Material3.DayNight.NoActionBar">\
-        <item name="android:statusBarColor">@android:color/transparent</item>\
+    <style name="Base.Theme.Laska" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
     </style>
 
     <style name="Theme.Laska" parent="Base.Theme.Laska" />
@@ -10,7 +12,24 @@
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/main_background</item>
         <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="postSplashScreenTheme">@style/Theme.Laska</item>
     </style>
+
+    <style name="FullScreenBottomSheetDialog" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/FullScreenBottomSheetStyle</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="FullScreenBottomSheetStyle" parent="Widget.MaterialComponents.BottomSheet.Modal">
+
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="maxWidth">@null</item>
+        <item name="android:maxWidth">@null</item>
+    </style>
+
+
 
 </resources>

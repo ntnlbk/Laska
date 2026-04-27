@@ -4,7 +4,9 @@ sealed class AudioPlayerState {
 
     data class Playing(
         val currentPosition: String,
-        val progress: Int
+        val progress: Int,
+        val max: Int,
+        val songTime: String
     ) : AudioPlayerState()
 
     object Downloading : AudioPlayerState()

@@ -93,6 +93,9 @@ dependencies {
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.ui.compose)
 
+    //preferences datastore
+    implementation(libs.androidx.datastore.preferences)
+
 }
 
 kapt {

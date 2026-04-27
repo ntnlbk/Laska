@@ -6,13 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    android:focusable="true"> <!-- Match dark background -->
+    android:focusable="true">
 
     <androidx.media3.ui.PlayerView
         android:id="@+id/playerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:use_controller="false"
+        android:background="#1d1a1c"
+        android:paddingBottom="185dp"
         app:resize_mode="zoom" >
 
     </androidx.media3.ui.PlayerView>
@@ -29,7 +31,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="invisible"/>
 
-    <!-- TOP BAR -->
+
     <ImageView
         android:id="@+id/btnShare"
         android:layout_width="36dp"
@@ -55,12 +57,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <!-- BOTTOM BUTTON -->
     <LinearLayout
         android:id="@+id/show_text_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="28.6dp"
+        android:layout_marginBottom="50dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -147,12 +148,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <!-- Re-styled to match pill buttons using compound drawables to keep TextView ID -->
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/minus_btn"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:layout_width="76dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            app:iconPadding="10dp"
             android:text="15"
             android:textColor="#8d8677"
             android:textSize="14sp"
@@ -161,6 +164,8 @@
             app:cornerRadius="24dp"
             android:fontFamily="@font/inter"
             app:icon="@drawable/back_15_ic"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:iconSize="18dp"
             app:iconGravity="textEnd"
             android:insetTop="0dp"
@@ -174,8 +179,12 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/plus_btn"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:layout_width="76dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            app:iconPadding="10dp"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:text="15"
             app:iconTint="#FBEECE"
             android:fontFamily="@font/inter"
@@ -241,28 +250,6 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/audioPlayerCard"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <!-- EXISTING SWIPE BUTTONS (Hidden to prevent UI block, read below!) -->
-    <Button
-        android:id="@+id/forward_btn"
-        android:layout_width="60dp"
-        android:layout_height="0dp"
-        android:background="@android:color/transparent"
-        android:text=""
-        android:layout_marginTop="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-    <Button
-        android:id="@+id/back_btn"
-        android:layout_width="60dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="100dp"
-        android:background="@android:color/transparent"
-        android:text=""
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
 

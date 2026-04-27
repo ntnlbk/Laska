@@ -24,5 +24,5 @@ class DateUtils {
         }
         fun todayFormatted(): String = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
 
-    }
+    }//"20260426"
 }

@@ -13,7 +13,9 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -41,20 +43,35 @@ class MainFragment : Fragment() {
 
     private var isSeekBarTouched = false
     private lateinit var gestureDetector: GestureDetector
+    private var hasInitializedRootView = false
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMainBinding.inflate(layoutInflater)
+        if (_binding == null) {
+            _binding = FragmentMainBinding.inflate(inflater, container, false)
+        }
+        val parent = binding.root.parent as? ViewGroup
+        parent?.removeView(binding.root)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (!hasInitializedRootView) {
+            if (savedInstanceState == null && viewModel.mainUIState.value is MainFragmentState.Progress) {
+                viewModel.setReading(language = Language.BY)
+            }
+
+            setupViews()
+            initGestures()
+
+            hasInitializedRootView = true
+        }
+
         observeViewModel()
-        viewModel.setReading(language = Language.BY)
-        setupViews()
-        initGestures()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -128,6 +145,7 @@ class MainFragment : Fragment() {
         }
     }
 
+
     private fun setupBackgroundPlayer() {
         val playerView = binding.playerView
         backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build()
@@ -138,7 +156,13 @@ class MainFragment : Fragment() {
         backgroundVidePlayer?.setMediaItem(mediaItem)
         backgroundVidePlayer?.repeatMode = Player.REPEAT_MODE_ALL
         backgroundVidePlayer?.volume = 0f
+
         backgroundVidePlayer?.prepare()
+        backgroundVidePlayer?.play()
+    }
+
+    override fun onResume() {
+        super.onResume()
         backgroundVidePlayer?.play()
     }
 
@@ -149,19 +173,10 @@ class MainFragment : Fragment() {
 
     private fun setupViews() {
         setupBackgroundPlayer()
-        binding.playBtn.setOnClickListener {
-            viewModel.playButtonClicked()
-        }
+        binding.playBtn.setOnClickListener { viewModel.playButtonClicked() }
 
         binding.songSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(
-                p0: SeekBar?,
-                p1: Int,
-                p2: Boolean,
-            ) {
-
-            }
-
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {}
             override fun onStartTrackingTouch(p0: SeekBar?) {
                 isSeekBarTouched = true
             }
@@ -169,41 +184,13 @@ class MainFragment : Fragment() {
             override fun onStopTrackingTouch(p0: SeekBar?) {
                 viewModel.seekTo(binding.songSeekbar.progress.toLong())
                 isSeekBarTouched = false
-
             }
         })
 
-
-        binding.plusBtn.setOnClickListener {
-            viewModel.goForward15Sec()
-        }
-
-        binding.minusBtn.setOnClickListener {
-            viewModel.goBack15Sec()
-        }
-
-        binding.showTextBtn.setOnClickListener {
-            viewModel.showTextButtonClicked()
-        }
-
-        binding.forwardBtn.setOnClickListener {
-            try {
-                viewModel.goForward()
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        binding.backBtn.setOnClickListener {
-            try {
-                viewModel.goBack()
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
-            }
-        }
-
+        binding.plusBtn.setOnClickListener { viewModel.goForward15Sec() }
+        binding.minusBtn.setOnClickListener { viewModel.goBack15Sec() }
+        binding.showTextBtn.setOnClickListener { viewModel.showTextButtonClicked() }
         binding.dotsIndicator.totalDots = TOTAL_DAYS_TO_SHOW
-
         binding.btnMenu.setOnClickListener {
             findNavController().navigate(MainFragmentDirections.actionMainFragmentToOptionsFragment())
         }
@@ -211,109 +198,108 @@ class MainFragment : Fragment() {
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.mainUIState.collect {
-                when (it) {
-                    is MainFragmentState.Content -> {
-                        binding.progressBar.visibility = View.INVISIBLE
-                        binding.dateTv.text = it.date
-                        binding.feastNameTv.text = it.feastName
-                        binding.bibleRefTv.text = it.bibleReference
-                        binding.dotsIndicator.animateTo(viewModel.currentDayIndex + 2)
-                    }
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-                    is MainFragmentState.Progress -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
+                launch {
+                    viewModel.mainUIState.collect {
+                        when (it) {
+                            is MainFragmentState.Content -> {
+                                binding.progressBar.visibility = View.INVISIBLE
+                                binding.dateTv.text = it.date
+                                binding.feastNameTv.text = it.feastName
+                                binding.bibleRefTv.text = it.bibleReference
+                                binding.dotsIndicator.animateTo(viewModel.currentDayIndex + 2)
+                            }
 
-                    is MainFragmentState.Error -> {
-                        binding.progressBar.visibility = View.INVISIBLE
-                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                    }
+                            is MainFragmentState.Progress -> {
+                                binding.progressBar.visibility = View.VISIBLE
+                            }
 
-                    is MainFragmentState.TextShowed -> {
-                        showTextFragment(
-                            it.dialogArguments
-                        )
+                            is MainFragmentState.Error -> {
+                                binding.progressBar.visibility = View.INVISIBLE
+                                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
+                            is MainFragmentState.TextShowed -> {
+                                showTextFragment(it.dialogArguments)
+                            }
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.playerUIState.collect {
+                        when (it) {
+                            is AudioPlayerState.Downloaded -> {
+                                binding.progressBar.visibility = View.INVISIBLE
+                                binding.minusBtn.isEnabled = true
+                                binding.plusBtn.isEnabled = true
+                                binding.songSeekbar.isClickable = true
+                            }
+
+                            is AudioPlayerState.Downloading -> {
+                                binding.progressBar.visibility = View.VISIBLE
+                            }
+
+                            is AudioPlayerState.Error -> {
+                                binding.progressBar.visibility = View.INVISIBLE
+                                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
+                            is AudioPlayerState.Initial -> {
+                                binding.minusBtn.isEnabled = false
+                                binding.plusBtn.isEnabled = false
+                                binding.songSeekbar.isClickable = false
+                                binding.songSeekbar.progress = 0
+                                binding.actualTimeTv.text = "00:00"
+                                binding.playBtn.setImageDrawable(
+                                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_play)
+                                )
+                            }
+
+                            is AudioPlayerState.Paused -> {
+                                binding.songSeekbar.max = it.maxProgress
+                                binding.songTimeTv.text = it.songTime
+                                binding.actualTimeTv.text = it.currentPosition
+                                if (!isSeekBarTouched)
+                                    binding.songSeekbar.progress = it.progress
+                                binding.playBtn.setImageDrawable(
+                                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_play)
+                                )
+                            }
+
+                            is AudioPlayerState.Playing -> {
+                                if (!isSeekBarTouched) {
+                                    binding.songSeekbar.progress = it.progress
+                                    binding.songSeekbar.max = it.max
+                                }
+                                binding.songTimeTv.text = it.songTime
+                                binding.actualTimeTv.text = it.currentPosition
+                                binding.playBtn.setImageDrawable(
+                                    ContextCompat.getDrawable(requireContext(), R.drawable.pause_ic)
+                                )
+                            }
+                        }
                     }
                 }
             }
         }
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.playerUIState.collect {
-                when (it) {
-                    is AudioPlayerState.Downloaded -> {
-                        binding.progressBar.visibility = View.INVISIBLE
-                        binding.minusBtn.isEnabled = true
-                        binding.plusBtn.isEnabled = true
-                        binding.songSeekbar.isClickable = true
-                    }
+    }
 
-                    is AudioPlayerState.Downloading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-
-                    is AudioPlayerState.Error -> {
-                        binding.progressBar.visibility = View.INVISIBLE
-                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                    }
-
-                    is AudioPlayerState.Initial -> {
-                        binding.minusBtn.isEnabled = false
-                        binding.plusBtn.isEnabled = false
-                        binding.songSeekbar.isClickable = false
-                        binding.songSeekbar.progress = 0
-                        binding.actualTimeTv.text="00:00"
-                        binding.playBtn.setImageDrawable(
-                            ContextCompat.getDrawable(requireContext(), R.drawable.ic_play)
-                        )
-                    }
-
-                    is AudioPlayerState.Paused -> {
-                        binding.songSeekbar.max = it.maxProgress
-                        binding.songTimeTv.text = it.songTime
-                        binding.actualTimeTv.text = it.currentPosition
-                        if(!isSeekBarTouched)
-                            binding.songSeekbar.progress = it.progress
-                        binding.playBtn.setImageDrawable(
-                            ContextCompat.getDrawable(requireContext(), R.drawable.ic_play)
-                        )
-                    }
-
-                    is AudioPlayerState.Playing -> {
-                        if(!isSeekBarTouched)
-                            binding.songSeekbar.progress = it.progress
-                        binding.actualTimeTv.text = it.currentPosition
-                        binding.playBtn.setImageDrawable(
-                            ContextCompat.getDrawable(requireContext(), R.drawable.pause_ic)
-                        )
-                    }
-                }
-            }
-
+    private fun showTextFragment(it: DialogArguments) {
+        if (requireActivity().supportFragmentManager.findFragmentByTag(TextFragmentBottomSheet.TAG) == null) {
+            val instance = TextFragmentBottomSheet.newInstance(it)
+            instance.show(requireActivity().supportFragmentManager, TextFragmentBottomSheet.TAG)
         }
     }
 
 
-    private fun showTextFragment(
-        it: DialogArguments
-    ) {
-        val instance = TextFragmentBottomSheet.newInstance(
-            it
-        )
-        instance.show(requireActivity().supportFragmentManager, TextFragmentBottomSheet.TAG)
-    }
-
-
-
-    override fun onResume() {
-        backgroundVidePlayer?.play()
-        super.onResume()
-    }
-
-    override fun onDestroyView() {
+    override fun onDestroy() {
         backgroundVidePlayer?.release()
+        backgroundVidePlayer = null
         _binding = null
-        super.onDestroyView()
+        super.onDestroy()
     }
-
 }
