@@ -7,9 +7,10 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#F8F8F6">
+        android:background="#292423">
 
         <LinearLayout
             android:id="@+id/btnBack"
@@ -18,7 +19,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/bg_pill_button"
-            android:backgroundTint="#e4e0d8"
+            android:backgroundTint="#3e3a39"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center_vertical"
@@ -27,18 +28,20 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:id="@+id/btnBackIc"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginStart="17dp"
-                android:src="@drawable/back_btn_ic" />
+                android:src="@drawable/back_btn_light_ic" />
 
             <TextView
+                android:id="@+id/btnBackTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:paddingBottom="3dp"
                 android:text="назад"
-                android:textColor="#000000"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -49,10 +52,10 @@
             android:layout_height="36dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_circle_button"
+            android:background="@drawable/bg_circle_button_light"
             android:padding="11dp"
             android:scaleType="centerInside"
-            android:src="@drawable/font_size_ic"
+            android:src="@drawable/font_size_ic_light"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -64,7 +67,7 @@
             android:layout_marginTop="10dp"
             android:max="100"
             android:progress="0"
-            android:progressDrawable="@drawable/custom_progress_bar"
+            android:progressDrawable="@drawable/custom_progress_bar_dark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnBack" />
@@ -93,7 +96,7 @@
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#F8F8F6"
+            android:background="#292423"
             android:clipToPadding="false"
             android:fillViewport="true"
             android:paddingBottom="78dp">
@@ -109,9 +112,9 @@
                     android:id="@+id/tv1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#F8F8F6"
+                    android:background="#292423"
                     android:fontFamily="@font/lora"
-                    android:textColor="#1B1B1B"
+                    android:textColor="#c4baa3"
                     android:lineSpacingExtra="1dp"
                     android:padding="10dp"
                     android:text="@string/test_intro"
@@ -122,8 +125,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_pill_button"
-                    android:textColor="#1B1B1B"
-                    android:backgroundTint="#efede6"
+                    android:textColor="#eef1f5"
+                    android:backgroundTint="#312b29"
                     android:fontFamily="@font/lora"
                     android:lineSpacingExtra="3dp"
                     android:padding="20dp"
@@ -134,9 +137,9 @@
                     android:id="@+id/tv3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#F8F8F6"
+                    android:background="#292423"
                     android:fontFamily="@font/lora"
-                    android:textColor="#1B1B1B"
+                    android:textColor="#c4baa3"
                     android:lineSpacingExtra="1dp"
                     android:padding="10dp"
                     android:text="@string/test_body"
@@ -145,9 +148,10 @@
         </androidx.core.widget.NestedScrollView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/dialog_player_gradient"
             android:layout_width="match_parent"
             android:layout_height="78dp"
-            android:background="@drawable/dialog_player_layout_background"
+            android:background="@drawable/dialog_player_layout_background_dark"
             app:layout_constraintBottom_toBottomOf="parent">
 
 
@@ -156,7 +160,7 @@
                 android:layout_height="35dp"
                 android:id="@+id/play_btn"
                 android:layout_marginHorizontal="16dp"
-                android:background="@drawable/dialog_player_background"
+                android:background="@drawable/dialog_player_background_dark"
                 android:clipToOutline="true"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -191,7 +195,7 @@
                     android:layout_marginTop="10dp"
                     android:max="100"
                     android:progress="20"
-                    android:progressDrawable="@drawable/custom_dialog_player_progress_bar"
+                    android:progressDrawable="@drawable/custom_dialog_player_progress_bar_dark"
                     app:layout_constraintBottom_toBottomOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

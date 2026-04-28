@@ -1,6 +1,7 @@
 package mobi.laska.daily.bible.meditation.presentation.textfragment
 
 import android.app.Dialog
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,7 @@ import kotlinx.coroutines.launch
 import mobi.laska.daily.bible.meditation.R
 import mobi.laska.daily.bible.meditation.databinding.FragmentTextBottomSheetBinding
 import mobi.laska.daily.bible.meditation.domain.settings.Settings
+import mobi.laska.daily.bible.meditation.domain.settings.TextFragmentTheme
 import mobi.laska.daily.bible.meditation.presentation.mainfragment.AudioPlayerState
 import mobi.laska.daily.bible.meditation.presentation.mainfragment.DialogArguments
 import mobi.laska.daily.bible.meditation.presentation.mainfragment.MainFragmentViewModel
@@ -39,6 +41,8 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
     private var dialogArguments: DialogArguments = DialogArguments()
 
     private var actualSetting: Settings = Settings()
+    private var play_button_id: Int = R.drawable.ic_play
+    private var pause_button_id: Int = R.drawable.pause_ic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,7 +126,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
                                 binding.playBtnIc.setImageDrawable(
                                     ContextCompat.getDrawable(
                                         requireContext(),
-                                        R.drawable.play_dialog_ic
+                                        play_button_id
                                     )
                                 )
                             }
@@ -134,7 +138,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
                                 binding.playBtnIc.setImageDrawable(
                                     ContextCompat.getDrawable(
                                         requireContext(),
-                                        R.drawable.pause_dialog_ic
+                                        pause_button_id
                                     )
                                 )
                             }
@@ -160,6 +164,15 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
                                 binding.tv1.textSize = actualSetting.fontSize
                                 binding.tv2.textSize = actualSetting.fontSize
                                 binding.tv3.textSize = actualSetting.fontSize
+                                when (it.settings.textFragmentTheme) {
+                                    TextFragmentTheme.DARK -> {
+                                        setupDarkTheme()
+                                    }
+
+                                    TextFragmentTheme.LIGHT -> {
+                                        setupLightTheme()
+                                    }
+                                }
                             }
 
                             is TextFragmentOptionsState.Error -> {
@@ -176,6 +189,89 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
             }
         }
     }
+
+    fun setupDarkTheme() {
+        binding.header.background = "#292423".toColorInt().toDrawable()
+        binding.btnBack.backgroundTintList = ColorStateList.valueOf("#3e3a39".toColorInt())
+        binding.btnBackTv.setTextColor("#FFFFFF".toColorInt())
+        binding.btnBackIc.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireActivity(),
+                R.drawable.back_btn_light_ic
+            )
+        )
+        binding.btnTextOptions.background =
+            ContextCompat.getDrawable(requireActivity(), R.drawable.bg_circle_button_light)
+        binding.btnTextOptions.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireActivity(),
+                R.drawable.font_size_ic_light
+            )
+        )
+        binding.headerProgressBar.progressDrawable =
+            ContextCompat.getDrawable(requireActivity(), R.drawable.custom_progress_bar_dark)
+        binding.scrollView.background = "#292423".toColorInt().toDrawable()
+        binding.tv1.background = "#292423".toColorInt().toDrawable()
+        binding.tv1.setTextColor("#c4baa3".toColorInt())
+        binding.tv2.backgroundTintList = ColorStateList.valueOf("#312b29".toColorInt())
+        binding.tv2.setTextColor("#eef1f5".toColorInt())
+        binding.tv3.background = "#292423".toColorInt().toDrawable()
+        binding.tv3.setTextColor("#c4baa3".toColorInt())
+        binding.dialogPlayerGradient.background = ContextCompat.getDrawable(
+            requireActivity(),
+            R.drawable.dialog_player_layout_background_dark
+        )
+        binding.playBtn.background =
+            ContextCompat.getDrawable(requireActivity(), R.drawable.dialog_player_background_dark)
+        binding.feastNameTv.setTextColor("#989898".toColorInt())
+        binding.dialogPlayerProgressBar.progressDrawable = ContextCompat.getDrawable(
+            requireActivity(),
+            R.drawable.custom_dialog_player_progress_bar_dark
+        )
+        play_button_id = R.drawable.ic_play
+        pause_button_id = R.drawable.pause_ic
+    }
+
+    fun setupLightTheme() {
+        binding.header.background = "#F8F8F6".toColorInt().toDrawable()
+        binding.btnBack.backgroundTintList = ColorStateList.valueOf("#e4e0d8".toColorInt())
+        binding.btnBackTv.setTextColor("#000000".toColorInt())
+        binding.btnBackIc.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireActivity(),
+                R.drawable.back_btn_ic
+            )
+        )
+        binding.btnTextOptions.background =
+            ContextCompat.getDrawable(requireActivity(), R.drawable.bg_circle_button)
+        binding.btnTextOptions.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireActivity(),
+                R.drawable.font_size_ic
+            )
+        )
+        binding.headerProgressBar.progressDrawable =
+            ContextCompat.getDrawable(requireActivity(), R.drawable.custom_progress_bar)
+        binding.scrollView.background = "#F8F8F6".toColorInt().toDrawable()
+        binding.tv1.background = "#F8F8F6".toColorInt().toDrawable()
+        binding.tv1.setTextColor("#1B1B1B".toColorInt())
+        binding.tv2.backgroundTintList = ColorStateList.valueOf("#efede6".toColorInt())
+        binding.tv2.setTextColor("#1B1B1B".toColorInt())
+        binding.tv3.background = "#F8F8F6".toColorInt().toDrawable()
+        binding.tv3.setTextColor("#1B1B1B".toColorInt())
+        binding.dialogPlayerGradient.background =
+            ContextCompat.getDrawable(requireActivity(), R.drawable.dialog_player_layout_background)
+        binding.playBtn.background =
+            ContextCompat.getDrawable(requireActivity(), R.drawable.dialog_player_background)
+        binding.feastNameTv.setTextColor("#4a4945".toColorInt())
+        binding.dialogPlayerProgressBar.progressDrawable = ContextCompat.getDrawable(
+            requireActivity(),
+            R.drawable.custom_dialog_player_progress_bar
+        )
+        play_button_id = R.drawable.play_dialog_ic
+        pause_button_id = R.drawable.pause_dialog_ic
+    }
+
 
     private fun setupViews() {
         val scrollView = binding.scrollView
@@ -207,8 +303,11 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
         binding.dialogPlayerProgressBar.max = dialogArguments.songMaxProgress
         binding.dialogPlayerProgressBar.progress = dialogArguments.actualProgress
         binding.btnTextOptions.setOnClickListener {
-            val dialog = ChooseFontSizeDialogFragment.newInstance(actualSetting.fontSize)
-            dialog.callback = object : ChooseFontSizeCallback{
+            val dialog = ChooseFontSizeDialogFragment.newInstance(
+                actualSetting.fontSize,
+                actualSetting.textFragmentTheme
+            )
+            dialog.callback = object : ChooseFontSizeCallback {
                 override fun chosenFont(fontSize: Float) {
                     settingViewModel.updateSettings(
                         Settings(
