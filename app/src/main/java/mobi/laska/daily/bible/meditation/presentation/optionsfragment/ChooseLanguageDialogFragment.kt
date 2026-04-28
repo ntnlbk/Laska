@@ -13,6 +13,7 @@ import mobi.laska.daily.bible.meditation.databinding.FragmentChooseLanguageDialo
 import mobi.laska.daily.bible.meditation.domain.Language
 
 private const val ARG_PARAM1 = "lang_chosen"
+private const val ARG_PARAM3 = "y"
 
 class ChooseLanguageDialogFragment : DialogFragment() {
     private var _binding: FragmentChooseLanguageDialogBinding? = null
@@ -24,20 +25,16 @@ class ChooseLanguageDialogFragment : DialogFragment() {
         super.onStart()
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.window?.let { window ->
-
             window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-
             val params = window.attributes
             params.gravity = Gravity.TOP
-            val metrics = Resources.getSystem().displayMetrics
-            val screenHeight = metrics.heightPixels
-            val height = (screenHeight * 0.15).toInt()
-            params.y = height
+            params.y = y
             window.attributes = params
         }
     }
 
     private var param1: Language = Language.BY
+    private var y: Int = 0
 
     var callback: ChooseLanguageCallback? = null
 
@@ -45,6 +42,7 @@ class ChooseLanguageDialogFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getSerializable(ARG_PARAM1) as Language
+            y = it.getInt(ARG_PARAM3)
         }
     }
 
@@ -86,10 +84,11 @@ class ChooseLanguageDialogFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(language: Language) =
+        fun newInstance(language: Language, y: Int) =
             ChooseLanguageDialogFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_PARAM1, language)
+                    putInt(ARG_PARAM3, y)
                 }
             }
     }

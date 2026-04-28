@@ -13,6 +13,7 @@ import mobi.laska.daily.bible.meditation.databinding.FragmentChooseReadingThemeD
 import mobi.laska.daily.bible.meditation.domain.settings.TextFragmentTheme
 
 private const val ARG_PARAM1 = "theme_chosen"
+private const val ARG_PARAM2 = "y"
 
 class ChooseReadingThemeDialogFragment : DialogFragment() {
     private var _binding: FragmentChooseReadingThemeDialogBinding? = null
@@ -24,27 +25,23 @@ class ChooseReadingThemeDialogFragment : DialogFragment() {
         super.onStart()
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.window?.let { window ->
-
             window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-
             val params = window.attributes
             params.gravity = Gravity.TOP
-            val metrics = Resources.getSystem().displayMetrics
-            val screenHeight = metrics.heightPixels
-            val height = (screenHeight * 0.21).toInt()
-            params.y = height
+            params.y = y
             window.attributes = params
         }
     }
 
     private var param1: TextFragmentTheme = TextFragmentTheme.LIGHT
-
+    private var y: Int = 0
     var callback: ChooseThemeCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getSerializable(ARG_PARAM1) as TextFragmentTheme
+            y = it.getInt(ARG_PARAM2)
         }
     }
 
@@ -66,6 +63,7 @@ class ChooseReadingThemeDialogFragment : DialogFragment() {
             TextFragmentTheme.DARK -> {
                 binding.darkThemeOption.setTextColor("#A8A08D".toColorInt())
             }
+
             TextFragmentTheme.LIGHT -> {
                 binding.lightThemeOption.setTextColor("#A8A08D".toColorInt())
             }
@@ -85,15 +83,17 @@ class ChooseReadingThemeDialogFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(theme: TextFragmentTheme) =
+        fun newInstance(theme: TextFragmentTheme, y: Int) =
             ChooseReadingThemeDialogFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_PARAM1, theme)
+                    putInt(ARG_PARAM2, y)
                 }
             }
     }
 
 }
+
 interface ChooseThemeCallback {
     fun chosenTheme(theme: TextFragmentTheme)
 }

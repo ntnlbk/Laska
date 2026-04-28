@@ -30,8 +30,7 @@ class OptionsFragment : Fragment() {
     private var actualSettings: Settings = Settings()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentOptionsBinding.inflate(layoutInflater)
         return binding.root
@@ -86,15 +85,18 @@ class OptionsFragment : Fragment() {
             findNavController().popBackStack()
         }
         binding.languageBtn.setOnClickListener {
-            val dialog = ChooseLanguageDialogFragment.newInstance(actualSettings.language)
+            val location = IntArray(2)
+            binding.languageBtn.getLocationOnScreen(location)
+            val y = location[1] + binding.languageBtn.height / 2 + 30
+            val dialog = ChooseLanguageDialogFragment.newInstance(
+                actualSettings.language, y
+            )
             dialog.callback = object : ChooseLanguageCallback {
                 override fun chosenLanguage(language: Language) {
                     dialog.dismiss()
                     viewModel.updateSettings(
                         Settings(
-                            language,
-                            actualSettings.fontSize,
-                            actualSettings.textFragmentTheme
+                            language, actualSettings.fontSize, actualSettings.textFragmentTheme
                         )
                     )
                 }
@@ -102,15 +104,19 @@ class OptionsFragment : Fragment() {
             dialog.show(childFragmentManager, CHOOSE_LANG_DIALOG_TAG)
         }
         binding.readingColorBtn.setOnClickListener {
-            val dialog = ChooseReadingThemeDialogFragment.newInstance(actualSettings.textFragmentTheme)
+            val location = IntArray(2)
+            binding.readingColorBtn.getLocationOnScreen(location)
+            val y = location[1] + binding.readingColorBtn.height / 2 + 30
+            val dialog = ChooseReadingThemeDialogFragment.newInstance(
+                actualSettings.textFragmentTheme,
+                y
+            )
             dialog.callback = object : ChooseThemeCallback {
                 override fun chosenTheme(theme: TextFragmentTheme) {
                     dialog.dismiss()
                     viewModel.updateSettings(
                         Settings(
-                            actualSettings.language,
-                            actualSettings.fontSize,
-                            theme
+                            actualSettings.language, actualSettings.fontSize, theme
                         )
                     )
                 }
