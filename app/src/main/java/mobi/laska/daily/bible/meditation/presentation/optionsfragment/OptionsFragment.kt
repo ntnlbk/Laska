@@ -57,8 +57,8 @@ class OptionsFragment : Fragment() {
                                     Language.BY -> "Беларуская"
                                 }
                                 binding.colorChosenTv.text = when (it.settings.textFragmentTheme) {
-                                    TextFragmentTheme.DARK -> "Тёмная"
-                                    TextFragmentTheme.LIGHT -> "Светлая"
+                                    TextFragmentTheme.DARK -> "Тёмный"
+                                    TextFragmentTheme.LIGHT -> "Светлый"
                                 }
                             }
 

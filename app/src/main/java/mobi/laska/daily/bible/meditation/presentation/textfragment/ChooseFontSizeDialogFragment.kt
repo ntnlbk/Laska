@@ -1,13 +1,16 @@
-package mobi.laska.daily.bible.meditation.presentation.optionsfragment
+package mobi.laska.daily.bible.meditation.presentation.textfragment
 
+import android.R
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.toColorInt
+import android.view.WindowManager
+import android.widget.SeekBar
 import androidx.fragment.app.DialogFragment
 import mobi.laska.daily.bible.meditation.databinding.FragmentChooseFontSizeDialogBinding
-import mobi.laska.daily.bible.meditation.domain.settings.FontSize
+import mobi.laska.daily.bible.meditation.domain.settings.DEFAULT_TEXT_SIZE
 
 private const val ARG_PARAM1 = "font_chosen"
 
@@ -19,17 +22,26 @@ class ChooseFontSizeDialogFragment : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog?.window?.setBackgroundDrawableResource(R.color.transparent)
+        dialog?.window?.let { window ->
+
+            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+
+            val params = window.attributes
+            params.gravity = Gravity.TOP
+            params.y = 200
+            window.attributes = params
+        }
     }
 
-    private var param1: FontSize = FontSize.NORMAL
+    private var param1: Float = DEFAULT_TEXT_SIZE
 
     var callback: ChooseFontSizeCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getSerializable(ARG_PARAM1) as FontSize
+            param1 = it.getFloat(ARG_PARAM1)
         }
     }
 
@@ -47,26 +59,25 @@ class ChooseFontSizeDialogFragment : DialogFragment() {
     }
 
     private fun setupViews() {
-        when (param1) {
-            FontSize.SMALL -> {
-                binding.smallOption.setTextColor("#A8A08D".toColorInt())
+        binding.seekBar.progress = param1.toInt()
+        binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(
+                p0: SeekBar?,
+                p1: Int,
+                p2: Boolean
+            ) {
+                callback?.chosenFont(binding.seekBar.progress.toFloat())
             }
-            FontSize.NORMAL -> {
-                binding.mediumOption.setTextColor("#A8A08D".toColorInt())
+
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+
             }
-            FontSize.LARGE -> {
-                binding.largeOption.setTextColor("#A8A08D".toColorInt())
+
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+
             }
-        }
-        binding.smallOption.setOnClickListener {
-            callback?.chosenFont(FontSize.SMALL)
-        }
-        binding.mediumOption.setOnClickListener {
-            callback?.chosenFont(FontSize.NORMAL)
-        }
-        binding.largeOption.setOnClickListener {
-            callback?.chosenFont(FontSize.LARGE)
-        }
+
+        })
     }
 
     override fun onDestroyView() {
@@ -76,15 +87,16 @@ class ChooseFontSizeDialogFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(fontSize: FontSize) =
+        fun newInstance(fontSize: Float) =
             ChooseFontSizeDialogFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(ARG_PARAM1, fontSize)
+                    putFloat(ARG_PARAM1, fontSize)
                 }
             }
     }
 
 }
+
 interface ChooseFontSizeCallback {
-    fun chosenFont(fontSize: FontSize)
+    fun chosenFont(fontSize: Float)
 }

@@ -1,9 +1,12 @@
 package mobi.laska.daily.bible.meditation.presentation.optionsfragment
 
+import android.content.res.Resources
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.DialogFragment
 import mobi.laska.daily.bible.meditation.databinding.FragmentChooseLanguageDialogBinding
@@ -20,6 +23,18 @@ class ChooseLanguageDialogFragment : DialogFragment() {
     override fun onStart() {
         super.onStart()
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog?.window?.let { window ->
+
+            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+
+            val params = window.attributes
+            params.gravity = Gravity.TOP
+            val metrics = Resources.getSystem().displayMetrics
+            val screenHeight = metrics.heightPixels
+            val height = (screenHeight * 0.15).toInt()
+            params.y = height
+            window.attributes = params
+        }
     }
 
     private var param1: Language = Language.BY

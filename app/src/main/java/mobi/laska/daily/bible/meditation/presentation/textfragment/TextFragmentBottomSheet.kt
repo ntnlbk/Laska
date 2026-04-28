@@ -1,26 +1,32 @@
 package mobi.laska.daily.bible.meditation.presentation.textfragment
 
 import android.app.Dialog
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.graphics.toColorInt
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import mobi.laska.daily.bible.meditation.R
 import mobi.laska.daily.bible.meditation.databinding.FragmentTextBottomSheetBinding
+import mobi.laska.daily.bible.meditation.domain.settings.Settings
 import mobi.laska.daily.bible.meditation.presentation.mainfragment.AudioPlayerState
-import mobi.laska.daily.bible.meditation.presentation.mainfragment.MainFragmentViewModel
 import mobi.laska.daily.bible.meditation.presentation.mainfragment.DialogArguments
-import kotlin.getValue
+import mobi.laska.daily.bible.meditation.presentation.mainfragment.MainFragmentViewModel
 
+@AndroidEntryPoint
 class TextFragmentBottomSheet : BottomSheetDialogFragment() {
 
     private var _binding: FragmentTextBottomSheetBinding? = null
@@ -28,8 +34,11 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
         get() = _binding ?: throw Exception("FragmentTextBottomSheetBinding is null")
 
     private val viewModel: MainFragmentViewModel by activityViewModels()
+    private val settingViewModel: TextFragmentOptionsViewModel by viewModels()
 
     private var dialogArguments: DialogArguments = DialogArguments()
+
+    private var actualSetting: Settings = Settings()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +96,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
 
         dialog.setOnShowListener {
             (view?.parent as ViewGroup).background =
-                Color.parseColor("#F8F8F6").toDrawable()
+                "#F8F8F6".toColorInt().toDrawable()
         }
 
         return dialog
@@ -102,21 +111,67 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.playerUIState.collect {
-                when (it) {
-                    is AudioPlayerState.Paused -> {
-                        binding.dialogPlayerProgressBar.progress = it.progress
-                        binding.playBtnIc.setImageDrawable(
-                            ContextCompat.getDrawable(requireContext(), R.drawable.play_dialog_ic)
-                        )
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.playerUIState.collect {
+                        when (it) {
+                            is AudioPlayerState.Paused -> {
+                                binding.progressBar.visibility = View.INVISIBLE
+                                binding.dialogPlayerProgressBar.progress = it.progress
+                                binding.dialogPlayerProgressBar.max = it.maxProgress
+                                binding.playBtnIc.setImageDrawable(
+                                    ContextCompat.getDrawable(
+                                        requireContext(),
+                                        R.drawable.play_dialog_ic
+                                    )
+                                )
+                            }
+
+                            is AudioPlayerState.Playing -> {
+                                binding.dialogPlayerProgressBar.max = it.max
+                                binding.progressBar.visibility = View.INVISIBLE
+                                binding.dialogPlayerProgressBar.progress = it.progress
+                                binding.playBtnIc.setImageDrawable(
+                                    ContextCompat.getDrawable(
+                                        requireContext(),
+                                        R.drawable.pause_dialog_ic
+                                    )
+                                )
+                            }
+
+                            is AudioPlayerState.Downloading -> {
+                                binding.progressBar.visibility = View.VISIBLE
+                            }
+
+                            else -> {}
+                        }
                     }
-                    is AudioPlayerState.Playing -> {
-                        binding.dialogPlayerProgressBar.progress = it.progress
-                        binding.playBtnIc.setImageDrawable(
-                            ContextCompat.getDrawable(requireContext(), R.drawable.pause_dialog_ic)
-                        )
+                }
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    settingViewModel.state.collect {
+                        when (it) {
+                            is TextFragmentOptionsState.Content -> {
+                                binding.progressBar.visibility = View.INVISIBLE
+                                actualSetting = it.settings
+                                binding.tv1.textSize = actualSetting.fontSize
+                                binding.tv2.textSize = actualSetting.fontSize
+                                binding.tv3.textSize = actualSetting.fontSize
+                            }
+
+                            is TextFragmentOptionsState.Error -> {
+                                binding.progressBar.visibility = View.INVISIBLE
+                                Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                            }
+
+                            is TextFragmentOptionsState.Progress -> {
+                                binding.progressBar.visibility = View.VISIBLE
+                            }
+                        }
                     }
-                    else -> {}
                 }
             }
         }
@@ -151,6 +206,22 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
         }
         binding.dialogPlayerProgressBar.max = dialogArguments.songMaxProgress
         binding.dialogPlayerProgressBar.progress = dialogArguments.actualProgress
+        binding.btnTextOptions.setOnClickListener {
+            val dialog = ChooseFontSizeDialogFragment.newInstance(actualSetting.fontSize)
+            dialog.callback = object : ChooseFontSizeCallback{
+                override fun chosenFont(fontSize: Float) {
+                    settingViewModel.updateSettings(
+                        Settings(
+                            actualSetting.language,
+                            fontSize,
+                            actualSetting.textFragmentTheme
+                        )
+                    )
+                }
+
+            }
+            dialog.show(childFragmentManager, FONT_SIZE_DIALOG_TAG)
+        }
     }
 
     override fun onDestroyView() {
@@ -161,6 +232,8 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
     companion object {
 
         private const val TEXTS_TO_SHOW_KEY = "textsToShowKey"
+
+        private const val FONT_SIZE_DIALOG_TAG = "fontSizeDialog"
 
         const val TAG = "TextFragmentBottomSheet"
 

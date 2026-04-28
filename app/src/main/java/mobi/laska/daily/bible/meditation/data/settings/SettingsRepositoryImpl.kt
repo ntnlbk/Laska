@@ -4,13 +4,14 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import mobi.laska.daily.bible.meditation.domain.Language
-import mobi.laska.daily.bible.meditation.domain.settings.FontSize
+import mobi.laska.daily.bible.meditation.domain.settings.DEFAULT_TEXT_SIZE
 import mobi.laska.daily.bible.meditation.domain.settings.Settings
 import mobi.laska.daily.bible.meditation.domain.settings.SettingsRepository
 import mobi.laska.daily.bible.meditation.domain.settings.TextFragmentTheme
@@ -25,7 +26,7 @@ class SettingsRepositoryImpl @Inject constructor(
 ) : SettingsRepository {
 
     private val languageKey = stringPreferencesKey("LANGUAGE_KEY")
-    private val fontSizeKey = stringPreferencesKey("FONT_SIZE_KEY")
+    private val fontSizeKey = floatPreferencesKey("FONT_SIZE_KEY")
     private val themeKey = stringPreferencesKey("THEME_KEY")
 
 
@@ -35,8 +36,7 @@ class SettingsRepositoryImpl @Inject constructor(
                 preferences[languageKey]?.let { runCatching { Language.valueOf(it) }.getOrNull() }
                     ?: Language.BY
             val fontSize =
-                preferences[fontSizeKey]?.let { runCatching { FontSize.valueOf(it) }.getOrNull() }
-                    ?: FontSize.NORMAL
+                preferences[fontSizeKey] ?: DEFAULT_TEXT_SIZE
             val theme =
                 preferences[themeKey]?.let { runCatching { TextFragmentTheme.valueOf(it) }.getOrNull() }
                     ?: TextFragmentTheme.LIGHT
@@ -48,7 +48,7 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun updateSettings(newSettings: Settings) {
         application.dataStore.edit { preferences ->
             preferences[languageKey] = newSettings.language.name
-            preferences[fontSizeKey] = newSettings.fontSize.name
+            preferences[fontSizeKey] = newSettings.fontSize
             preferences[themeKey] = newSettings.textFragmentTheme.name
         }
     }

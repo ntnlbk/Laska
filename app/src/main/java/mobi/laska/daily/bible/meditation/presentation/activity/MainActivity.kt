@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                     viewModel.downloadActualReading()
 
                     if (!viewModel.isReadyToPlay()) {
-                        delay(2000L)
+                        delay(1000L)
                     }
                 } catch (e: Exception) {
                     showNetworkError()
