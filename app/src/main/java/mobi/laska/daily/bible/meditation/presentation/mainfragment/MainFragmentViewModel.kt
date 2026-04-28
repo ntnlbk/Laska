@@ -162,7 +162,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                     reflectionTextIntro = actualReading?.reflectionTextIntro ?: "",
                     reflectionTextBody = actualReading?.reflectionTextBody ?: "",
                     songMaxProgress = player.duration.toInt(),
-                    actualProgress = player.currentPosition.toInt()
+                    actualProgress = player.currentPosition.toInt(),
+                    date = actualReading?.dateFormatted ?: ""
                 )
 
             )

@@ -230,6 +230,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
         )
         play_button_id = R.drawable.ic_play
         pause_button_id = R.drawable.pause_ic
+        binding.dateTv.setTextColor("#FFFFFF".toColorInt())
     }
 
     fun setupLightTheme() {
@@ -270,6 +271,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
         )
         play_button_id = R.drawable.play_dialog_ic
         pause_button_id = R.drawable.pause_dialog_ic
+        binding.dateTv.setTextColor("#000000".toColorInt())
     }
 
 
@@ -293,6 +295,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
         binding.tv1.text = dialogArguments.reflectionTextIntro
         binding.tv2.text = dialogArguments.bibleTextPlain
         binding.tv3.text = dialogArguments.reflectionTextBody
+        binding.dateTv.text = dialogArguments.date
         binding.btnBack.setOnClickListener {
             dialog?.cancel()
         }
