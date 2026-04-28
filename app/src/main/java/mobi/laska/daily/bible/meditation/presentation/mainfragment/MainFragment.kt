@@ -25,7 +25,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import mobi.laska.daily.bible.meditation.R
 import mobi.laska.daily.bible.meditation.databinding.FragmentMainBinding
-import mobi.laska.daily.bible.meditation.domain.Language
 import mobi.laska.daily.bible.meditation.presentation.mainfragment.MainFragmentViewModel.Companion.TOTAL_DAYS_TO_SHOW
 import mobi.laska.daily.bible.meditation.presentation.textfragment.TextFragmentBottomSheet
 
@@ -61,13 +60,8 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (!hasInitializedRootView) {
-            if (savedInstanceState == null && viewModel.mainUIState.value is MainFragmentState.Progress) {
-                viewModel.setReading(language = Language.BY)
-            }
-
             setupViews()
             initGestures()
-
             hasInitializedRootView = true
         }
 

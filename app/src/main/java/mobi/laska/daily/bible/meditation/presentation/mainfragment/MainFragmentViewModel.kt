@@ -25,6 +25,7 @@ import mobi.laska.daily.bible.meditation.domain.audio.AudioDownloadState
 import mobi.laska.daily.bible.meditation.domain.audio.CheckAudioDownloadedUseCase
 import mobi.laska.daily.bible.meditation.domain.audio.DownloadAudioUseCase
 import mobi.laska.daily.bible.meditation.domain.audio.ObserveDownloadAudioUseCase
+import mobi.laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
 import mobi.laska.daily.bible.meditation.presentation.uils.ConnectionUtils
 import mobi.laska.daily.bible.meditation.presentation.uils.DateUtils
 import mobi.laska.daily.bible.meditation.presentation.uils.DateUtils.Companion.todayFormatted
@@ -40,7 +41,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     private val checkAudioDownloadedUseCase: CheckAudioDownloadedUseCase,
     private val connectionUtils: ConnectionUtils,
     private val cacheDataSourceFactory: CacheDataSource.Factory,
-    @param:ApplicationContext private val application: Context
+    @param:ApplicationContext private val application: Context,
+    private val getSettingsUseCase: GetSettingsUseCase
 ) : ViewModel() {
 
 
@@ -80,6 +82,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     }
 
     init {
+        observeSettings()
         viewModelScope.launch {
             while (true) {
                 delay(200L)
@@ -109,6 +112,16 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         }
     }
 
+
+    private fun observeSettings() {
+        viewModelScope.launch {
+            getSettingsUseCase()
+                .collect { settings ->
+                    setReading(language = settings.language)
+                }
+        }
+    }
+
     fun goForward15Sec() {
         var currentPosition = (player.currentPosition) + PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS
         if (currentPosition > player.duration) currentPosition = player.duration - 1000
@@ -130,6 +143,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     }
 
     fun setReading(date: String = todayFormatted(), language: Language) {
+        player.pause()
+
         downloadJob?.cancel()
         _mainUIState.value = MainFragmentState.Progress
         _playerUIState.value = AudioPlayerState.Initial

@@ -13,6 +13,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import mobi.laska.daily.bible.meditation.domain.DEFAULT_LANGUAGE
+import mobi.laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,13 +23,17 @@ class MainActivityViewModel @Inject constructor(
     private val downloadAudioUseCase: DownloadAudioUseCase,
     private val getReadingUseCase: GetReadingUseCase,
     private val connectionUtils: ConnectionUtils,
-    private val deleteAllCachedAudioUseCase: DeleteAllCachedAudioUseCase
+    private val deleteAllCachedAudioUseCase: DeleteAllCachedAudioUseCase,
+    private val getSettingsUseCase: GetSettingsUseCase
 ) : ViewModel() {
 
     private val _isReady = MutableStateFlow<Boolean?>(null)
     val isReady: StateFlow<Boolean?> = _isReady
 
+    private var language: Language = DEFAULT_LANGUAGE
+
     init {
+        observeSettings()
         viewModelScope.launch {
             try {
                 downloadActualReading()
@@ -37,12 +43,21 @@ class MainActivityViewModel @Inject constructor(
             }
         }
     }
+
+    private fun observeSettings() {
+        viewModelScope.launch {
+            getSettingsUseCase()
+                .collect { settings ->
+                    language = settings.language
+                }
+        }
+    }
+
     suspend fun downloadActualReading() {
         try {
-            val actualReading = getReadingUseCase(DateUtils.todayFormatted(), Language.BY)
+            val actualReading = getReadingUseCase(DateUtils.todayFormatted(), language)
             val isDownloaded = isDownloadedUseCase(actualReading.audioURL)
             if (!isDownloaded) {
-                // usecase: если мы предзагружаем актуальную дату, удалить весь кеш.
                 deleteAllCachedAudioUseCase()
                 downloadAudioUseCase(actualReading.audioURL)
             }
@@ -53,7 +68,7 @@ class MainActivityViewModel @Inject constructor(
 
     suspend fun isReadyToPlay(): Boolean {
         if (!connectionUtils.isInternetAvailable()) return true
-        val actualReading = getReadingUseCase(DateUtils.todayFormatted(), Language.BY)
+        val actualReading = getReadingUseCase(DateUtils.todayFormatted(), language)
         val isDownloaded = isDownloadedUseCase(actualReading.audioURL)
         return isDownloaded
     }
