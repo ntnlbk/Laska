@@ -9,6 +9,8 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -18,6 +20,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mobi.laska.daily.bible.meditation.R
+import mobi.laska.daily.bible.meditation.domain.Language
+import mobi.laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
 import mobi.laska.daily.bible.meditation.presentation.uils.ConnectionUtils
 import javax.inject.Inject
 
@@ -29,9 +33,26 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var connectionUtils: ConnectionUtils
 
+    @Inject
+    lateinit var getSettingsUseCase: GetSettingsUseCase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        lifecycleScope.launch {
+            getSettingsUseCase().collect {
+                val lang = when (it.language){
+                    Language.RU -> "ru"
+                    Language.BY -> "be"
+                }
+                AppCompatDelegate.setApplicationLocales(
+                    LocaleListCompat.forLanguageTags(lang)
+                )
+            }
+        }
+
+
         val rootView = findViewById<View>(android.R.id.content)
 
         val isTablet = resources.getBoolean(R.bool.is_tablet)
@@ -46,7 +67,6 @@ class MainActivity : AppCompatActivity() {
 
             windowInsets
         }
-
 
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.Companion.dark(Color.TRANSPARENT),
@@ -63,29 +83,34 @@ class MainActivity : AppCompatActivity() {
 
     private fun preloadDataAndManageSplash(splashOverlay: View) {
         lifecycleScope.launch {
-            val minimumSplashTimer = async { delay(1500L) }
-            val dataFetchJob = async {
-                try {
-                    viewModel.downloadActualReading()
-
-                    if (!viewModel.isReadyToPlay()) {
-                        delay(1000L)
+            delay(1500L)
+            viewModel.isReady.collect { isReadyStatus ->
+                when (isReadyStatus) {
+                    true -> {
+                        hideSplash(splashOverlay)
                     }
-                } catch (e: Exception) {
-                    showNetworkError()
+                    false -> {
+                        showNetworkError()
+                        hideSplash(splashOverlay)
+                    }
+                    null -> {
+                        delay(1500L)
+                        hideSplash(splashOverlay)
+                    }
                 }
             }
-            minimumSplashTimer.await()
-            dataFetchJob.await()
-            splashOverlay.animate().alpha(0f).setDuration(500).withEndAction {
-                    splashOverlay.visibility = View.GONE
-                }
+        }
+    }
+
+    private fun hideSplash(splashOverlay: View) {
+        splashOverlay.animate().alpha(0f).setDuration(500).withEndAction {
+            splashOverlay.visibility = View.GONE
         }
     }
 
     private fun showNetworkError() {
         val message = if (connectionUtils.isInternetAvailable()) {
-            "Калі ласка, паспрабуйце пазней"
+            "Калі ласка, паспрабуйце пазнейasdsdasa"
         } else {
             "Калі ласка, праверце інтрэрнэт"
         }

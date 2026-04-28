@@ -71,7 +71,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Читать текст"
+            android:text="@string/read_text_str"
             android:textColor="#FBEECE"
             android:textStyle="bold"
             android:textSize="16sp" />
