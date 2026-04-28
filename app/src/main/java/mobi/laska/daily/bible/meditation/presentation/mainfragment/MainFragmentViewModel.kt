@@ -18,6 +18,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import mobi.laska.daily.bible.meditation.domain.DEFAULT_LANGUAGE
 import mobi.laska.daily.bible.meditation.domain.GetReadingUseCase
 import mobi.laska.daily.bible.meditation.domain.Language
 import mobi.laska.daily.bible.meditation.domain.ReadingItem
@@ -57,6 +58,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     private var downloadJob: Job? = null
 
     var currentDayIndex = 0
+
+    var currentLanguage: Language = DEFAULT_LANGUAGE
 
     private val player by lazy {
         val mediaSourceFactory =
@@ -117,7 +120,11 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         viewModelScope.launch {
             getSettingsUseCase()
                 .collect { settings ->
-                    setReading(language = settings.language)
+                    if(currentLanguage != settings.language){
+                        currentLanguage = settings.language
+                        setReading(language = settings.language)
+                    }
+
                 }
         }
     }
