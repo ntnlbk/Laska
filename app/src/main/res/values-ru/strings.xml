@@ -1,2 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="read_text_str">Читать текст</string>
+    <string name="back">назад</string>
+    <string name="about_project">О проекте</string>
+    <string name="authors">Авторы</string>
+    <string name="history">История создания</string>
+    <string name="light">Светлый</string>
+    <string name="dark">Тёмный</string>
+    <string name="options">Настройки</string>
+    <string name="global">Общие</string>
+    <string name="language">Язык</string>
+    <string name="reading_mode_color">Цвет режима чтения</string>
+    <string name="support">Поддержка</string>
+    <string name="connect_us">Связаться с нами</string>
+    <string name="give_thank">Поблагодарить</string>
+    <string name="about_history">текст про историю</string>
+    <string name="about_authors">текст про авторов</string>
+</resources>

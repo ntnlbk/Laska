@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="read_text_str">Чытаць тэкст</string>
+    <string name="back">назад</string>
+    <string name="about_project">Пра праект</string>
+    <string name="authors">Аўтары</string>
+    <string name="history">Гісторыя стварэння</string>
+    <string name="light">Светлы</string>
+    <string name="dark">Цёмны</string>
+    <string name="options">Налады</string>
+    <string name="global">Агульныя</string>
+    <string name="language">Мова</string>
+    <string name="reading_mode_color">Колер рэжыму чытання</string>
+    <string name="support">Падтрымка</string>
+    <string name="connect_us">Звязацца з намі</string>
+    <string name="give_thank">Падзякаваць</string>
+    <string name="about_history">тэкст пра гісторыю</string>
+    <string name="about_authors">тэкст пра аўтараў</string>
 </resources>

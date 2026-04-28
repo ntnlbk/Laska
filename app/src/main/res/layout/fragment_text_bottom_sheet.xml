@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:paddingBottom="3dp"
-                android:text="назад"
+                android:text="@string/back"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -132,7 +132,7 @@
                     android:textColor="#c4baa3"
                     android:lineSpacingExtra="1dp"
                     android:padding="10dp"
-                    android:text="@string/test_intro"
+                    tools:text="some text"
                     android:textSize="18sp" />
 
                 <TextView
@@ -145,7 +145,7 @@
                     android:fontFamily="@font/lora"
                     android:lineSpacingExtra="3dp"
                     android:padding="20dp"
-                    android:text="@string/test_bible_text"
+                    tools:text="test"
                     android:textSize="18sp" />
 
                 <TextView
@@ -157,7 +157,7 @@
                     android:textColor="#c4baa3"
                     android:lineSpacingExtra="1dp"
                     android:padding="10dp"
-                    android:text="@string/test_body"
+                    tools:text="test"
                     android:textSize="18sp" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
@@ -184,7 +184,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:fontFamily="@font/inter"
-                    android:text="Matthew 21:21-35"
+                    tools:text="Matthew 21:21-35"
                     android:textColor="#4a4945"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
