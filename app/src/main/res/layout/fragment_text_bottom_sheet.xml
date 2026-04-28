@@ -176,7 +176,6 @@
                 android:id="@+id/play_btn"
                 android:layout_marginHorizontal="16dp"
                 android:background="@drawable/dialog_player_background_dark"
-                android:clipToOutline="true"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView

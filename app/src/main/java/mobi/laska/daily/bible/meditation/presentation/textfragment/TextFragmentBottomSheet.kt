@@ -19,6 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mobi.laska.daily.bible.meditation.R
 import mobi.laska.daily.bible.meditation.databinding.FragmentTextBottomSheetBinding
@@ -123,6 +124,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
                                 binding.progressBar.visibility = View.INVISIBLE
                                 binding.dialogPlayerProgressBar.progress = it.progress
                                 binding.dialogPlayerProgressBar.max = it.maxProgress
+                                delay(50)
                                 binding.playBtnIc.setImageDrawable(
                                     ContextCompat.getDrawable(
                                         requireContext(),
@@ -135,6 +137,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
                                 binding.dialogPlayerProgressBar.max = it.max
                                 binding.progressBar.visibility = View.INVISIBLE
                                 binding.dialogPlayerProgressBar.progress = it.progress
+                                delay(50)
                                 binding.playBtnIc.setImageDrawable(
                                     ContextCompat.getDrawable(
                                         requireContext(),
@@ -191,6 +194,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
     }
 
     fun setupDarkTheme() {
+        binding.playBtn.clipToOutline = true
         binding.header.background = "#292423".toColorInt().toDrawable()
         binding.btnBack.backgroundTintList = ColorStateList.valueOf("#3e3a39".toColorInt())
         binding.btnBackTv.setTextColor("#FFFFFF".toColorInt())
@@ -234,6 +238,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
     }
 
     fun setupLightTheme() {
+        binding.playBtn.clipToOutline = true
         binding.header.background = "#F8F8F6".toColorInt().toDrawable()
         binding.btnBack.backgroundTintList = ColorStateList.valueOf("#e4e0d8".toColorInt())
         binding.btnBackTv.setTextColor("#000000".toColorInt())
@@ -276,6 +281,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
 
 
     private fun setupViews() {
+        binding.playBtn.clipToOutline = true
         val scrollView = binding.scrollView
         val progressBar = binding.headerProgressBar
         scrollView.viewTreeObserver.addOnScrollChangedListener {
