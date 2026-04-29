@@ -150,7 +150,14 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
                                 binding.progressBar.visibility = View.VISIBLE
                             }
 
-                            else -> {}
+                            else -> {
+                                binding.playBtnIc.setImageDrawable(
+                                    ContextCompat.getDrawable(
+                                        requireContext(),
+                                        play_button_id
+                                    )
+                                )
+                            }
                         }
                     }
                 }

@@ -1,14 +1,14 @@
 package mobi.laska.daily.bible.meditation.presentation.optionsfragment
 
-import android.content.res.Resources
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.core.graphics.toColorInt
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import mobi.laska.daily.bible.meditation.R
 import mobi.laska.daily.bible.meditation.databinding.FragmentChooseReadingThemeDialogBinding
 import mobi.laska.daily.bible.meditation.domain.settings.TextFragmentTheme
 
@@ -61,18 +61,29 @@ class ChooseReadingThemeDialogFragment : DialogFragment() {
     private fun setupViews() {
         when (param1) {
             TextFragmentTheme.DARK -> {
-                binding.darkThemeOption.setTextColor("#A8A08D".toColorInt())
+                binding.firstOption.text = ContextCompat.getString(requireActivity(), R.string.dark)
+                binding.secondOption.text =
+                    ContextCompat.getString(requireActivity(), R.string.light)
+                binding.secondOption.setOnClickListener {
+                    callback?.chosenTheme(TextFragmentTheme.LIGHT)
+                }
+                binding.firstOption.setOnClickListener {
+                    callback?.chosenTheme(TextFragmentTheme.DARK)
+                }
             }
 
             TextFragmentTheme.LIGHT -> {
-                binding.lightThemeOption.setTextColor("#A8A08D".toColorInt())
+                binding.firstOption.text =
+                    ContextCompat.getString(requireActivity(), R.string.light)
+                binding.secondOption.text =
+                    ContextCompat.getString(requireActivity(), R.string.dark)
+                binding.secondOption.setOnClickListener {
+                    callback?.chosenTheme(TextFragmentTheme.DARK)
+                }
+                binding.firstOption.setOnClickListener {
+                    callback?.chosenTheme(TextFragmentTheme.LIGHT)
+                }
             }
-        }
-        binding.lightThemeOption.setOnClickListener {
-            callback?.chosenTheme(TextFragmentTheme.LIGHT)
-        }
-        binding.darkThemeOption.setOnClickListener {
-            callback?.chosenTheme(TextFragmentTheme.DARK)
         }
     }
 

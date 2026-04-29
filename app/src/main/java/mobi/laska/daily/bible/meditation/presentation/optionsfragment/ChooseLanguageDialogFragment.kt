@@ -1,14 +1,14 @@
 package mobi.laska.daily.bible.meditation.presentation.optionsfragment
 
-import android.content.res.Resources
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.core.graphics.toColorInt
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import mobi.laska.daily.bible.meditation.R
 import mobi.laska.daily.bible.meditation.databinding.FragmentChooseLanguageDialogBinding
 import mobi.laska.daily.bible.meditation.domain.Language
 
@@ -62,18 +62,30 @@ class ChooseLanguageDialogFragment : DialogFragment() {
     private fun setupViews() {
         when (param1) {
             Language.RU -> {
-                binding.russianLangOption.setTextColor("#A8A08D".toColorInt())
+                binding.firstOption.text =
+                    ContextCompat.getString(requireActivity(), R.string.russian_language)
+                binding.secondOption.text =
+                    ContextCompat.getString(requireActivity(), R.string.belarusian_language)
+                binding.secondOption.setOnClickListener {
+                    callback?.chosenLanguage(Language.BY)
+                }
+                binding.firstOption.setOnClickListener {
+                    callback?.chosenLanguage(Language.RU)
+                }
             }
 
             Language.BY -> {
-                binding.belarusianLangOption.setTextColor("#A8A08D".toColorInt())
+                binding.firstOption.text =
+                    ContextCompat.getString(requireActivity(), R.string.belarusian_language)
+                binding.secondOption.text =
+                    ContextCompat.getString(requireActivity(), R.string.russian_language)
+                binding.secondOption.setOnClickListener {
+                    callback?.chosenLanguage(Language.RU)
+                }
+                binding.firstOption.setOnClickListener {
+                    callback?.chosenLanguage(Language.BY)
+                }
             }
-        }
-        binding.russianLangOption.setOnClickListener {
-            callback?.chosenLanguage(Language.RU)
-        }
-        binding.belarusianLangOption.setOnClickListener {
-            callback?.chosenLanguage(Language.BY)
         }
     }
 
@@ -94,6 +106,7 @@ class ChooseLanguageDialogFragment : DialogFragment() {
     }
 
 }
+
 interface ChooseLanguageCallback {
     fun chosenLanguage(language: Language)
 }

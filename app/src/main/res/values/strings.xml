@@ -20,4 +20,6 @@
     <string name="give_thank">Падзякаваць</string>
     <string name="about_history">текст про историю</string>
     <string name="about_authors">Авторы</string>
+    <string name="russian_language" translatable="false">Русский язык</string>
+    <string name="belarusian_language" translatable="false">Беларуская мова</string>
 </resources>

@@ -86,6 +86,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
 
     init {
         observeSettings()
+        setReading()
         viewModelScope.launch {
             while (true) {
                 delay(200L)
@@ -124,7 +125,6 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                         currentLanguage = settings.language
                         setReading(language = settings.language)
                     }
-
                 }
         }
     }
@@ -149,7 +149,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         player.seekTo(moment)
     }
 
-    fun setReading(date: String = todayFormatted(), language: Language) {
+    fun setReading(date: String = todayFormatted(), language: Language = DEFAULT_LANGUAGE) {
         player.pause()
 
         downloadJob?.cancel()
