@@ -122,11 +122,12 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     private fun observeSettings() {
         viewModelScope.launch {
             getSettingsUseCase().collect { settings ->
-                    if (currentLanguage != settings.language) {
-                        currentLanguage = settings.language
-                        setReading(language = settings.language)
-                    }
+                if (currentLanguage != settings.language) {
+                    currentDayIndex = 0
+                    currentLanguage = settings.language
+                    setReading(language = settings.language)
                 }
+            }
         }
     }
 
