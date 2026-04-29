@@ -198,6 +198,13 @@ class MainFragment : Fragment() {
                         when (it) {
                             is MainFragmentState.Content -> {
                                 binding.progressBar.visibility = View.INVISIBLE
+                                if(it.feastName == ""){
+                                    binding.feastNameTv.visibility = View.GONE
+                                    binding.bibleRefTv.setMarginsInDp(24, 0, 24, 40)
+                                } else {
+                                    binding.feastNameTv.visibility = View.VISIBLE
+                                    binding.bibleRefTv.setMarginsInDp(24, 0, 24, 0)
+                                }
                                 binding.dateTv.text = it.date
                                 binding.feastNameTv.text = it.feastName
                                 binding.bibleRefTv.text = it.bibleReference
@@ -311,5 +318,19 @@ class MainFragment : Fragment() {
         backgroundVidePlayer = null
         _binding = null
         super.onDestroy()
+    }
+
+    private fun View.setMarginsInDp(left: Int, top: Int, right: Int, bottom: Int) {
+        val params = layoutParams as? ViewGroup.MarginLayoutParams ?: return
+        val density = context.resources.displayMetrics.density
+
+        params.setMargins(
+            (left * density).toInt(),
+            (top * density).toInt(),
+            (right * density).toInt(),
+            (bottom * density).toInt()
+        )
+
+        layoutParams = params
     }
 }
