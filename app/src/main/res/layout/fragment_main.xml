@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
@@ -30,6 +31,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/error_tv1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Что-то пошло не так"
+        android:layout_marginBottom="270dp"
+        android:fontFamily="@font/inter"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/error_tv2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Проверьте интернет соединение"
+        android:layout_marginBottom="200dp"
+        android:fontFamily="@font/inter"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:textColor="#989898"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/error_tv1"/>
 
 
     <ImageView
@@ -219,6 +251,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
+        android:fontFamily="@font/inter"
         tools:text="1 cентября"
         android:textColor="#FFFFFF"
         android:textSize="22sp"
@@ -232,6 +265,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
+        android:fontFamily="@font/inter"
         tools:text="Matthew 21:21–35"
         android:textColor="#FFFFFF"
         android:textSize="19sp"
@@ -245,6 +279,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         tools:text="Feast name"
+        android:fontFamily="@font/inter"
         android:layout_marginBottom="40dp"
         android:textColor="#AAAAAA"
         android:textSize="16sp"

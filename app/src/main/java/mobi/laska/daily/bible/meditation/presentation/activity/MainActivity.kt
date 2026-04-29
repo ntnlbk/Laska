@@ -87,10 +87,10 @@ class MainActivity : AppCompatActivity() {
             viewModel.isReady.collect { isReadyStatus ->
                 when (isReadyStatus) {
                     true -> {
+                        delay(1500L)
                         hideSplash(splashOverlay)
                     }
                     false -> {
-                        showNetworkError()
                         hideSplash(splashOverlay)
                     }
                     null -> {
@@ -106,14 +106,5 @@ class MainActivity : AppCompatActivity() {
         splashOverlay.animate().alpha(0f).setDuration(500).withEndAction {
             splashOverlay.visibility = View.GONE
         }
-    }
-
-    private fun showNetworkError() {
-        val message = if (connectionUtils.isInternetAvailable()) {
-            "Калі ласка, паспрабуйце пазнейasdsdasa"
-        } else {
-            "Калі ласка, праверце інтрэрнэт"
-        }
-        Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
     }
 }

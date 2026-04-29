@@ -15,4 +15,9 @@ sealed class MainFragmentState {
     data class Error(
         val message: String
     ): MainFragmentState()
+
+    companion object{
+        const val ERROR_INITIAL = "initial error"
+        const val ERROR_WHILE_CHANGING_DATES = "date error"
+    }
 }

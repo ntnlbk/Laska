@@ -27,6 +27,8 @@ import mobi.laska.daily.bible.meditation.domain.audio.CheckAudioDownloadedUseCas
 import mobi.laska.daily.bible.meditation.domain.audio.DownloadAudioUseCase
 import mobi.laska.daily.bible.meditation.domain.audio.ObserveDownloadAudioUseCase
 import mobi.laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
+import mobi.laska.daily.bible.meditation.presentation.mainfragment.MainFragmentState.Companion.ERROR_INITIAL
+import mobi.laska.daily.bible.meditation.presentation.mainfragment.MainFragmentState.Companion.ERROR_WHILE_CHANGING_DATES
 import mobi.laska.daily.bible.meditation.presentation.uils.ConnectionUtils
 import mobi.laska.daily.bible.meditation.presentation.uils.DateUtils
 import mobi.laska.daily.bible.meditation.presentation.uils.DateUtils.Companion.todayFormatted
@@ -119,9 +121,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
 
     private fun observeSettings() {
         viewModelScope.launch {
-            getSettingsUseCase()
-                .collect { settings ->
-                    if(currentLanguage != settings.language){
+            getSettingsUseCase().collect { settings ->
+                    if (currentLanguage != settings.language) {
                         currentLanguage = settings.language
                         setReading(language = settings.language)
                     }
@@ -151,7 +152,6 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
 
     fun setReading(date: String = todayFormatted(), language: Language = DEFAULT_LANGUAGE) {
         player.pause()
-
         downloadJob?.cancel()
         _mainUIState.value = MainFragmentState.Progress
         _playerUIState.value = AudioPlayerState.Initial
@@ -170,7 +170,15 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                _mainUIState.value = MainFragmentState.Error(ERROR_MESSAGE)
+                if (todayFormatted() != date) {
+                    _mainUIState.value = MainFragmentState.Error(ERROR_WHILE_CHANGING_DATES)
+                    delay(50)
+                    setReading()
+
+                } else {
+                    _mainUIState.value = MainFragmentState.Error(ERROR_INITIAL)
+                }
+
             }
         }
     }
@@ -258,6 +266,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     }
 
     private suspend fun getReadyItemToPlay() {
+        _playerUIState.value = AudioPlayerState.Downloading
+        delay(50)
         val readingUrl = actualReading?.audioURL
         if (readingUrl == null) {
             _playerUIState.value = AudioPlayerState.Error(ERROR_MESSAGE)
@@ -288,31 +298,58 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     }
 
     fun goForward() {
+
         if (currentDayIndex == MAX_DAY_INDEX) {
-            _mainUIState.value = MainFragmentState.Error("Дальше нельзя!")
+//            _mainUIState.value = MainFragmentState.Error("Дальше нельзя!")
         } else if (!player.isPlaying) {
+            _mainUIState.value = MainFragmentState.Progress
             currentDayIndex += 1
-            player.pause()
-            player.stop()
-            player.clearMediaItems()
-            val tomorrow =
-                DateUtils.getNextDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
-            setReading(tomorrow, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
+            viewModelScope.launch {
+                try {
+                    val tomorrow =
+                        DateUtils.getNextDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
+                    val tempReading = getReadingUseCase(
+                        tomorrow, actualReading?.language ?: throw Exception(ERROR_MESSAGE)
+                    )
+                    player.pause()
+                    player.stop()
+                    player.clearMediaItems()
+                    setReading(tomorrow, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
+                } catch (e: Exception) {
+                    _mainUIState.value = MainFragmentState.Error(ERROR_WHILE_CHANGING_DATES)
+                    currentDayIndex -= 1
+                }
+            }
+
         }
 
     }
 
     fun goBack() {
         if (currentDayIndex == MIN_DAY_INDEX) {
-            _mainUIState.value = MainFragmentState.Error("Дальше нельзя!")
+            //  _mainUIState.value = MainFragmentState.Error("Дальше нельзя!")
         } else if (!player.isPlaying) {
+            _mainUIState.value = MainFragmentState.Progress
             currentDayIndex -= 1
-            player.pause()
-            player.stop()
-            player.clearMediaItems()
-            val yesterday =
-                DateUtils.getPreviousDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
-            setReading(yesterday, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
+            viewModelScope.launch {
+                try {
+                    val yesterday = DateUtils.getPreviousDay(
+                        actualReading?.date ?: throw Exception(
+                            ERROR_MESSAGE
+                        )
+                    )
+                    val tempReading = getReadingUseCase(
+                        yesterday, actualReading?.language ?: throw Exception(ERROR_MESSAGE)
+                    )
+                    player.pause()
+                    player.stop()
+                    player.clearMediaItems()
+                    setReading(yesterday, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
+                } catch (e: Exception) {
+                    currentDayIndex += 1
+                    _mainUIState.value = MainFragmentState.Error(ERROR_WHILE_CHANGING_DATES)
+                }
+            }
         }
     }
 

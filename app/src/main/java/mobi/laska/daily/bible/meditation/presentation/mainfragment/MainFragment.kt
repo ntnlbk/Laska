@@ -25,6 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import mobi.laska.daily.bible.meditation.R
 import mobi.laska.daily.bible.meditation.databinding.FragmentMainBinding
+import mobi.laska.daily.bible.meditation.presentation.mainfragment.MainFragmentState.Companion.ERROR_INITIAL
 import mobi.laska.daily.bible.meditation.presentation.mainfragment.MainFragmentViewModel.Companion.TOTAL_DAYS_TO_SHOW
 import mobi.laska.daily.bible.meditation.presentation.textfragment.TextFragmentBottomSheet
 
@@ -120,11 +121,7 @@ class MainFragment : Fragment() {
     }
 
     private fun onSwipeLeft() {
-        try {
-            viewModel.goForward()
-        } catch (e: Exception) {
-            Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
-        }
+        viewModel.goForward()
     }
 
     private fun onSwipeUp() {
@@ -132,11 +129,9 @@ class MainFragment : Fragment() {
     }
 
     private fun onSwipeRight() {
-        try {
-            viewModel.goBack()
-        } catch (e: Exception) {
-            Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
-        }
+
+        viewModel.goBack()
+
     }
 
 
@@ -193,7 +188,6 @@ class MainFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
                 launch {
                     viewModel.mainUIState.collect {
                         when (it) {
@@ -211,8 +205,21 @@ class MainFragment : Fragment() {
 
                             is MainFragmentState.Error -> {
                                 binding.progressBar.visibility = View.INVISIBLE
-                                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
-                                    .show()
+                                if (it.message == ERROR_INITIAL) {
+                                    binding.errorTv1.visibility = View.VISIBLE
+                                    binding.errorTv2.visibility = View.VISIBLE
+                                    binding.playerView.visibility = View.INVISIBLE
+                                    binding.mainBackground.background = ContextCompat.getDrawable(
+                                        requireActivity(),
+                                        R.drawable.background_temp_gradient
+                                    )
+                                } else {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.to_change_date_check_connection),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
 
                             is MainFragmentState.TextShowed -> {
@@ -238,7 +245,11 @@ class MainFragment : Fragment() {
 
                             is AudioPlayerState.Error -> {
                                 binding.progressBar.visibility = View.INVISIBLE
-                                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.check_connection_to_listen),
+                                    Toast.LENGTH_SHORT
+                                )
                                     .show()
                             }
 
@@ -247,7 +258,7 @@ class MainFragment : Fragment() {
                                 binding.plusBtn.isEnabled = false
                                 binding.songSeekbar.isClickable = false
                                 binding.songSeekbar.progress = 0
-                                binding.actualTimeTv.text = "00:00"
+                                binding.actualTimeTv.text = getString(R.string._00_00)
                                 binding.playBtn.setImageDrawable(
                                     ContextCompat.getDrawable(requireContext(), R.drawable.ic_play)
                                 )
