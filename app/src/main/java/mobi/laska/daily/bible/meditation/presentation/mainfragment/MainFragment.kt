@@ -58,14 +58,17 @@ class MainFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        postponeEnterTransition()
         super.onViewCreated(view, savedInstanceState)
-
         if (!hasInitializedRootView) {
+            postponeEnterTransition()
             setupViews()
+            setupBackgroundPlayer()
             initGestures()
             hasInitializedRootView = true
+        } else {
+            startPostponedEnterTransition()
         }
-
         observeViewModel()
     }
 
@@ -134,7 +137,6 @@ class MainFragment : Fragment() {
 
     }
 
-
     private fun setupBackgroundPlayer() {
         val playerView = binding.playerView
         backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build()
@@ -145,7 +147,11 @@ class MainFragment : Fragment() {
         backgroundVidePlayer?.setMediaItem(mediaItem)
         backgroundVidePlayer?.repeatMode = Player.REPEAT_MODE_ALL
         backgroundVidePlayer?.volume = 0f
-
+        backgroundVidePlayer?.addListener(object : Player.Listener {
+            override fun onRenderedFirstFrame() {
+                startPostponedEnterTransition()
+            }
+        })
         backgroundVidePlayer?.prepare()
         backgroundVidePlayer?.play()
     }
@@ -161,7 +167,6 @@ class MainFragment : Fragment() {
     }
 
     private fun setupViews() {
-        setupBackgroundPlayer()
         binding.playBtn.setOnClickListener { viewModel.playButtonClicked() }
 
         binding.songSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {

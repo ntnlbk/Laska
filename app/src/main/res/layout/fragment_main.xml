@@ -16,6 +16,8 @@
         app:use_controller="false"
         android:background="#1d1a1c"
         android:paddingBottom="185dp"
+        app:surface_type="texture_view"
+        app:shutter_background_color="@android:color/transparent"
         app:resize_mode="zoom" >
 
     </androidx.media3.ui.PlayerView>
