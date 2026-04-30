@@ -44,6 +44,7 @@ class MainFragment : Fragment() {
     private var isSeekBarTouched = false
     private lateinit var gestureDetector: GestureDetector
     private var hasInitializedRootView = false
+    private var errorBlocking: Boolean = false
 
 
     override fun onCreateView(
@@ -87,30 +88,32 @@ class MainFragment : Fragment() {
                     velocityX: Float,
                     velocityY: Float
                 ): Boolean {
+                    if (!errorBlocking) {
+                        val diffX = e2.x - (e1?.x ?: 0f)
+                        val diffY = e2.y - (e1?.y ?: 0f)
 
-                    val diffX = e2.x - (e1?.x ?: 0f)
-                    val diffY = e2.y - (e1?.y ?: 0f)
+                        if (Math.abs(diffX) > Math.abs(diffY)) {
+                            if (Math.abs(diffX) > SWIPE_THRESHOLD &&
+                                Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD
+                            ) {
+                                if (diffX > 0) {
+                                    onSwipeRight()
+                                } else {
+                                    onSwipeLeft()
+                                }
+                                return true
+                            }
+                        } else {
+                            if (Math.abs(diffY) > SWIPE_THRESHOLD &&
+                                Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD
+                            ) {
+                                if (diffY < 0) {
+                                    onSwipeUp()
+                                }
+                                return true
+                            }
+                        }
 
-                    if (Math.abs(diffX) > Math.abs(diffY)) {
-                        if (Math.abs(diffX) > SWIPE_THRESHOLD &&
-                            Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD
-                        ) {
-                            if (diffX > 0) {
-                                onSwipeRight()
-                            } else {
-                                onSwipeLeft()
-                            }
-                            return true
-                        }
-                    } else {
-                        if (Math.abs(diffY) > SWIPE_THRESHOLD &&
-                            Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD
-                        ) {
-                            if (diffY < 0) {
-                                onSwipeUp()
-                            }
-                            return true
-                        }
                     }
                     return false
                 }
@@ -183,10 +186,13 @@ class MainFragment : Fragment() {
 
         binding.plusBtn.setOnClickListener { viewModel.goForward15Sec() }
         binding.minusBtn.setOnClickListener { viewModel.goBack15Sec() }
-        binding.showTextBtn.setOnClickListener { viewModel.showTextButtonClicked() }
+        binding.showTextBtn.setOnClickListener { if (!errorBlocking) viewModel.showTextButtonClicked() }
         binding.dotsIndicator.totalDots = TOTAL_DAYS_TO_SHOW
         binding.btnMenu.setOnClickListener {
-            findNavController().navigate(MainFragmentDirections.actionMainFragmentToOptionsFragment())
+            if (!errorBlocking){
+                findNavController().navigate(MainFragmentDirections.actionMainFragmentToOptionsFragment())
+            }
+
         }
     }
 
@@ -197,8 +203,9 @@ class MainFragment : Fragment() {
                     viewModel.mainUIState.collect {
                         when (it) {
                             is MainFragmentState.Content -> {
+                                errorBlocking = false
                                 binding.progressBar.visibility = View.INVISIBLE
-                                if(it.feastName == ""){
+                                if (it.feastName == "") {
                                     binding.feastNameTv.visibility = View.GONE
                                     binding.bibleRefTv.setMarginsInDp(24, 0, 24, 40)
                                 } else {
@@ -218,6 +225,7 @@ class MainFragment : Fragment() {
                             is MainFragmentState.Error -> {
                                 binding.progressBar.visibility = View.INVISIBLE
                                 if (it.message == ERROR_INITIAL) {
+                                    errorBlocking = true
                                     binding.errorTv1.visibility = View.VISIBLE
                                     binding.errorTv2.visibility = View.VISIBLE
                                     binding.playerView.visibility = View.INVISIBLE

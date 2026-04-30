@@ -309,7 +309,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                 try {
                     val tomorrow =
                         DateUtils.getNextDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
-                    val tempReading = getReadingUseCase(
+                    getReadingUseCase(
                         tomorrow, actualReading?.language ?: throw Exception(ERROR_MESSAGE)
                     )
                     player.pause()
@@ -339,7 +339,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                             ERROR_MESSAGE
                         )
                     )
-                    val tempReading = getReadingUseCase(
+                    getReadingUseCase(
                         yesterday, actualReading?.language ?: throw Exception(ERROR_MESSAGE)
                     )
                     player.pause()
