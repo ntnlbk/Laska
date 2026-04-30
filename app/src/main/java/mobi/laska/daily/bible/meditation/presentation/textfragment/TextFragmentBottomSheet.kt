@@ -111,7 +111,6 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
-        setupViews()
     }
 
     private fun observeViewModel() {
@@ -151,12 +150,23 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
                             }
 
                             else -> {
-                                binding.playBtnIc.setImageDrawable(
-                                    ContextCompat.getDrawable(
-                                        requireContext(),
-                                        play_button_id
+                                delay(50)
+                                if (actualSetting.textFragmentTheme == TextFragmentTheme.LIGHT) {
+                                    binding.playBtnIc.setImageDrawable(
+                                        ContextCompat.getDrawable(
+                                            requireContext(),
+                                            R.drawable.play_dialog_ic
+                                        )
                                     )
-                                )
+                                } else {
+                                    binding.playBtnIc.setImageDrawable(
+                                        ContextCompat.getDrawable(
+                                            requireContext(),
+                                            R.drawable.ic_play
+                                        )
+                                    )
+                                }
+
                             }
                         }
                     }
@@ -174,6 +184,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
                                 binding.tv1.textSize = actualSetting.fontSize
                                 binding.tv2.textSize = actualSetting.fontSize
                                 binding.tv3.textSize = actualSetting.fontSize
+                                binding.dateTv.textSize = actualSetting.fontSize
                                 when (it.settings.textFragmentTheme) {
                                     TextFragmentTheme.DARK -> {
                                         setupDarkTheme()
@@ -183,6 +194,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
                                         setupLightTheme()
                                     }
                                 }
+                                setupViews()
                             }
 
                             is TextFragmentOptionsState.Error -> {
@@ -242,6 +254,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
         play_button_id = R.drawable.ic_play
         pause_button_id = R.drawable.pause_ic
         binding.dateTv.setTextColor("#FFFFFF".toColorInt())
+        binding.dateTv.backgroundTintList = ColorStateList.valueOf("#312b29".toColorInt())
     }
 
     fun setupLightTheme() {
@@ -284,6 +297,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
         play_button_id = R.drawable.play_dialog_ic
         pause_button_id = R.drawable.pause_dialog_ic
         binding.dateTv.setTextColor("#000000".toColorInt())
+        binding.dateTv.backgroundTintList = ColorStateList.valueOf("#efede6".toColorInt())
     }
 
 
@@ -308,7 +322,7 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
         binding.tv1.text = dialogArguments.reflectionTextIntro
         binding.tv2.text = dialogArguments.bibleTextPlain
         binding.tv3.text = dialogArguments.reflectionTextBody
-        binding.dateTv.text = dialogArguments.date
+        binding.dateTv.text = dialogArguments.date + "\n" + dialogArguments.bibleRef
         binding.btnBack.setOnClickListener {
             dialog?.cancel()
         }

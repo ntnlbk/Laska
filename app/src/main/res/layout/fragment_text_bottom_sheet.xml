@@ -47,19 +47,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/date_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="1 cентября"
-            android:layout_marginTop="5dp"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/headerProgressBar"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
 
         <ImageButton
             android:id="@+id/btnTextOptions"
@@ -122,6 +109,20 @@
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="16dp"
                 android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/date_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="1 cентября\nсентября"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/bg_pill_button"
+                    android:backgroundTint="#312b29"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/lora"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="10dp"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tv1"
