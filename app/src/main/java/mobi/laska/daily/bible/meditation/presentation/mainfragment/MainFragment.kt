@@ -145,7 +145,7 @@ class MainFragment : Fragment() {
         backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build()
         playerView.player = backgroundVidePlayer
         val mediaItem = MediaItem.fromUri(
-            "android.resource://${requireContext().packageName}/${R.raw.background_video}"
+            "android.resource://${requireContext().packageName}/${R.raw.background}"
         )
         backgroundVidePlayer?.setMediaItem(mediaItem)
         backgroundVidePlayer?.repeatMode = Player.REPEAT_MODE_ALL
