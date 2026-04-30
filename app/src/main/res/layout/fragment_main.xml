@@ -14,8 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:use_controller="false"
-        android:background="#1d1a1c"
-        android:paddingBottom="185dp"
+        android:background="#19181a"
+        android:paddingBottom="300dp"
         app:surface_type="texture_view"
         app:shutter_background_color="@android:color/transparent"
         app:resize_mode="zoom" >
