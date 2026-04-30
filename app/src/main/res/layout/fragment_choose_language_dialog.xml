@@ -1,43 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="342dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/menu_options_background"
-    android:paddingBottom="0dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/menu_options_background">
 
     <TextView
         android:id="@+id/first_option"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="20dp"
-        android:width="308dp"
-        android:height="60dp"
         android:fontFamily="@font/inter"
         android:paddingTop="20dp"
         android:paddingBottom="10dp"
+        tools:text="@string/belarusian_language"
         android:textColor="#A8A08D"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/russian_language" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/second_option"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
-        android:width="308dp"
-        android:height="70dp"
+        android:height="55dp"
         android:fontFamily="@font/inter"
         android:paddingTop="10dp"
+        tools:text="@string/russian_language"
         android:textColor="#FFFFFF"
+        android:layout_marginStart="16dp"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/first_option"
-        tools:text="@string/belarusian_language" />
+        app:layout_constraintTop_toBottomOf="@id/first_option" />
 </androidx.constraintlayout.widget.ConstraintLayout>

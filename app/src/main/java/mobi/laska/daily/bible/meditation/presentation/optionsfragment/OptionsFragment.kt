@@ -58,8 +58,15 @@ class OptionsFragment : Fragment() {
                                     Language.BY -> "Беларуская"
                                 }
                                 binding.colorChosenTv.text = when (it.settings.textFragmentTheme) {
-                                    TextFragmentTheme.DARK -> ContextCompat.getString(requireActivity(), R.string.dark)
-                                    TextFragmentTheme.LIGHT -> ContextCompat.getString(requireActivity(), R.string.light)
+                                    TextFragmentTheme.DARK -> ContextCompat.getString(
+                                        requireActivity(),
+                                        R.string.dark
+                                    )
+
+                                    TextFragmentTheme.LIGHT -> ContextCompat.getString(
+                                        requireActivity(),
+                                        R.string.light
+                                    )
                                 }
                             }
 
@@ -91,7 +98,7 @@ class OptionsFragment : Fragment() {
             binding.languageBtn.getLocationOnScreen(location)
             val y = location[1] + binding.languageBtn.height / 2 + 30
             val dialog = ChooseLanguageDialogFragment.newInstance(
-                actualSettings.language, y
+                actualSettings.language, y, binding.languageBtn.width
             )
             dialog.callback = object : ChooseLanguageCallback {
                 override fun chosenLanguage(language: Language) {
@@ -111,7 +118,8 @@ class OptionsFragment : Fragment() {
             val y = location[1] + binding.readingColorBtn.height / 2 + 30
             val dialog = ChooseReadingThemeDialogFragment.newInstance(
                 actualSettings.textFragmentTheme,
-                y
+                y,
+                binding.readingColorBtn.width
             )
             dialog.callback = object : ChooseThemeCallback {
                 override fun chosenTheme(theme: TextFragmentTheme) {
