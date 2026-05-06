@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import mobi.laska.daily.bible.meditation.R
 import mobi.laska.daily.bible.meditation.databinding.FragmentAboutUsBinding
 
@@ -14,6 +15,7 @@ class AboutUsFragment : Fragment() {
     private var _binding: FragmentAboutUsBinding? = null
     private val binding: FragmentAboutUsBinding
         get() = _binding ?: throw Exception("FragmentOptionsBinding is null")
+    private val args: AboutUsFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +38,8 @@ class AboutUsFragment : Fragment() {
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        binding.aboutUsMainTv.text = args.mainSectionName
     }
 
     override fun onDestroyView() {

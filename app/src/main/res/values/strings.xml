@@ -18,14 +18,17 @@
     <string name="support">Падтрымка</string>
     <string name="connect_us">Звязацца з намі</string>
     <string name="give_thank">Падзякаваць</string>
-    <string name="about_history">текст про историю</string>
-    <string name="about_authors">Авторы</string>
-    <string name="russian_language" translatable="false">Русский язык</string>
-    <string name="belarusian_language" translatable="false">Беларуская мова</string>
-    <string name="check_connection_to_listen">Праверце інтэрнэт злучэнне, каб праслухаць аўдыё.</string>
-    <string name="_00_00" translatable="false">00:00</string>
-    <string name="to_change_date_check_connection">Чтобы перейти к этой дате, проверьте подключение к интернету</string>
-    <string name="check_connection">Праверце інтэрнэт злучэнне</string>
+    <string name="about_history">тэкст пра гісторыю</string>
+    <string name="about_authors">тэкст пра аўтараў</string>
+    <string name="check_connection_to_listen">Праверце інтэрнэт-злучэнне, каб праслухаць аўдыя</string>
+    <string name="to_change_date_check_connection">Каб перайсці да гэтай даты, праверце інтэрнэт-злучэнне</string>
+    <string name="check_connection">Праверце інтэрнэт-злучэнне</string>
     <string name="something_went_wrong">Нешта пайшло не так</string>
     <string name="_15" translatable="false">15</string>
+    <string name="_00_00" translatable="false">00:00</string>
+    <string name="russian_language" translatable="false">Русский язык</string>
+    <string name="belarusian_language" translatable="false">Беларуская мова</string>
+    <string name="about_project_main_section">О проекте бел</string>
+    <string name="contact_us_main_section">Связацца з намі бел</string>
+    <string name="thanks_fragment_main_section">Падзякаваць бел</string>
 </resources>

@@ -26,5 +26,9 @@
         android:id="@+id/aboutUsFragment"
         android:name="mobi.laska.daily.bible.meditation.presentation.aboutusfragment.AboutUsFragment"
         android:label="fragment_about_us"
-        tools:layout="@layout/fragment_about_us" />
+        tools:layout="@layout/fragment_about_us" >
+        <argument
+            android:name="main_section_name"
+            app:argType="string" />
+    </fragment>
 </navigation>

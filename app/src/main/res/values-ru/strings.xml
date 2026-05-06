@@ -16,8 +16,11 @@
     <string name="give_thank">Поблагодарить</string>
     <string name="about_history">текст про историю</string>
     <string name="about_authors">текст про авторов</string>
-    <string name="check_connection_to_listen">Проверьте интернет соединение, чтобы прослушать аудио.</string>
-    <string name="to_change_date_check_connection">Каб перайсці да гэтай даты, праверце падлучэнне да інтэрнэту</string>
-    <string name="check_connection">Проверьте интернет соединение</string>
+    <string name="check_connection_to_listen">Проверьте интернет-соединение, чтобы прослушать аудио</string>
+    <string name="to_change_date_check_connection">Чтобы перейти к этой дате, проверьте интернет-соединение</string>
+    <string name="check_connection">Проверьте интернет-соединение</string>
     <string name="something_went_wrong">Что-то пошло не так</string>
+    <string name="about_project_main_section">О проекте рус</string>
+    <string name="contact_us_main_section">Связацца з намі рус</string>
+    <string name="thanks_fragment_main_section">Падзякаваць ру</string>
 </resources>
