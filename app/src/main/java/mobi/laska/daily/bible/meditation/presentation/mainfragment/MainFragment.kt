@@ -207,7 +207,7 @@ class MainFragment : Fragment() {
                                 binding.progressBar.visibility = View.INVISIBLE
                                 if (it.feastName == "") {
                                     binding.feastNameTv.visibility = View.GONE
-                                    binding.bibleRefTv.setMarginsInDp(24, 0, 24, 40)
+                                    binding.bibleRefTv.setMarginsInDp(24, 0, 24, 50)
                                 } else {
                                     binding.feastNameTv.visibility = View.VISIBLE
                                     binding.bibleRefTv.setMarginsInDp(24, 0, 24, 0)
