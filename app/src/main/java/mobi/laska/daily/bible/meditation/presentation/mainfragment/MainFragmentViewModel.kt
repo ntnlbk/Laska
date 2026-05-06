@@ -363,8 +363,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         private const val PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS = 15000L
 
         const val TOTAL_DAYS_TO_SHOW = 5
-        private const val MIN_DAY_INDEX = -2
-        private const val MAX_DAY_INDEX = 2
+        private const val MIN_DAY_INDEX = -7
+        private const val MAX_DAY_INDEX = 7
 
     }
 }

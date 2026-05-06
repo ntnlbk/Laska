@@ -189,7 +189,7 @@ class MainFragment : Fragment() {
         binding.showTextBtn.setOnClickListener { if (!errorBlocking) viewModel.showTextButtonClicked() }
         binding.dotsIndicator.totalDots = TOTAL_DAYS_TO_SHOW
         binding.btnMenu.setOnClickListener {
-            if (!errorBlocking){
+            if (!errorBlocking) {
                 findNavController().navigate(MainFragmentDirections.actionMainFragmentToOptionsFragment())
             }
 
@@ -215,7 +215,12 @@ class MainFragment : Fragment() {
                                 binding.dateTv.text = it.date
                                 binding.feastNameTv.text = it.feastName
                                 binding.bibleRefTv.text = it.bibleReference
-                                binding.dotsIndicator.animateTo(viewModel.currentDayIndex + 2)
+                                if (viewModel.currentDayIndex + CENTER_DOT_ID in 0..DOTS_NUMBER_VISIBLE) {
+                                    binding.dotsIndicator.animateTo(
+                                        viewModel.currentDayIndex + CENTER_DOT_ID
+                                    )
+                                }
+
                             }
 
                             is MainFragmentState.Progress -> {
@@ -340,5 +345,10 @@ class MainFragment : Fragment() {
         )
 
         layoutParams = params
+    }
+
+    companion object{
+        private const val DOTS_NUMBER_VISIBLE = 5
+        private const val CENTER_DOT_ID = 2
     }
 }
