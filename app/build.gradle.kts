@@ -101,6 +101,10 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
 
+    //google play review API
+    implementation(libs.review)
+    implementation(libs.review.ktx)
+
 }
 
 kapt {
