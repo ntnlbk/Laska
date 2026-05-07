@@ -153,6 +153,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
 
     fun setReading(date: String = todayFormatted(), language: Language = DEFAULT_LANGUAGE) {
         player.pause()
+        player.clearMediaItems()
         downloadJob?.cancel()
         _mainUIState.value = MainFragmentState.Progress
         _playerUIState.value = AudioPlayerState.Initial

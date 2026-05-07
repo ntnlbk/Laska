@@ -11,7 +11,7 @@ import retrofit2.http.Query
 class LaskaApiService {
 
     companion object {
-        private const val BASE_URL = "https://new2.laska.mobi/wp-json/daily-readings/v1/"
+        private const val BASE_URL = "https://laska.mobi/wp-json/daily-readings/v1/"
         private val retrofit =
             Retrofit.Builder()
                 .addConverterFactory(

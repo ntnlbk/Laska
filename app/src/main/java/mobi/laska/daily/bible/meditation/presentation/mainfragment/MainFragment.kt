@@ -215,7 +215,7 @@ class MainFragment : Fragment() {
                                 binding.dateTv.text = it.date
                                 binding.feastNameTv.text = it.feastName
                                 binding.bibleRefTv.text = it.bibleReference
-                                if (viewModel.currentDayIndex + CENTER_DOT_ID in 0..DOTS_NUMBER_VISIBLE) {
+                                if ((viewModel.currentDayIndex + CENTER_DOT_ID) in 0..<DOTS_NUMBER_VISIBLE) {
                                     binding.dotsIndicator.animateTo(
                                         viewModel.currentDayIndex + CENTER_DOT_ID
                                     )

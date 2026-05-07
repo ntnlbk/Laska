@@ -327,8 +327,11 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
             dialog?.cancel()
         }
         binding.feastNameTv.text = dialogArguments.bibleRef
-        binding.playBtn.setOnClickListener {
+        binding.playBtnIc.setOnClickListener {
             viewModel.playButtonClicked()
+        }
+        binding.playBtn.setOnClickListener {
+            dialog?.cancel()
         }
         binding.dialogPlayerProgressBar.max = dialogArguments.songMaxProgress
         binding.dialogPlayerProgressBar.progress = dialogArguments.actualProgress
