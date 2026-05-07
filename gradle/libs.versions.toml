@@ -4,6 +4,7 @@ converterScalars = "2.9.0"
 coreKtx = "1.13.1"
 coreSplashscreen = "1.2.0"
 datastorePreferences = "1.2.1"
+firebaseBom = "34.12.0"
 gson = "2.13.2"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -39,6 +40,8 @@ androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fr
 androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationComposeVersion" }
 converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit" }
 converter-scalars-v290 = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "converterScalars" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }

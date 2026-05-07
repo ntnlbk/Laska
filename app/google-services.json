@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "285201122789",
+    "project_id": "laska-ce421",
+    "storage_bucket": "laska-ce421.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285201122789:android:a0d0fc79737976b6719b0c",
+        "android_client_info": {
+          "package_name": "mobi.laska.daily.bible.meditation"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9B8ifIeQ6QaKaU3Kf8bGum4OkvVuRIxo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

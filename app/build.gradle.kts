@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
     id("androidx.navigation.safeargs.kotlin")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -95,6 +96,10 @@ dependencies {
 
     //preferences datastore
     implementation(libs.androidx.datastore.preferences)
+
+    //firebase analytics
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 
 }
 
