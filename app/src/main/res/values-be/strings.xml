@@ -14,13 +14,14 @@
     <string name="support">Падтрымка</string>
     <string name="connect_us">Звязацца з намі</string>
     <string name="give_thank">Падзякаваць</string>
-    <string name="about_history">тэкст пра гісторыю</string>
-    <string name="about_authors">тэкст пра аўтараў</string>
     <string name="check_connection_to_listen">Праверце інтэрнэт-злучэнне, каб праслухаць аўдыя</string>
     <string name="to_change_date_check_connection">Каб перайсці да гэтай даты, праверце інтэрнэт-злучэнне</string>
     <string name="check_connection">Праверце інтэрнэт-злучэнне</string>
     <string name="something_went_wrong">Нешта пайшло не так</string>
-    <string name="about_project_main_section">О проекте бел</string>
-    <string name="contact_us_main_section">Связацца з намі бел</string>
-    <string name="thanks_fragment_main_section">Падзякаваць бел</string>
+    <string name="about_project_main_section_name">Пра нас</string>
+    <string name="contact_us_main_section_name">Кантакты</string>
+    <string name="thanks_fragment_main_section_name">Падтрымаць нас</string>
+    <string name="about_project_main_section_content">"Laska – гэта прастора для штодзённай медытацыі над Евангеллем. Гэта 7 хвілін у дзень тваёй сустрэчы са Словам, пошуку сваіх адказаў і сэнсу.\n\nКожнае разважанне з’яўляецца плёнам супрацы каталіцкіх святароў і прафесійных рэдактараў. Святары ствараюць фокус медытацыі, рэдактары «шліфуюць» тэксты, а дыктары надаюць ім фінальнае гучанне.\n\nМы рады, што цябе зацікавіла Laska. У добры шлях! "</string>
+    <string name="contact_us_main_section_content">Мы будзем рады любой зваротнай сувязі, прапановам супрацы. Таксама просім у выпадку любой недакладнасці ў прылажэнні паведаміць пра гэта на laskamobi@gmail.com</string>
+    <string name="thanks_fragment_main_section_content">Будзем удзячныя, калі вы ацэніце наша прылажэнне і падзеліцеся ім са свамі блізкімі. Такім чынам больш людзей змогуць даведацца пра Laska.</string>
 </resources>

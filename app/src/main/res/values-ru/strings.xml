@@ -14,13 +14,14 @@
     <string name="support">Поддержка</string>
     <string name="connect_us">Связаться с нами</string>
     <string name="give_thank">Поблагодарить</string>
-    <string name="about_history">текст про историю</string>
-    <string name="about_authors">текст про авторов</string>
     <string name="check_connection_to_listen">Проверьте интернет-соединение, чтобы прослушать аудио</string>
     <string name="to_change_date_check_connection">Чтобы перейти к этой дате, проверьте интернет-соединение</string>
     <string name="check_connection">Проверьте интернет-соединение</string>
     <string name="something_went_wrong">Что-то пошло не так</string>
-    <string name="about_project_main_section">О проекте рус</string>
-    <string name="contact_us_main_section">Связацца з намі рус</string>
-    <string name="thanks_fragment_main_section">Падзякаваць ру</string>
+    <string name="about_project_main_section_name">О нас</string>
+    <string name="contact_us_main_section_name">Контакты</string>
+    <string name="thanks_fragment_main_section_name">Поддержать нас</string>
+    <string name="about_project_main_section_content">"Laska — это пространство для ежедневной медитации над Евангелием. Это 7 минут в день для твоей встречи со Словом, поиска собственных ответов и смыслов.\n\nКаждое размышление — плод сотрудничества католических священников и профессиональных редакторов. Священники создают основу медитации, редакторы «шлифуют» тексты, а дикторы придают им финальное звучание.\n\nМы рады, что тебя заинтересовала Laska. В добрый путь! "</string>
+    <string name="contact_us_main_section_content">Мы будем рады любой обратной связи и предложениям о сотрудничестве. Также просим сообщать о любых неточностях в приложении по адресу: laskamobi@gmail.com</string>
+    <string name="thanks_fragment_main_section_content">Будем благодарны, если вы оцените наше приложение и поделитесь им со своими близкими. Так больше людей смогут узнать о Laska.</string>
 </resources>

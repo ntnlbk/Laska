@@ -89,17 +89,20 @@ class OptionsFragment : Fragment() {
     private fun setupViews() {
         binding.aboutProjectBtn.setOnClickListener {
             findNavController().navigate(OptionsFragmentDirections.actionOptionsFragmentToAboutUsFragment(
-                mainSectionName = ContextCompat.getString(requireActivity(), R.string.about_project_main_section)
+                mainSectionName = ContextCompat.getString(requireActivity(), R.string.about_project_main_section_name),
+                mainSectionContent = ContextCompat.getString(requireActivity(), R.string.about_project_main_section_content)
             ))
         }
         binding.connectUsBtn.setOnClickListener {
             findNavController().navigate(OptionsFragmentDirections.actionOptionsFragmentToAboutUsFragment(
-                mainSectionName = ContextCompat.getString(requireActivity(), R.string.contact_us_main_section)
+                mainSectionName = ContextCompat.getString(requireActivity(), R.string.contact_us_main_section_name),
+                mainSectionContent = ContextCompat.getString(requireActivity(), R.string.contact_us_main_section_content)
             ))
         }
         binding.thanksBtn.setOnClickListener {
             findNavController().navigate(OptionsFragmentDirections.actionOptionsFragmentToAboutUsFragment(
-                mainSectionName = ContextCompat.getString(requireActivity(), R.string.thanks_fragment_main_section)
+                mainSectionName = ContextCompat.getString(requireActivity(), R.string.thanks_fragment_main_section_name),
+                mainSectionContent = ContextCompat.getString(requireActivity(), R.string.thanks_fragment_main_section_content)
             ))
         }
         binding.closeBtn.setOnClickListener {

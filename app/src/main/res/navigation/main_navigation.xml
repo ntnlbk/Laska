@@ -30,5 +30,7 @@
         <argument
             android:name="main_section_name"
             app:argType="string" />
+        <argument android:name="main_section_content"
+            app:argType="string" />
     </fragment>
 </navigation>

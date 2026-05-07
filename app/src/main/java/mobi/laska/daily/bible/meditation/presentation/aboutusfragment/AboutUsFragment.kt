@@ -40,6 +40,7 @@ class AboutUsFragment : Fragment() {
         }
 
         binding.aboutUsMainTv.text = args.mainSectionName
+        binding.authorsSectionContentTv.text = args.mainSectionContent
     }
 
     override fun onDestroyView() {
