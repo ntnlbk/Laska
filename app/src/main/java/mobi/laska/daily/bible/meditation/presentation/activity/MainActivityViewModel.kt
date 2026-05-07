@@ -10,6 +10,7 @@ import mobi.laska.daily.bible.meditation.domain.audio.DownloadAudioUseCase
 import mobi.laska.daily.bible.meditation.presentation.uils.ConnectionUtils
 import mobi.laska.daily.bible.meditation.presentation.uils.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -30,7 +31,7 @@ class MainActivityViewModel @Inject constructor(
     private val _isReady = MutableStateFlow<Boolean?>(null)
     val isReady: StateFlow<Boolean?> = _isReady
 
-    private var language: Language = DEFAULT_LANGUAGE
+    private lateinit var language: Language
 
     init {
         observeSettings()
@@ -55,6 +56,7 @@ class MainActivityViewModel @Inject constructor(
 
     suspend fun downloadActualReading() {
         try {
+            delay(50)
             val actualReading = getReadingUseCase(DateUtils.todayFormatted(), language)
             val isDownloaded = isDownloadedUseCase(actualReading.audioURL)
             if (!isDownloaded) {

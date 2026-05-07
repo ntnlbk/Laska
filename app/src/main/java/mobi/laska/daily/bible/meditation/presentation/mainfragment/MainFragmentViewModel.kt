@@ -17,8 +17,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import mobi.laska.daily.bible.meditation.domain.DEFAULT_LANGUAGE
 import mobi.laska.daily.bible.meditation.domain.GetReadingUseCase
 import mobi.laska.daily.bible.meditation.domain.Language
 import mobi.laska.daily.bible.meditation.domain.ReadingItem
@@ -61,7 +61,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
 
     var currentDayIndex = 0
 
-    var currentLanguage: Language = DEFAULT_LANGUAGE
+    lateinit var currentLanguage: Language
 
     private val player by lazy {
         val mediaSourceFactory =
@@ -87,9 +87,10 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     }
 
     init {
-        observeSettings()
-        setReading()
         viewModelScope.launch {
+            observeSettings()
+            delay(50)
+            setReading()
             while (true) {
                 delay(200L)
                 val isPlaying = player.isPlaying
@@ -121,6 +122,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
 
     private fun observeSettings() {
         viewModelScope.launch {
+            currentLanguage = getSettingsUseCase().first().language
             getSettingsUseCase().collect { settings ->
                 if (currentLanguage != settings.language) {
                     currentDayIndex = 0
@@ -151,7 +153,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         player.seekTo(moment)
     }
 
-    fun setReading(date: String = todayFormatted(), language: Language = DEFAULT_LANGUAGE) {
+    fun setReading(date: String = todayFormatted(), language: Language = currentLanguage) {
         player.pause()
         player.clearMediaItems()
         downloadJob?.cancel()
@@ -330,7 +332,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     fun goBack() {
         if (currentDayIndex == MIN_DAY_INDEX) {
             //  _mainUIState.value = MainFragmentState.Error("Дальше нельзя!")
-        } else if (!player.isPlaying) {
+        } else if (!player.isPlaying && actualReading?.date != RELEASE_DATE_TEXT) {
             _mainUIState.value = MainFragmentState.Progress
             currentDayIndex -= 1
             viewModelScope.launch {
@@ -366,6 +368,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         const val TOTAL_DAYS_TO_SHOW = 5
         private const val MIN_DAY_INDEX = -7
         private const val MAX_DAY_INDEX = 7
+
+        private const val RELEASE_DATE_TEXT = "20260515"
 
     }
 }
