@@ -1,6 +1,7 @@
 package mobi.laska.daily.bible.meditation.presentation.mainfragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -193,6 +194,20 @@ class MainFragment : Fragment() {
                 findNavController().navigate(MainFragmentDirections.actionMainFragmentToOptionsFragment())
             }
 
+        }
+        binding.btnShare.setOnClickListener {
+            val appLink = "https://play.google.com/store/apps/details?id=${requireContext().packageName}"
+
+            val shareText = "Скачай Laska!:\n$appLink"
+
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, shareText)
+            }
+
+            requireContext().startActivity(
+                Intent.createChooser(intent, "Поделиться приложением")
+            )
         }
     }
 
