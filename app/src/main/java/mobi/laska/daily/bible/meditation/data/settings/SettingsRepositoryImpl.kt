@@ -15,6 +15,7 @@ import mobi.laska.daily.bible.meditation.domain.settings.DEFAULT_TEXT_SIZE
 import mobi.laska.daily.bible.meditation.domain.settings.Settings
 import mobi.laska.daily.bible.meditation.domain.settings.SettingsRepository
 import mobi.laska.daily.bible.meditation.domain.settings.TextFragmentTheme
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -34,7 +35,7 @@ class SettingsRepositoryImpl @Inject constructor(
         return application.dataStore.data.map { preferences ->
             val language =
                 preferences[languageKey]?.let { runCatching { Language.valueOf(it) }.getOrNull() }
-                    ?: Language.BY
+                    ?: getSystemLanguage()
             val fontSize =
                 preferences[fontSizeKey] ?: DEFAULT_TEXT_SIZE
             val theme =
@@ -42,6 +43,15 @@ class SettingsRepositoryImpl @Inject constructor(
                     ?: TextFragmentTheme.LIGHT
 
             Settings(language, fontSize, theme)
+        }
+    }
+
+    private fun getSystemLanguage(): Language {
+        val systemLanguage = Locale.getDefault().language
+        return when (systemLanguage) {
+            "ru" -> Language.RU
+            "be" -> Language.BY
+            else -> Language.BY
         }
     }
 
