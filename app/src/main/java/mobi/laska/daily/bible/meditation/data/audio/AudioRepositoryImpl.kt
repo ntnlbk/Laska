@@ -39,22 +39,26 @@ class AudioRepositoryImpl @OptIn(UnstableApi::class)
             .setMimeType(MimeTypes.AUDIO_MPEG)
             .build()
 
-        DownloadService.sendAddDownload(
-            context,
-            LaskaDownloadService::class.java,
-            request,
-            false
-        )
+//        DownloadService.sendAddDownload(
+//            context,
+//            LaskaDownloadService::class.java,
+//            request,
+//            false
+//        )
+        //downloadManager.removeAllDownloads()
+        downloadManager.addDownload(request)
+        downloadManager.resumeDownloads()
     }
 
     @OptIn(UnstableApi::class)
     override fun removeDownloadAudio(url: String) {
-        DownloadService.sendRemoveDownload(
-            context,
-            LaskaDownloadService::class.java,
-            url,
-            false
-        )
+//        DownloadService.sendRemoveDownload(
+//            context,
+//            LaskaDownloadService::class.java,
+//            url,
+//            false
+//        )
+        downloadManager.removeDownload(url)
     }
 
     @OptIn(UnstableApi::class)
@@ -108,10 +112,11 @@ class AudioRepositoryImpl @OptIn(UnstableApi::class)
 
     @OptIn(UnstableApi::class)
     override fun deleteAllCachedAudio() {
-        DownloadService.sendRemoveAllDownloads(
-            context,
-            LaskaDownloadService::class.java,
-            false
-        )
+//        DownloadService.sendRemoveAllDownloads(
+//            context,
+//            LaskaDownloadService::class.java,
+//            false
+//        )
+        downloadManager.removeAllDownloads()
     }
 }

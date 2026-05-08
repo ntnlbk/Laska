@@ -153,6 +153,10 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         player.seekTo(moment)
     }
 
+    fun pausePlayer(){
+        player?.pause()
+    }
+
     fun setReading(date: String = todayFormatted(), language: Language = currentLanguage) {
         player.pause()
         player.clearMediaItems()
