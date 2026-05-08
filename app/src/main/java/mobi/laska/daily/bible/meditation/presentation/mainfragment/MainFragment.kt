@@ -198,7 +198,7 @@ class MainFragment : Fragment() {
         binding.btnShare.setOnClickListener {
             val appLink = "https://play.google.com/store/apps/details?id=${requireContext().packageName}"
 
-            val shareText = "Скачай Laska!:\n$appLink"
+            val shareText = getString(R.string.laska_share_text) + "\n$appLink"
 
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
@@ -206,7 +206,7 @@ class MainFragment : Fragment() {
             }
 
             requireContext().startActivity(
-                Intent.createChooser(intent, "Поделиться приложением")
+                Intent.createChooser(intent, getString(R.string.laska_share_dialog_name))
             )
         }
     }
