@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:285201122789:android:a0d0fc79737976b6719b0c",
+        "mobilesdk_app_id": "1:285201122789:android:3da85da3ee0d0946719b0c",
         "android_client_info": {
-          "package_name": "mobi.laska.daily.bible.meditation"
+          "package_name": "laska.daily.bible.meditation"
         }
       },
       "oauth_client": [],

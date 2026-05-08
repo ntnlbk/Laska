@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="mobi.laska.daily.bible.meditation.presentation.mainfragment.MainFragment"
+        android:name="laska.daily.bible.meditation.presentation.mainfragment.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/optionsFragment"
-        android:name="mobi.laska.daily.bible.meditation.presentation.optionsfragment.OptionsFragment"
+        android:name="laska.daily.bible.meditation.presentation.optionsfragment.OptionsFragment"
         android:label="OptionsFragment" >
         <action
             android:id="@+id/action_optionsFragment_to_aboutUsFragment"
@@ -24,7 +24,7 @@
     </fragment>
     <fragment
         android:id="@+id/aboutUsFragment"
-        android:name="mobi.laska.daily.bible.meditation.presentation.aboutusfragment.AboutUsFragment"
+        android:name="laska.daily.bible.meditation.presentation.aboutusfragment.AboutUsFragment"
         android:label="fragment_about_us"
         tools:layout="@layout/fragment_about_us" >
         <argument

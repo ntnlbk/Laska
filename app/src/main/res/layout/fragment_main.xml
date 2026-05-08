@@ -239,7 +239,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <mobi.laska.daily.bible.meditation.presentation.mainfragment.DotsIndicatorView
+    <laska.daily.bible.meditation.presentation.mainfragment.DotsIndicatorView
         android:id="@+id/dotsIndicator"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
