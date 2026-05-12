@@ -51,7 +51,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
         val rootView = findViewById<View>(android.R.id.content)
 
         val isTablet = resources.getBoolean(R.bool.is_tablet)

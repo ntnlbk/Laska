@@ -1,16 +1,20 @@
 package laska.daily.bible.meditation.presentation.mainfragment
 
+import android.content.ComponentName
 import android.content.Context
 import androidx.annotation.OptIn
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.cache.CacheDataSource
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
+import com.google.common.util.concurrent.ListenableFuture
+import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
@@ -19,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.domain.GetReadingUseCase
 import laska.daily.bible.meditation.domain.Language
 import laska.daily.bible.meditation.domain.ReadingItem
@@ -29,6 +34,7 @@ import laska.daily.bible.meditation.domain.audio.ObserveDownloadAudioUseCase
 import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
 import laska.daily.bible.meditation.presentation.mainfragment.MainFragmentState.Companion.ERROR_INITIAL
 import laska.daily.bible.meditation.presentation.mainfragment.MainFragmentState.Companion.ERROR_WHILE_CHANGING_DATES
+import laska.daily.bible.meditation.presentation.service.AudioPlaybackService
 import laska.daily.bible.meditation.presentation.uils.ConnectionUtils
 import laska.daily.bible.meditation.presentation.uils.DateUtils
 import laska.daily.bible.meditation.presentation.uils.DateUtils.Companion.todayFormatted
@@ -43,59 +49,82 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     private val observeDownloadAudioUseCase: ObserveDownloadAudioUseCase,
     private val checkAudioDownloadedUseCase: CheckAudioDownloadedUseCase,
     private val connectionUtils: ConnectionUtils,
-    private val cacheDataSourceFactory: CacheDataSource.Factory,
     @param:ApplicationContext private val application: Context,
     private val getSettingsUseCase: GetSettingsUseCase
 ) : ViewModel() {
 
-
     private val _mainUIState = MutableStateFlow<MainFragmentState>(MainFragmentState.Progress)
     private var actualReading: ReadingItem? = null
-
     val mainUIState = _mainUIState.asStateFlow()
 
     private val _playerUIState = MutableStateFlow<AudioPlayerState>(AudioPlayerState.Initial)
     val playerUIState = _playerUIState.asStateFlow()
 
     private var downloadJob: Job? = null
-
     var currentDayIndex = 0
-
     lateinit var currentLanguage: Language
 
-    private val player by lazy {
-        val mediaSourceFactory =
-            DefaultMediaSourceFactory(application).setDataSourceFactory(cacheDataSourceFactory)
-
-        ExoPlayer.Builder(application).setMediaSourceFactory(mediaSourceFactory).build().apply {
-            addListener(object : Player.Listener {
-                override fun onPlaybackStateChanged(playbackState: Int) {
-                    if (playbackState == Player.STATE_ENDED) {
-                        seekTo(0)
-                        pause()
-                        val duration = duration.coerceAtLeast(0)
-                        _playerUIState.value = AudioPlayerState.Paused(
-                            formatTime(duration),
-                            formatTime(0),
-                            duration.toInt(),
-                            currentPosition.toInt()
-                        )
-                    }
-                }
-            })
-        }
-    }
+    private var mediaControllerFuture: ListenableFuture<MediaController>? = null
+    private var mediaController: MediaController? = null
 
     init {
+        initializeController()
         viewModelScope.launch {
             observeSettings()
             delay(50)
             setReading()
+            startProgressUpdater()
+        }
+    }
+
+    @OptIn(UnstableApi::class)
+    private fun initializeController() {
+        val sessionToken = SessionToken(
+            application,
+            ComponentName(application, AudioPlaybackService::class.java)
+        )
+        mediaControllerFuture = MediaController.Builder(application, sessionToken).buildAsync()
+        mediaControllerFuture?.addListener({
+            mediaController = mediaControllerFuture?.get()
+            setupPlayerListeners()
+            if (_playerUIState.value is AudioPlayerState.Downloaded) {
+                actualReading?.audioURL?.let { url ->
+                    loadSongToPlayer(url)
+                    viewModelScope.launch {
+                        waitForReadyAndEmitDuration()
+                    }
+                }
+            }
+
+        }, ContextCompat.getMainExecutor(application)) // Выполняем в главном потоке
+    }
+
+    private fun setupPlayerListeners() {
+        mediaController?.addListener(object : Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                if (playbackState == Player.STATE_ENDED) {
+                    mediaController?.seekTo(0)
+                    mediaController?.pause()
+                    val duration = mediaController?.duration?.coerceAtLeast(0) ?: 0
+                    _playerUIState.value = AudioPlayerState.Paused(
+                        formatTime(duration),
+                        formatTime(0),
+                        duration.toInt(),
+                        0
+                    )
+                }
+            }
+        })
+    }
+
+    private fun startProgressUpdater() {
+        viewModelScope.launch {
             while (true) {
                 delay(200L)
-                val isPlaying = player.isPlaying
-                val currentPosition = player.currentPosition.coerceAtLeast(0)
-                val duration = player.duration
+                val controller = mediaController ?: continue
+                val isPlaying = controller.isPlaying
+                val currentPosition = controller.currentPosition.coerceAtLeast(0)
+                val duration = controller.duration
 
                 if (isPlaying) {
                     _playerUIState.value = AudioPlayerState.Playing(
@@ -105,11 +134,11 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                         songTime = formatTime(duration),
                     )
                 } else if (duration != C.TIME_UNSET && duration > 0) {
-                    val state = player.playbackState
+                    val state = controller.playbackState
                     if (state == Player.STATE_READY || state == Player.STATE_ENDED) {
                         _playerUIState.value = AudioPlayerState.Paused(
                             formatTime(duration),
-                            formatTime(player.currentPosition),
+                            formatTime(currentPosition),
                             duration.toInt(),
                             currentPosition.toInt()
                         )
@@ -134,32 +163,31 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     }
 
     fun goForward15Sec() {
-        var currentPosition = (player.currentPosition) + PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS
-        if (currentPosition > player.duration) currentPosition = player.duration - 1000
-        player.seekTo(
-            currentPosition
-        )
+        mediaController?.let {
+            var currentPosition = it.currentPosition + PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS
+            if (currentPosition > it.duration) currentPosition = it.duration - 1000
+            it.seekTo(currentPosition)
+        }
     }
 
     fun goBack15Sec() {
-        val currentPosition = (player.currentPosition ?: 0)
-        player.seekTo(
-            if (currentPosition - PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS < 0L) 0L
-            else currentPosition - PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS
-        )
+        mediaController?.let {
+            val currentPosition = it.currentPosition
+            it.seekTo(if (currentPosition - PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS < 0L) 0L else currentPosition - PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS)
+        }
     }
 
     fun seekTo(moment: Long) {
-        player.seekTo(moment)
+        mediaController?.seekTo(moment)
     }
 
-    fun pausePlayer(){
-        player?.pause()
+    fun pausePlayer() {
+        mediaController?.pause()
     }
 
     fun setReading(date: String = todayFormatted(), language: Language = currentLanguage) {
-        player.pause()
-        player.clearMediaItems()
+        mediaController?.pause()
+        mediaController?.clearMediaItems()
         downloadJob?.cancel()
         _mainUIState.value = MainFragmentState.Progress
         _playerUIState.value = AudioPlayerState.Initial
@@ -182,28 +210,28 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                     _mainUIState.value = MainFragmentState.Error(ERROR_WHILE_CHANGING_DATES)
                     delay(50)
                     setReading()
-
                 } else {
                     _mainUIState.value = MainFragmentState.Error(ERROR_INITIAL)
                 }
-
             }
         }
     }
 
     fun showTextButtonClicked() {
         if (actualReading != null) {
+            val duration = mediaController?.duration?.coerceAtLeast(0) ?: 0
+            val position = mediaController?.currentPosition?.coerceAtLeast(0) ?: 0
+
             _mainUIState.value = MainFragmentState.TextShowed(
                 DialogArguments(
                     actualReading?.bibleTextPlain ?: "",
                     bibleRef = actualReading?.bibleReference ?: "",
                     reflectionTextIntro = actualReading?.reflectionTextIntro ?: "",
                     reflectionTextBody = actualReading?.reflectionTextBody ?: "",
-                    songMaxProgress = player.duration.toInt(),
-                    actualProgress = player.currentPosition.toInt(),
+                    songMaxProgress = duration.toInt(),
+                    actualProgress = position.toInt(),
                     date = actualReading?.dateFormatted ?: ""
                 )
-
             )
             _mainUIState.value = MainFragmentState.Content(
                 actualReading?.dateFormatted ?: throw Exception(ERROR_MESSAGE),
@@ -218,15 +246,12 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     fun playButtonClicked() {
         when (_playerUIState.value) {
             is AudioPlayerState.Downloaded, is AudioPlayerState.Paused -> {
-                player.play()
+                mediaController?.play()
             }
-
             AudioPlayerState.Downloading -> {}
-
             is AudioPlayerState.Playing -> {
-                player.pause()
+                mediaController?.pause()
             }
-
             is AudioPlayerState.Error, AudioPlayerState.Initial -> {
                 downloadJob?.cancel()
                 downloadJob = viewModelScope.launch {
@@ -238,36 +263,38 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     }
 
     private fun loadSongToPlayer(url: String) {
-        val mediaItem = MediaItem.fromUri(url)
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        _playerUIState.value = AudioPlayerState.Downloaded
-    }
+        val metadata = MediaMetadata.Builder()
+            .setTitle(actualReading?.dateFormatted)
+            .setArtist(application.getString(R.string.app_name))
+            .build()
 
-    private fun formatTime(mills: Long): String {
-        if (mills == C.TIME_UNSET) return "00:00"
-        val seconds = mills / 1000
-        val m = seconds / 60
-        val s = seconds % 60
-        if (m < 0 || s < 0) return "00:00"
-        return "%02d:%02d".format(m, s)
+        val mediaItem = MediaItem.Builder()
+            .setUri(url)
+            .setMediaId(url)
+            .setMediaMetadata(metadata)
+            .build()
+
+        mediaController?.setMediaItem(mediaItem)
+        mediaController?.prepare()
+        _playerUIState.value = AudioPlayerState.Downloaded
     }
 
     private suspend fun waitForReadyAndEmitDuration() {
         var attempts = 0
-        while (player.playbackState != Player.STATE_READY && attempts < 100) {
-            if (player.playerError != null) break
+        while (mediaController?.playbackState != Player.STATE_READY && attempts < 100) {
+            if (mediaController?.playerError != null) break
             delay(50)
             attempts++
         }
 
-        val duration = player.duration.coerceAtLeast(0)
+        val duration = mediaController?.duration?.coerceAtLeast(0) ?: 0
+        val position = mediaController?.currentPosition?.coerceAtLeast(0) ?: 0
         if (duration > 0) {
             _playerUIState.value = AudioPlayerState.Paused(
                 formatTime(duration),
-                formatTime(player.currentPosition),
+                formatTime(position),
                 duration.toInt(),
-                player.currentPosition.toInt()
+                position.toInt()
             )
             delay(100)
         }
@@ -284,7 +311,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
             if (isDownloaded) {
                 loadSongToPlayer(readingUrl)
                 waitForReadyAndEmitDuration()
-                player.play()
+                mediaController?.play()
             } else {
                 if (connectionUtils.isInternetAvailable()) {
                     downloadAudioUseCase(readingUrl)
@@ -292,10 +319,9 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                         if (domainStatus is AudioDownloadState.Completed) {
                             loadSongToPlayer(readingUrl)
                             waitForReadyAndEmitDuration()
-                            player.play()
+                            mediaController?.play()
                         } else if (domainStatus is AudioDownloadState.Failed) {
-                            _playerUIState.value =
-                                AudioPlayerState.Error("Failed to download audio")
+                            _playerUIState.value = AudioPlayerState.Error("Failed to download audio")
                         }
                     }
                 } else {
@@ -308,50 +334,37 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     fun goForward() {
 
         if (currentDayIndex == MAX_DAY_INDEX) {
-//            _mainUIState.value = MainFragmentState.Error("Дальше нельзя!")
-        } else if (!player.isPlaying) {
+        } else if (mediaController?.isPlaying != true) {
             _mainUIState.value = MainFragmentState.Progress
             currentDayIndex += 1
             viewModelScope.launch {
                 try {
-                    val tomorrow =
-                        DateUtils.getNextDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
-                    getReadingUseCase(
-                        tomorrow, actualReading?.language ?: throw Exception(ERROR_MESSAGE)
-                    )
-                    player.pause()
-                    player.stop()
-                    player.clearMediaItems()
+                    val tomorrow = DateUtils.getNextDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
+                    getReadingUseCase(tomorrow, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
+                    mediaController?.pause()
+                    mediaController?.stop()
+                    mediaController?.clearMediaItems()
                     setReading(tomorrow, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
                 } catch (e: Exception) {
                     _mainUIState.value = MainFragmentState.Error(ERROR_WHILE_CHANGING_DATES)
                     currentDayIndex -= 1
                 }
             }
-
         }
-
     }
 
     fun goBack() {
         if (currentDayIndex == MIN_DAY_INDEX) {
-            //  _mainUIState.value = MainFragmentState.Error("Дальше нельзя!")
-        } else if (!player.isPlaying && actualReading?.date != RELEASE_DATE_TEXT) {
+        } else if (mediaController?.isPlaying != true && actualReading?.date != RELEASE_DATE_TEXT) {
             _mainUIState.value = MainFragmentState.Progress
             currentDayIndex -= 1
             viewModelScope.launch {
                 try {
-                    val yesterday = DateUtils.getPreviousDay(
-                        actualReading?.date ?: throw Exception(
-                            ERROR_MESSAGE
-                        )
-                    )
-                    getReadingUseCase(
-                        yesterday, actualReading?.language ?: throw Exception(ERROR_MESSAGE)
-                    )
-                    player.pause()
-                    player.stop()
-                    player.clearMediaItems()
+                    val yesterday = DateUtils.getPreviousDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
+                    getReadingUseCase(yesterday, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
+                    mediaController?.pause()
+                    mediaController?.stop()
+                    mediaController?.clearMediaItems()
                     setReading(yesterday, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
                 } catch (e: Exception) {
                     currentDayIndex += 1
@@ -361,19 +374,25 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         }
     }
 
+    private fun formatTime(mills: Long): String {
+        if (mills == C.TIME_UNSET) return "00:00"
+        val seconds = mills / 1000
+        val m = seconds / 60
+        val s = seconds % 60
+        if (m < 0 || s < 0) return "00:00"
+        return "%02d:%02d".format(m, s)
+    }
+
     override fun onCleared() {
         super.onCleared()
-        player.release()
+        mediaControllerFuture?.let { MediaController.releaseFuture(it) }
     }
 
     companion object {
         private const val PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS = 15000L
-
         const val TOTAL_DAYS_TO_SHOW = 5
         private const val MIN_DAY_INDEX = -7
         private const val MAX_DAY_INDEX = 7
-
         private const val RELEASE_DATE_TEXT = "20260515"
-
     }
 }

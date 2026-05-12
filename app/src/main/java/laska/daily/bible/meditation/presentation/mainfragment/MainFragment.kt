@@ -143,31 +143,52 @@ class MainFragment : Fragment() {
 
     private fun setupBackgroundPlayer() {
         val playerView = binding.playerView
-        backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build()
-        playerView.player = backgroundVidePlayer
-        val mediaItem = MediaItem.fromUri(
-            "android.resource://${requireContext().packageName}/${R.raw.background}"
-        )
-        backgroundVidePlayer?.setMediaItem(mediaItem)
-        backgroundVidePlayer?.repeatMode = Player.REPEAT_MODE_ALL
-        backgroundVidePlayer?.volume = 0f
-        backgroundVidePlayer?.addListener(object : Player.Listener {
-            override fun onRenderedFirstFrame() {
-                startPostponedEnterTransition()
-            }
-        })
-        backgroundVidePlayer?.prepare()
-        backgroundVidePlayer?.play()
+
+        backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build().apply {
+            playerView.player = this
+
+            val mediaItem = MediaItem.fromUri(
+                "android.resource://${requireContext().packageName}/${R.raw.background}"
+            )
+            setMediaItem(mediaItem)
+            repeatMode = Player.REPEAT_MODE_ALL
+            volume = 0f
+
+            playWhenReady = true
+
+            addListener(object : Player.Listener {
+                override fun onRenderedFirstFrame() {
+                    startPostponedEnterTransition()
+                }
+
+                override fun onPlaybackStateChanged(playbackState: Int) {
+                    if (playbackState == Player.STATE_READY) {
+                        startPostponedEnterTransition()
+                        play()
+                    }
+                }
+
+                override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+                    super.onPlayerError(error)
+                    seekTo(0)
+                    prepare()
+                    play()
+                    startPostponedEnterTransition()
+                }
+            })
+
+            prepare()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        backgroundVidePlayer?.play()
+        backgroundVidePlayer?.playWhenReady = true
     }
 
     override fun onPause() {
         super.onPause()
-        backgroundVidePlayer?.pause()
+        backgroundVidePlayer?.playWhenReady = false
     }
 
     private fun setupViews() {
@@ -211,10 +232,6 @@ class MainFragment : Fragment() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        viewModel.pausePlayer()
-    }
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
