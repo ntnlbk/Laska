@@ -106,6 +106,9 @@ dependencies {
     implementation(libs.review)
     implementation(libs.review.ktx)
 
+    //firestore
+    implementation(libs.firebase.firestore)
+
 }
 
 kapt {
