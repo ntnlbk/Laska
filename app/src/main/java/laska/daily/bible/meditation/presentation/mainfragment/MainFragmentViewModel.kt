@@ -14,7 +14,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
@@ -27,6 +26,8 @@ import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.domain.GetReadingUseCase
 import laska.daily.bible.meditation.domain.Language
 import laska.daily.bible.meditation.domain.ReadingItem
+import laska.daily.bible.meditation.domain.analytics.CounterType
+import laska.daily.bible.meditation.domain.analytics.IncrementCounterUseCase
 import laska.daily.bible.meditation.domain.audio.AudioDownloadState
 import laska.daily.bible.meditation.domain.audio.CheckAudioDownloadedUseCase
 import laska.daily.bible.meditation.domain.audio.DownloadAudioUseCase
@@ -50,7 +51,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     private val checkAudioDownloadedUseCase: CheckAudioDownloadedUseCase,
     private val connectionUtils: ConnectionUtils,
     @param:ApplicationContext private val application: Context,
-    private val getSettingsUseCase: GetSettingsUseCase
+    private val getSettingsUseCase: GetSettingsUseCase,
+    private val incrementCounterUseCase: IncrementCounterUseCase
 ) : ViewModel() {
 
     private val _mainUIState = MutableStateFlow<MainFragmentState>(MainFragmentState.Progress)
@@ -66,6 +68,9 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
 
     private var mediaControllerFuture: ListenableFuture<MediaController>? = null
     private var mediaController: MediaController? = null
+
+    private var isFirstAudioEventSent = false
+    private var isSecondAudioEventSent = false
 
     init {
         initializeController()
@@ -126,6 +131,16 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                 val currentPosition = controller.currentPosition.coerceAtLeast(0)
                 val duration = controller.duration
 
+                if (!isFirstAudioEventSent && currentPosition >= SECONDS_REQUIRED_FOR_FIRST_EVENT * 1000) {
+                    incrementCounterUseCase(CounterType.DAILY_REFLECTION_AUDIO_PLAY)
+                    isFirstAudioEventSent = true
+                }
+
+                if (!isSecondAudioEventSent && (currentPosition.toFloat() / duration.toFloat()) > (PERCENTAGE_REQUIRED_FOR_SECOND_EVENT.toFloat() / 100)) {
+                    incrementCounterUseCase(CounterType.DAILY_REFLECTION_AUDIO_COMPLETED)
+                    isSecondAudioEventSent = true
+                }
+
                 if (isPlaying) {
                     _playerUIState.value = AudioPlayerState.Playing(
                         currentPosition = formatTime(currentPosition),
@@ -133,6 +148,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                         max = duration.toInt(),
                         songTime = formatTime(duration),
                     )
+
                 } else if (duration != C.TIME_UNSET && duration > 0) {
                     val state = controller.playbackState
                     if (state == Player.STATE_READY || state == Player.STATE_ENDED) {
@@ -186,6 +202,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     }
 
     fun setReading(date: String = todayFormatted(), language: Language = currentLanguage) {
+        isSecondAudioEventSent = false
+        isFirstAudioEventSent = false
         mediaController?.pause()
         mediaController?.clearMediaItems()
         downloadJob?.cancel()
@@ -221,7 +239,9 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         if (actualReading != null) {
             val duration = mediaController?.duration?.coerceAtLeast(0) ?: 0
             val position = mediaController?.currentPosition?.coerceAtLeast(0) ?: 0
-
+            viewModelScope.launch {
+                incrementCounterUseCase(CounterType.DAILY_REFLECTION_TEXT)
+            }
             _mainUIState.value = MainFragmentState.TextShowed(
                 DialogArguments(
                     actualReading?.bibleTextPlain ?: "",
@@ -248,10 +268,12 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
             is AudioPlayerState.Downloaded, is AudioPlayerState.Paused -> {
                 mediaController?.play()
             }
+
             AudioPlayerState.Downloading -> {}
             is AudioPlayerState.Playing -> {
                 mediaController?.pause()
             }
+
             is AudioPlayerState.Error, AudioPlayerState.Initial -> {
                 downloadJob?.cancel()
                 downloadJob = viewModelScope.launch {
@@ -321,7 +343,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                             waitForReadyAndEmitDuration()
                             mediaController?.play()
                         } else if (domainStatus is AudioDownloadState.Failed) {
-                            _playerUIState.value = AudioPlayerState.Error("Failed to download audio")
+                            _playerUIState.value =
+                                AudioPlayerState.Error("Failed to download audio")
                         }
                     }
                 } else {
@@ -339,8 +362,12 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
             currentDayIndex += 1
             viewModelScope.launch {
                 try {
-                    val tomorrow = DateUtils.getNextDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
-                    getReadingUseCase(tomorrow, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
+                    val tomorrow =
+                        DateUtils.getNextDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
+                    getReadingUseCase(
+                        tomorrow,
+                        actualReading?.language ?: throw Exception(ERROR_MESSAGE)
+                    )
                     mediaController?.pause()
                     mediaController?.stop()
                     mediaController?.clearMediaItems()
@@ -360,8 +387,13 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
             currentDayIndex -= 1
             viewModelScope.launch {
                 try {
-                    val yesterday = DateUtils.getPreviousDay(actualReading?.date ?: throw Exception(ERROR_MESSAGE))
-                    getReadingUseCase(yesterday, actualReading?.language ?: throw Exception(ERROR_MESSAGE))
+                    val yesterday = DateUtils.getPreviousDay(
+                        actualReading?.date ?: throw Exception(ERROR_MESSAGE)
+                    )
+                    getReadingUseCase(
+                        yesterday,
+                        actualReading?.language ?: throw Exception(ERROR_MESSAGE)
+                    )
                     mediaController?.pause()
                     mediaController?.stop()
                     mediaController?.clearMediaItems()
@@ -394,5 +426,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         private const val MIN_DAY_INDEX = -7
         private const val MAX_DAY_INDEX = 7
         private const val RELEASE_DATE_TEXT = "20260515"
+
+        private const val SECONDS_REQUIRED_FOR_FIRST_EVENT = 5
+        private const val PERCENTAGE_REQUIRED_FOR_SECOND_EVENT = 70
     }
 }
