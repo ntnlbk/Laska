@@ -14,6 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import laska.daily.bible.meditation.domain.analytics.StartSessionUseCase
 import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
 import javax.inject.Inject
 
@@ -24,7 +25,8 @@ class MainActivityViewModel @Inject constructor(
     private val getReadingUseCase: GetReadingUseCase,
     private val connectionUtils: ConnectionUtils,
     private val deleteAllCachedAudioUseCase: DeleteAllCachedAudioUseCase,
-    private val getSettingsUseCase: GetSettingsUseCase
+    private val getSettingsUseCase: GetSettingsUseCase,
+    private val startSessionUseCase: StartSessionUseCase
 ) : ViewModel() {
 
     private val _isReady = MutableStateFlow<Boolean?>(null)
@@ -35,6 +37,7 @@ class MainActivityViewModel @Inject constructor(
     init {
         observeSettings()
         viewModelScope.launch {
+            startSessionUseCase()
             try {
                 downloadActualReading()
                 _isReady.value = true
