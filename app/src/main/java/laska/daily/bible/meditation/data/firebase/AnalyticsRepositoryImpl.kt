@@ -5,6 +5,7 @@ import androidx.core.content.edit
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
@@ -14,6 +15,7 @@ import laska.daily.bible.meditation.domain.analytics.Platform
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.cancellation.CancellationException
 
 @Singleton
 class AnalyticsRepositoryImpl @Inject constructor(
@@ -26,14 +28,15 @@ class AnalyticsRepositoryImpl @Inject constructor(
     private val db = Firebase.firestore
     private val userID = getUserId()
 
-    override suspend fun incrementCounter(counter: CounterType) {
+    override fun incrementCounter(counter: CounterType) {
         when (counter) {
             CounterType.SESSION_COUNT -> TODO()
             CounterType.DAILY_REFLECTION_AUDIO_PLAY -> {
                 analytics.logEvent(DAILY_REFLECTION_AUDIO_PLAY, null)
                 val updates = hashMapOf<String, Any>(
-                    "statistics.daily_reflection_audio_play" to FieldValue.increment(1)
-
+                    "statistics" to hashMapOf(
+                        "daily_reflection_audio_play" to FieldValue.increment(1)
+                    )
                 )
                 updateUser(updates)
             }
@@ -41,7 +44,9 @@ class AnalyticsRepositoryImpl @Inject constructor(
             CounterType.DAILY_REFLECTION_AUDIO_COMPLETED -> {
                 analytics.logEvent(DAILY_REFLECTION_AUDIO_COMPLETED, null)
                 val updates = hashMapOf<String, Any>(
-                    "statistics.daily_reflection_audio_completed" to FieldValue.increment(1)
+                    "statistics" to hashMapOf(
+                        "daily_reflection_audio_completed" to FieldValue.increment(1)
+                    )
                 )
                 updateUser(updates)
             }
@@ -49,7 +54,9 @@ class AnalyticsRepositoryImpl @Inject constructor(
             CounterType.DAILY_REFLECTION_TEXT -> {
                 analytics.logEvent(DAILY_REFLECTION_TEXT, null)
                 val updates = hashMapOf<String, Any>(
-                    "statistics.daily_reflection_text" to FieldValue.increment(1)
+                    "statistics" to hashMapOf(
+                        "daily_reflection_text" to FieldValue.increment(1)
+                    )
                 )
                 updateUser(updates)
             }
@@ -62,17 +69,19 @@ class AnalyticsRepositoryImpl @Inject constructor(
         checkAndCreateUser(userID)
     }
 
-    private suspend fun updateUser(updates: HashMap<String, Any>){
-        try {
-            db.collection("users").document(userID).update(updates).await()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+    private fun updateUser(updates: HashMap<String, Any>) {
+        db.collection("users").document(userID).set(updates, SetOptions.merge())
     }
+
     private suspend fun checkAndCreateUser(id: String) {
         val userRef = db.collection("users").document(id)
-        val documentSnapshot = userRef.get().await()
-        if (!documentSnapshot.exists()) {
+        val documentSnapshot = try {
+            userRef.get().await()
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            null
+        }
+        if (documentSnapshot == null || !documentSnapshot.exists() || !documentSnapshot.contains("created_at")) {
             userRef.set(
                 hashMapOf(
                     "session_count" to 1,
@@ -86,8 +95,9 @@ class AnalyticsRepositoryImpl @Inject constructor(
                         "daily_reflection_text" to 0,
                         "support_count" to 0,
                     )
-                )
-            ).await()
+                ),
+                SetOptions.merge()
+            )
         } else {
             val updates = hashMapOf<String, Any>(
                 "last_session" to FieldValue.serverTimestamp(),
