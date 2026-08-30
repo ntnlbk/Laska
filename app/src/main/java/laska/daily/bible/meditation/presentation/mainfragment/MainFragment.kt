@@ -27,6 +27,7 @@ import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentMainBinding
 import laska.daily.bible.meditation.presentation.mainfragment.MainFragmentState.Companion.ERROR_INITIAL
 import laska.daily.bible.meditation.presentation.mainfragment.MainFragmentViewModel.Companion.TOTAL_DAYS_TO_SHOW
+import laska.daily.bible.meditation.presentation.supportfragment.SupportFragmentLaunchMode
 import laska.daily.bible.meditation.presentation.textfragment.TextFragmentBottomSheet
 
 @UnstableApi
@@ -217,7 +218,11 @@ class MainFragment : Fragment() {
         }
         binding.supportBtn.setOnClickListener {
             if (!errorBlocking) {
-                findNavController().navigate(MainFragmentDirections.actionMainFragmentToSupportFragment())
+                findNavController().navigate(
+                    MainFragmentDirections.actionMainFragmentToSupportFragment(
+                        LAUNCHMODE = SupportFragmentLaunchMode.FROM_MAIN_MENU
+                    )
+                )
             }
         }
     }

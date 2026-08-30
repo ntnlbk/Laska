@@ -40,5 +40,9 @@
         android:id="@+id/supportFragment"
         android:name="laska.daily.bible.meditation.presentation.supportfragment.SupportFragment"
         android:label="fragment_support"
-        tools:layout="@layout/fragment_support" />
+        tools:layout="@layout/fragment_support" >
+        <argument
+            android:name="LAUNCH_MODE"
+            app:argType="laska.daily.bible.meditation.presentation.supportfragment.SupportFragmentLaunchMode" />
+    </fragment>
 </navigation>
