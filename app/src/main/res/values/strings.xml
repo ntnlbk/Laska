@@ -34,4 +34,7 @@
     <string name="thanks_fragment_main_section_content">Будзем удзячныя, калі вы ацэніце наша прылажэнне і падзеліцеся ім са свамі блізкімі. Такім чынам больш людзей змогуць даведацца пра Laska.</string>
     <string name="laska_share_text">Laska - штодзённыя разважанні над Евангеллем з дня</string>
     <string name="laska_share_dialog_name">"Падзяліцца Laska"</string>
+    <string name="support_project">Поддержать</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

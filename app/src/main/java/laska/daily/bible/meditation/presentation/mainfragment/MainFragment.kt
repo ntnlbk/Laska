@@ -1,7 +1,6 @@
 package laska.daily.bible.meditation.presentation.mainfragment
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -216,19 +215,10 @@ class MainFragment : Fragment() {
             }
 
         }
-        binding.btnShare.setOnClickListener {
-            val appLink = "https://play.google.com/store/apps/details?id=${requireContext().packageName}"
-
-            val shareText = getString(R.string.laska_share_text) + "\n$appLink"
-
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, shareText)
+        binding.supportBtn.setOnClickListener {
+            if (!errorBlocking) {
+                findNavController().navigate(MainFragmentDirections.actionMainFragmentToSupportFragment())
             }
-
-            requireContext().startActivity(
-                Intent.createChooser(intent, getString(R.string.laska_share_dialog_name))
-            )
         }
     }
 
@@ -384,7 +374,7 @@ class MainFragment : Fragment() {
         layoutParams = params
     }
 
-    companion object{
+    companion object {
         private const val DOTS_NUMBER_VISIBLE = 5
         private const val CENTER_DOT_ID = 2
     }

@@ -26,4 +26,5 @@
     <string name="thanks_fragment_main_section_content">Будем благодарны, если вы оцените наше приложение и поделитесь им со своими близкими. Так больше людей смогут узнать о Laska.</string>
     <string name="laska_share_text">Laska - ежедневные размышления над Евангелием</string>
     <string name="laska_share_dialog_name">"Поделиться Laska"</string>
+    <string name="support_project">Поддержать</string>
 </resources>
