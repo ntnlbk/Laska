@@ -29,6 +29,7 @@ review = "2.0.2"
 reviewKtx = "2.0.2"
 room = "2.8.4"
 firebaseFirestore = "26.4.1"
+constraintlayoutVersion = "2.2.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -70,6 +71,7 @@ retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit
 review = { module = "com.google.android.play:review", version.ref = "review" }
 review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "reviewKtx" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayoutVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

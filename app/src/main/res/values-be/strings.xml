@@ -27,4 +27,6 @@
     <string name="laska_share_text">Laska - штодзённыя разважанні над Евангеллем з дня</string>
     <string name="laska_share_dialog_name">Падзяліцца Laska</string>
     <string name="support_project">Падтрымаць</string>
+    <string name="donate_menu">Падтрымаць праект</string>
+    <string name="donate_menu_subtitle">На дадзены момант падтрымаць Laska можна толькі з Беларусі праз ЕРИП</string>
 </resources>
