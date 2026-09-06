@@ -148,11 +148,12 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/customAmountEditText"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/bg_input_capsule"
             android:hint="Другая сумма"
             android:textColorHint="#8E8E93"
             android:inputType="number"
+            android:maxLength="9"
             android:paddingHorizontal="20dp"
             android:paddingVertical="14dp"
             android:textColor="#FFFFFF"
