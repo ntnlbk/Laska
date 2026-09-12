@@ -46,4 +46,5 @@
     <string name="donate_erip_way_share">Скопировать счёт</string>
     <string name="donate_become_sponsor_content">Вы хотели бы оказать более основательную поддержку? Например, стать спонсором серии рассуждений или нового раздела в нашем мобильном приложении? Напишите сюда: laskamobi@gmail.com</string>
     <string name="donate_mail_copy">Скопировать почту</string>
+    <string name="donate_menu_title">Поддержать проект</string>
 </resources>

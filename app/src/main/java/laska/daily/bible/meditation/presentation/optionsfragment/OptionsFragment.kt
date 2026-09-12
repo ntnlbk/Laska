@@ -19,6 +19,7 @@ import laska.daily.bible.meditation.databinding.FragmentOptionsBinding
 import laska.daily.bible.meditation.domain.Language
 import laska.daily.bible.meditation.domain.settings.Settings
 import laska.daily.bible.meditation.domain.settings.TextFragmentTheme
+import laska.daily.bible.meditation.presentation.supportfragment.SupportFragmentLaunchMode
 
 @AndroidEntryPoint
 class OptionsFragment : Fragment() {
@@ -147,6 +148,13 @@ class OptionsFragment : Fragment() {
                 }
             }
             dialog.show(childFragmentManager, CHOOSE_THEME_DIALOG_TAG)
+        }
+        binding.supportBtn.setOnClickListener {
+            findNavController().navigate(
+                OptionsFragmentDirections.actionOptionsFragmentToSupportFragment(
+                    LAUNCHMODE = SupportFragmentLaunchMode.FROM_MAIN_MENU
+                )
+            )
         }
 
     }
