@@ -144,6 +144,12 @@ class SupportFragment : Fragment() {
                 EripPathDialogFragment.TAG
             )
         }
+        binding.btnBecomeSponsor.setOnClickListener {
+            BecomeSponsorDialogFragment.newInstance().show(
+                childFragmentManager,
+                BecomeSponsorDialogFragment.TAG
+            )
+        }
     }
 
 
