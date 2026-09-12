@@ -34,10 +34,29 @@
     <string name="thanks_fragment_main_section_content">Будзем удзячныя, калі вы ацэніце наша прылажэнне і падзеліцеся ім са свамі блізкімі. Такім чынам больш людзей змогуць даведацца пра Laska.</string>
     <string name="laska_share_text">Laska - штодзённыя разважанні над Евангеллем з дня</string>
     <string name="laska_share_dialog_name">"Падзяліцца Laska"</string>
-    <string name="support_project">Поддержать</string>
+    <string name="support_project">Падтрымаць</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="donate_menu">Поддержать проект</string>
-    <string name="donate_menu_subtitle">На данный момент поддержать Laska можно только из Беларуси через ЕРИП</string>
+    <string name="donate_menu">Падтрымаць праект</string>
+    <string name="donate_menu_subtitle">На дадзены момант падтрымаць Laska можна толькі з Беларусі праз ЕРИП</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="_10_byn" translatable="false">10 BYN</string>
+    <string name="_20_byn" translatable="false">20 BYN</string>
+    <string name="_30_byn" translatable="false">30 BYN</string>
+    <string name="donate_menu_other_sum">Іншая сума</string>
+    <string name="donate_erip_transfer">Падтрымаць па спасылцы ў ЕРИП</string>
+    <string name="donate_qr_show">Аплаціць па QR</string>
+    <string name="donate_erip_way">Шлях у дрэве ЕРИП</string>
+    <string name="donate_become_sponsor">Стаць спонсарам</string>
+    <string name="donate_belarus_not">Я не з Беларусі, але хачу падтрымаць вас</string>
+    <string name="donate_qr_menu">Каб аплаціць з іншай прылады, адскануйце QR-код.</string>
+    <string name="donate_qr_menu_share">Падзяліцца</string>
+    <string name="donate_belarus_not_origin">Адкуль вы?</string>
+    <string name="donate_belarus_not_EU">ЕС</string>
+    <string name="donate_belarus_not_Russia">Расія</string>
+    <string name="donate_belarus_not_Other">Іншае</string>
+    <string name="donate_belarus_not_confirm">Пацвердзіць</string>
+    <string name="donate_belarus_not_subtitle">Пакуль падтрымаць Laska можна толькі з Беларусі.\n\nМы працуем над функцыяналам падтрымкі для іншых краін. Дапамажыце нам зразумець, куды трэба рухацца ў першую чаргу, — прагаласуйце, адкуль вы.</string>
+    <string name="donate_erip_way_share">Скапіраваць рахунак</string>
+    <string name="donate_become_sponsor_content">Хацелі б падтрымаць нас грунтоўна? Стаць спонсарам серыі разважанняў, ці новага раздзелу ў нашай мабільнай праграме? Напішыце нам laskamobi@gmail.com</string>
+    <string name="donate_mail_copy">Скапіраваць пошту</string>
 </resources>

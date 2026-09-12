@@ -29,4 +29,21 @@
     <string name="support_project">Поддержать</string>
     <string name="donate_menu">Поддержать проект</string>
     <string name="donate_menu_subtitle">На данный момент поддержать Laska можно только из Беларуси через ЕРИП</string>
+    <string name="donate_menu_other_sum">Другая сумма</string>
+    <string name="donate_erip_transfer">Поддержать по ссылке в ЕРИП</string>
+    <string name="donate_qr_show">Оплатить по QR</string>
+    <string name="donate_erip_way">Путь в дереве ЕРИП</string>
+    <string name="donate_become_sponsor">Стать спонсором</string>
+    <string name="donate_belarus_not">Я не из Беларуси, но хочу поддержать</string>
+    <string name="donate_qr_menu">Чтобы оплатить с другого устройства, отсканируйте QR-код.</string>
+    <string name="donate_qr_menu_share">Поделиться</string>
+    <string name="donate_belarus_not_origin">Откуда вы?</string>
+    <string name="donate_belarus_not_EU">ЕС</string>
+    <string name="donate_belarus_not_Russia">Россия</string>
+    <string name="donate_belarus_not_Other">Другое</string>
+    <string name="donate_belarus_not_confirm">Подтвердить</string>
+    <string name="donate_belarus_not_subtitle">Пока что поддержать Laska можно только из Беларуси.  Мы работаем над функционалом поддержки из других стран. Помогите нам понять, куда стоит двигаться в первую очередь: дайте знать, откуда вы.</string>
+    <string name="donate_erip_way_share">Скопировать счёт</string>
+    <string name="donate_become_sponsor_content">Вы хотели бы оказать более основательную поддержку? Например, стать спонсором серии рассуждений или нового раздела в нашем мобильном приложении? Напишите сюда: laskamobi@gmail.com</string>
+    <string name="donate_mail_copy">Скопировать почту</string>
 </resources>
