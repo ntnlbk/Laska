@@ -102,8 +102,8 @@ class OptionsFragment : Fragment() {
         }
         binding.thanksBtn.setOnClickListener {
             findNavController().navigate(OptionsFragmentDirections.actionOptionsFragmentToAboutUsFragment(
-                mainSectionName = ContextCompat.getString(requireActivity(), R.string.thanks_fragment_main_section_name),
-                mainSectionContent = ContextCompat.getString(requireActivity(), R.string.thanks_fragment_main_section_content)
+                mainSectionName = ContextCompat.getString(requireActivity(), R.string.donate_become_sponsor),
+                mainSectionContent = ContextCompat.getString(requireActivity(), R.string.donate_become_sponsor_content)
             ))
         }
         binding.closeBtn.setOnClickListener {

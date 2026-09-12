@@ -301,7 +301,7 @@
             android:id="@+id/thanks_btn_ic"
             android:layout_width="17dp"
             android:layout_height="17dp"
-            android:src="@drawable/thanks_btn_ic"
+            android:src="@drawable/sponsor_btn_ic"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -311,7 +311,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="@font/inter"
-            android:text="@string/give_thank"
+            android:text="@string/donate_become_sponsor"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
