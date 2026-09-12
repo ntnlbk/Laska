@@ -137,6 +137,13 @@ class SupportFragment : Fragment() {
             )
 
         }
+
+        binding.btnEripPath.setOnClickListener {
+            EripPathDialogFragment.newInstance().show(
+                childFragmentManager,
+                EripPathDialogFragment.TAG
+            )
+        }
     }
 
 

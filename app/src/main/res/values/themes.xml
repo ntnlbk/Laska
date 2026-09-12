@@ -43,4 +43,13 @@
         <item name="backgroundTint">@android:color/transparent</item>
     </style>
 
+    <style name="EripPathItemStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingVertical">6dp</item>
+        <item name="android:textColor">#989898</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
 </resources>

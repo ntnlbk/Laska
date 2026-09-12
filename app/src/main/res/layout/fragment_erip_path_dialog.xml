@@ -8,11 +8,11 @@
 
     <!-- Title -->
     <TextView
-        android:id="@+id/tvQrTitle"
+        android:id="@+id/tvEripTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter"
-        android:text="Оплатить по QR"
+        android:text="Путь в дереве ЕРИП"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -32,66 +32,65 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- White Card container for QR Code -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardQrContainer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="24dp"
-        app:cardBackgroundColor="#FFFFFF"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="0dp"
-        app:strokeWidth="0dp"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnClose">
-
-        <ImageView
-            android:id="@+id/ivQrCode"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="QR Code"
-            android:padding="20dp"
-            android:scaleType="fitCenter" />
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- Subtitle Description -->
-    <TextView
-        android:id="@+id/tvQrDescription"
+    <!-- ERIP Path List -->
+    <LinearLayout
+        android:id="@+id/containerEripPath"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:fontFamily="@font/inter"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:lineSpacingExtra="3dp"
-        android:text="Чтобы оплатить с другого устройства, отсканируйте QR-код."
-        android:textColor="#989898"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardQrContainer" />
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/btnClose">
 
-    <!-- Share Button -->
+        <!-- Step 1 -->
+        <TextView
+            style="@style/EripPathItemStyle"
+            android:text="•  Платежи" />
+
+        <!-- Step 2 -->
+        <TextView
+            style="@style/EripPathItemStyle"
+            android:text="•  Банковские финансовые услуги" />
+
+        <!-- Step 3 -->
+        <TextView
+            style="@style/EripPathItemStyle"
+            android:text="•  Банки, НКФО" />
+
+        <!-- Step 4 -->
+        <TextView
+            style="@style/EripPathItemStyle"
+            android:text="•  Беларусбанк" />
+
+        <!-- Step 5 -->
+        <TextView
+            style="@style/EripPathItemStyle"
+            android:text="•  Пополнение счета" />
+
+        <!-- Step 6 (Account IBAN) -->
+        <TextView
+            android:id="@+id/tvEripAccount"
+            style="@style/EripPathItemStyle"
+            android:text="•  BY94AKBB30340019293080070000"/>
+
+    </LinearLayout>
+
+    <!-- Copy Account Button -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnShare"
+        android:id="@+id/btnCopyAccount"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="28dp"
         android:insetTop="0dp"
         android:insetBottom="0dp"
-        android:fontFamily="@font/inter"
-        android:text="Поделиться"
+        android:text="Скопировать счёт"
         android:textAllCaps="false"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:backgroundTint="#3A3A3C"
         app:cornerRadius="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvQrDescription"
+        app:layout_constraintTop_toBottomOf="@id/containerEripPath"
         app:rippleColor="#33FFFFFF" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
