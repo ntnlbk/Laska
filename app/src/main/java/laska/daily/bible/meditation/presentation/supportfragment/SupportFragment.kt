@@ -112,7 +112,12 @@ class SupportFragment : Fragment() {
                 setErrorState(false)
             }
         }
-
+        binding.tvNotFromBelarus.setOnClickListener {
+            OutsideBySupportDialogFragment.newInstance().show(
+                childFragmentManager,
+                OutsideBySupportDialogFragment.TAG
+            )
+        }
     }
 
 

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1b1b1b"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="24dp">
+
+    <!-- Close Button -->
+    <ImageView
+        android:id="@+id/btnClose"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_circle_dark"
+        android:padding="12dp"
+        android:src="@drawable/close_btn_ic"
+        app:backgroundTint="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:fontFamily="@font/inter"
+        android:text="Откуда вы?"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnClose" />
+
+    <!-- Country Options -->
+    <RadioGroup
+        android:id="@+id/rgRegion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+        <RadioButton
+            android:id="@+id/rbEc"
+            style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_capsule_selector"
+            android:backgroundTint="@null"
+            android:button="@null"
+            android:buttonTint="@null"
+            android:gravity="center"
+            android:text="ЕС"
+            android:textColor="@color/btn_text_selector"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/rbRussia"
+            style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_capsule_selector"
+            android:backgroundTint="@null"
+            android:button="@null"
+            android:buttonTint="@null"
+            android:gravity="center"
+            android:text="Россия"
+            android:textColor="@color/btn_text_selector"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/rbOther"
+            style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_capsule_selector"
+            android:backgroundTint="@null"
+            android:button="@null"
+            android:buttonTint="@null"
+            android:gravity="center"
+            android:text="Другое"
+            android:textColor="@color/btn_text_selector"
+            android:textSize="15sp" />
+    </RadioGroup>
+
+    <!-- Confirm Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnConfirm"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="24dp"
+        android:enabled="false"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="Подтвердить"
+        android:textAllCaps="false"
+        android:textColor="@color/btn_confirm_text_selector"
+        android:textSize="16sp"
+        app:backgroundTint="@color/btn_confirm_bg_selector"
+        app:cornerRadius="100dp"
+        app:layout_constraintTop_toBottomOf="@id/rgRegion" />
+
+    <!-- Description Text -->
+    <TextView
+        android:id="@+id/tvDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:gravity="center"
+        android:lineSpacingExtra="4dp"
+        android:text="Пакуль падтрымаць Laska можна толькі з Беларусі.\n\nМы працуем над функцыяналам падтрымкі для іншых краін. Дапамажыце нам зразумець, куды трэба рухацца ў першую чаргу, — прагаласуйце, адкуль вы."
+        android:textColor="#989898"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/btnConfirm" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
