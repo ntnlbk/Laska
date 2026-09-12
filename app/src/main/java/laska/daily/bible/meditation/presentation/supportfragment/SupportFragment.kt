@@ -1,6 +1,7 @@
 package laska.daily.bible.meditation.presentation.supportfragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentSupportBinding
+import androidx.core.net.toUri
 
 class SupportFragment : Fragment() {
 
@@ -117,6 +119,23 @@ class SupportFragment : Fragment() {
                 childFragmentManager,
                 OutsideBySupportDialogFragment.TAG
             )
+        }
+        binding.btnSupportErip.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, "https://pay.raschet.by/".toUri());
+            startActivity(browserIntent);
+        }
+
+        binding.btnPayQr.setOnClickListener {
+
+
+            setErrorState(false)
+            val eripQrUrl = "https://pay.raschet.by/"
+
+            QrCodeDialogFragment.newInstance(eripQrUrl).show(
+                childFragmentManager,
+                QrCodeDialogFragment.TAG
+            )
+
         }
     }
 

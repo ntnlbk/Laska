@@ -110,6 +110,8 @@ dependencies {
     //firestore
     implementation(libs.firebase.firestore)
 
+    // ZXing for dynamic QR code bitmap generation
+    implementation(libs.core)
 }
 
 kapt {
