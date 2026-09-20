@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -18,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
+import laska.daily.bible.meditation.presentation.supportfragment.SupportPaymentPrefs
 import laska.daily.bible.meditation.domain.Language
 import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
 import laska.daily.bible.meditation.presentation.uils.ConnectionUtils
@@ -34,6 +36,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var getSettingsUseCase: GetSettingsUseCase
+
+    @Inject
+    lateinit var paymentPrefs: SupportPaymentPrefs
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -105,6 +110,17 @@ class MainActivity : AppCompatActivity() {
     private fun hideSplash(splashOverlay: View) {
         splashOverlay.animate().alpha(0f).setDuration(500).withEndAction {
             splashOverlay.visibility = View.GONE
+        }
+    }
+    override fun onResume() {
+        super.onResume()
+
+        if (paymentPrefs.checkAndClearPaymentPending()) {
+            Toast.makeText(
+                this,
+                "Дзякуй за вашу падтрымку!",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -14,13 +15,19 @@ import androidx.navigation.fragment.navArgs
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentSupportBinding
 import androidx.core.net.toUri
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SupportFragment : Fragment() {
 
     private var _binding: FragmentSupportBinding? = null
     private val binding: FragmentSupportBinding
         get() = _binding ?: throw Exception("FragmentSupportBinding is null")
     val args: SupportFragmentArgs by navArgs()
+
+    @Inject
+    lateinit var paymentPrefs: SupportPaymentPrefs
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -122,6 +129,7 @@ class SupportFragment : Fragment() {
         }
         binding.btnSupportErip.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, "https://pay.raschet.by/".toUri());
+            paymentPrefs.isPaymentPending = true
             startActivity(browserIntent);
         }
 
@@ -162,6 +170,22 @@ class SupportFragment : Fragment() {
         val parent = binding.root.parent as? ViewGroup
         parent?.removeView(binding.root)
         return binding.root
+    }
+    override fun onResume() {
+        super.onResume()
+
+        // Executed whenever the user comes back to the app/fragment
+        if (paymentPrefs.isPaymentPending) {
+            // Show Toast message on first return
+            Toast.makeText(
+                requireContext(),
+                "Дзякуй за вашу падтрымку!",
+                Toast.LENGTH_LONG
+            ).show()
+
+            // Reset flag so it won't show again on subsequent screen transitions
+            paymentPrefs.isPaymentPending = false
+        }
     }
 
     override fun onDestroyView() {
