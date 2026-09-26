@@ -8,14 +8,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentOutsideBySupportDialogfragmentBinding
+import laska.daily.bible.meditation.domain.analytics.CounterType
+import laska.daily.bible.meditation.domain.analytics.IncrementCounterUseCase
+import javax.inject.Inject
 
-// 1. Extend standard DialogFragment, NOT BottomSheetDialogFragment
+@AndroidEntryPoint
 class OutsideBySupportDialogFragment : DialogFragment() {
 
     private var _binding: FragmentOutsideBySupportDialogfragmentBinding? = null
     private val binding get() = _binding!!
+
+    @Inject
+    lateinit var incrementCounterUseCase: IncrementCounterUseCase
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,9 +60,9 @@ class OutsideBySupportDialogFragment : DialogFragment() {
 
         binding.btnConfirm.setOnClickListener {
             val selectedRegion = when (binding.rgRegion.checkedRadioButtonId) {
-                R.id.rbEc -> "EC"
-                R.id.rbRussia -> "Russia"
-                R.id.rbOther -> "Other"
+                R.id.rbEc -> incrementCounterUseCase(CounterType.FROM_EU)
+                R.id.rbRussia -> incrementCounterUseCase(CounterType.FROM_RUSSIA)
+                R.id.rbOther -> incrementCounterUseCase(CounterType.FROM_OTHER)
                 else -> null
             }
 

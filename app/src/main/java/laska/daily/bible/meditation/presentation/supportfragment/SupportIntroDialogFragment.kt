@@ -1,5 +1,6 @@
 package laska.daily.bible.meditation.presentation.supportfragment
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,24 +8,15 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import dagger.hilt.android.AndroidEntryPoint
 import laska.daily.bible.meditation.R
-import laska.daily.bible.meditation.databinding.DialogPaymentFeedbackBinding
-import laska.daily.bible.meditation.domain.analytics.CounterType
-import laska.daily.bible.meditation.domain.analytics.IncrementCounterUseCase
-import javax.inject.Inject
+import laska.daily.bible.meditation.databinding.DialogSupportIntroBinding
 
-@AndroidEntryPoint
-class PaymentFeedbackDialogFragment : BottomSheetDialogFragment() {
+class SupportIntroDialogFragment : BottomSheetDialogFragment() {
 
-    private var _binding: DialogPaymentFeedbackBinding? = null
+    private var _binding: DialogSupportIntroBinding? = null
     private val binding get() = _binding!!
 
-    @Inject
-    lateinit var incrementCounterUseCase: IncrementCounterUseCase
-
-    var onNavigateHomeRequested: (() -> Unit)? = null
-    var onRetryRequested: (() -> Unit)? = null
+    var onNextClicked: (() -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,42 +28,27 @@ class PaymentFeedbackDialogFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DialogPaymentFeedbackBinding.inflate(inflater, container, false)
+        _binding = DialogSupportIntroBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Step 1 -> "Так, атрымалася" -> Advance ViewFlipper to Thank You view
-        binding.btnSuccess.setOnClickListener {
-            incrementCounterUseCase(CounterType.DONATE_CONFIRMED)
-            binding.viewFlipper.showNext()
-        }
-
-        // Step 1 -> "Не, паспрабаваць яшчэ раз" -> Dismiss and handle retry
-        binding.btnRetry.setOnClickListener {
-            incrementCounterUseCase(CounterType.DONATE_UNCONFIRMED)
+        binding.btnNext.setOnClickListener {
             dismiss()
-            onRetryRequested?.invoke()
-        }
-
-        // Step 2 -> "На галоўную" -> Dismiss and navigate home
-        binding.btnToMain.setOnClickListener {
-            dismiss()
-            onNavigateHomeRequested?.invoke()
+            onNextClicked?.invoke()
         }
     }
 
     override fun onStart() {
         super.onStart()
 
-        // Explicitly specify  on findViewById
+        // Force full-screen expansion
         val bottomSheet: FrameLayout? = dialog?.findViewById(com.google.android.material.R.id.design_bottom_sheet)
-
         if (bottomSheet != null) {
             bottomSheet.background = null
-            bottomSheet.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            bottomSheet.setBackgroundColor(Color.TRANSPARENT)
 
             val layoutParams = bottomSheet.layoutParams
             layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
@@ -90,7 +67,7 @@ class PaymentFeedbackDialogFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        const val TAG = "PaymentFeedbackDialogFragment"
-        fun newInstance() = PaymentFeedbackDialogFragment()
+        const val TAG = "SupportIntroDialogFragment"
+        fun newInstance() = SupportIntroDialogFragment()
     }
 }

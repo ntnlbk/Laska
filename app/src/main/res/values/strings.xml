@@ -68,4 +68,8 @@
     <string name="confirm_transfer_thank">Дзякуй!</string>
     <string name="confirm_transfer_thank_subtitle">Мабільная праграма Laska бясплатная і застанецца такім назаўжды – дзякуючы вашай падтрымцы.</string>
     <string name="confirm_transfer_thank_home">На галоўную</string>
+    <string name="invalid_sum">Некарэктная сума</string>
+    <string name="donate_request_first_main">Laska бясплатная – і так будзе заўсёды. Вашая падтрымка можа гэтаму дапамагчы.</string>
+    <string name="donate_request_main_next_window">Далей</string>
+    <string name="donate_request_later">Падтрымаць пазней</string>
 </resources>

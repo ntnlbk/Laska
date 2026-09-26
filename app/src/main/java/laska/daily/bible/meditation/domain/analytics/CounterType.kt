@@ -13,4 +13,8 @@ enum class CounterType {
     DONATE_BELARUS_NOT,
     DONATE_CLOSE,
     DONATE_CONFIRMED,
+    DONATE_UNCONFIRMED,
+    FROM_RUSSIA,
+    FROM_EU,
+    FROM_OTHER
 }

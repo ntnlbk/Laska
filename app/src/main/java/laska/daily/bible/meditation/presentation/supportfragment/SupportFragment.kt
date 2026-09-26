@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -22,6 +23,7 @@ import laska.daily.bible.meditation.domain.analytics.CounterType
 import laska.daily.bible.meditation.domain.analytics.IncrementCounterUseCase
 import laska.daily.bible.meditation.domain.donations.DonationsData
 import laska.daily.bible.meditation.domain.donations.GetDonationsDataUseCase
+import java.util.UUID
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -43,9 +45,12 @@ class SupportFragment : Fragment() {
 
     private lateinit var donationsData: DonationsData
 
+    private val mode by lazy {
+        args.LAUNCHMODE
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val mode = args.LAUNCHMODE
         setupViews()
     }
 
@@ -74,10 +79,10 @@ class SupportFragment : Fragment() {
 
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
             val selectedValue = when (checkedId) {
-                R.id.btn10 -> "10 BYN"
-                R.id.btn20 -> "20 BYN"
-                R.id.btn30 -> "30 BYN"
-                else -> ""
+                R.id.btn10 -> 10
+                R.id.btn20 -> 20
+                R.id.btn30 -> 30
+                else -> Integer.valueOf(editText.text.toString())
             }
             if (isProgrammaticChange) return@setOnCheckedChangeListener
 
@@ -92,12 +97,6 @@ class SupportFragment : Fragment() {
                 editText.clearFocus()
                 hideKeyboard()
             }
-            // TODO("log selected value")
-        }
-        fun getValidCustomAmount(): Int? {
-            val input = editText.text?.toString()?.trim()
-            val value = input?.toIntOrNull()
-            return if (value != null && value > 0) value else null
         }
 
         editText.setOnTouchListener { v, event ->
@@ -148,12 +147,35 @@ class SupportFragment : Fragment() {
             )
         }
         binding.btnSupportErip.setOnClickListener {
-            incrementCounterUseCase(CounterType.DONATE_ERIP)
-            val browserIntent =
-                Intent(Intent.ACTION_VIEW, donationsData.donationsUrl.toUri());
-            paymentPrefs.isPaymentPending = true
-            startActivity(browserIntent);
+            val selectedSum = when (binding.toggleGroup.checkedRadioButtonId) {
+                R.id.btn10 -> 10
+                R.id.btn20 -> 20
+                R.id.btn30 -> 30
+                else -> Integer.valueOf(
+                    if (binding.customAmountEditText.text.isNullOrEmpty())
+                        "0"
+                    else
+                        binding.customAmountEditText.text.toString()
 
+                )
+            }
+            if (selectedSum < 1) {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.invalid_sum),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                val id = UUID.randomUUID().toString()
+                paymentPrefs.setPendingPayment(
+                    id,
+                    selectedSum
+                )
+                incrementCounterUseCase(CounterType.DONATE_ERIP)
+                val browserIntent =
+                    Intent(Intent.ACTION_VIEW, donationsData.donationsUrl.toUri());
+                startActivity(browserIntent);
+            }
         }
 
         binding.btnPayQr.setOnClickListener {
@@ -165,6 +187,7 @@ class SupportFragment : Fragment() {
         }
 
         binding.btnEripPath.setOnClickListener {
+
             EripPathDialogFragment.newInstance(donationsData).show(
                 childFragmentManager,
                 EripPathDialogFragment.TAG
@@ -175,6 +198,11 @@ class SupportFragment : Fragment() {
                 childFragmentManager,
                 BecomeSponsorDialogFragment.TAG
             )
+        }
+
+        if (mode == SupportFragmentLaunchMode.FROM_POPUP) {
+            binding.ivBottomDots.visibility = View.VISIBLE
+            binding.tvDoItLater.visibility = View.VISIBLE
         }
     }
 

@@ -171,6 +171,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/customAmountInputLayout"
         app:rippleColor="#33000000" />
+    <TextView
+        android:id="@+id/tvDoItLater"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/inter"
+        android:text="@string/donate_request_later"
+        android:textColor="#8E8E93"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnSupportErip" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnPayQr"
@@ -194,7 +208,7 @@
         app:drawableEndCompat="@drawable/support_menu_sized"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnSupportErip"
+        app:layout_constraintTop_toBottomOf="@id/tvDoItLater"
         app:rippleColor="#33FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
@@ -259,5 +273,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnBecomeSponsor" />
+
+    <ImageView
+        android:id="@+id/ivBottomDots"
+        android:layout_width="17dp"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:layout_marginBottom="40dp"
+        android:layout_height="6dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/bottom_dots_1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
