@@ -112,6 +112,8 @@ dependencies {
 
     // ZXing for dynamic QR code bitmap generation
     implementation(libs.core)
+
+    implementation(libs.gson.v2101)
 }
 
 kapt {

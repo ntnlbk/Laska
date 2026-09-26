@@ -252,7 +252,11 @@ class MainFragment : Fragment() {
                                         viewModel.currentDayIndex + CENTER_DOT_ID
                                     )
                                 }
-
+                                if (it.isSupportButtonVisible) {
+                                    binding.supportBtn.visibility = View.VISIBLE
+                                } else {
+                                    binding.supportBtn.visibility = View.INVISIBLE
+                                }
                             }
 
                             is MainFragmentState.Progress -> {
@@ -261,6 +265,7 @@ class MainFragment : Fragment() {
 
                             is MainFragmentState.Error -> {
                                 binding.progressBar.visibility = View.INVISIBLE
+                                binding.supportBtn.visibility = View.INVISIBLE
                                 if (it.message == ERROR_INITIAL) {
                                     errorBlocking = true
                                     binding.errorTv1.visibility = View.VISIBLE

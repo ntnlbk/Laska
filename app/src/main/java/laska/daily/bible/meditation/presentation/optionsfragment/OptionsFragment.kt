@@ -41,8 +41,8 @@ class OptionsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViews()
         observeViewModel()
+        setupViews()
     }
 
     private fun observeViewModel() {
@@ -52,6 +52,30 @@ class OptionsFragment : Fragment() {
                     viewModel.state.collect {
                         when (it) {
                             is OptionsFragmentState.Content -> {
+                                if (it.isSupportButtonVisible) {
+                                    binding.supportBtn.setOnClickListener {
+                                        findNavController().navigate(
+                                            OptionsFragmentDirections.actionOptionsFragmentToSupportFragment(
+                                                LAUNCHMODE = SupportFragmentLaunchMode.FROM_MAIN_MENU
+                                            )
+                                        )
+                                    }
+                                } else {
+                                    binding.supportBtn.setOnClickListener {
+                                        findNavController().navigate(
+                                            OptionsFragmentDirections.actionOptionsFragmentToAboutUsFragment(
+                                                mainSectionName = ContextCompat.getString(
+                                                    requireActivity(),
+                                                    R.string.donate_become_sponsor
+                                                ),
+                                                mainSectionContent = ContextCompat.getString(
+                                                    requireActivity(),
+                                                    R.string.donate_become_sponsor_content
+                                                )
+                                            )
+                                        )
+                                    }
+                                }
                                 actualSettings = it.settings
                                 binding.progressBar.visibility = View.INVISIBLE
                                 binding.languageChosenTv.text = when (it.settings.language) {
@@ -89,22 +113,46 @@ class OptionsFragment : Fragment() {
 
     private fun setupViews() {
         binding.aboutProjectBtn.setOnClickListener {
-            findNavController().navigate(OptionsFragmentDirections.actionOptionsFragmentToAboutUsFragment(
-                mainSectionName = ContextCompat.getString(requireActivity(), R.string.about_project_main_section_name),
-                mainSectionContent = ContextCompat.getString(requireActivity(), R.string.about_project_main_section_content)
-            ))
+            findNavController().navigate(
+                OptionsFragmentDirections.actionOptionsFragmentToAboutUsFragment(
+                    mainSectionName = ContextCompat.getString(
+                        requireActivity(),
+                        R.string.about_project_main_section_name
+                    ),
+                    mainSectionContent = ContextCompat.getString(
+                        requireActivity(),
+                        R.string.about_project_main_section_content
+                    )
+                )
+            )
         }
         binding.connectUsBtn.setOnClickListener {
-            findNavController().navigate(OptionsFragmentDirections.actionOptionsFragmentToAboutUsFragment(
-                mainSectionName = ContextCompat.getString(requireActivity(), R.string.contact_us_main_section_name),
-                mainSectionContent = ContextCompat.getString(requireActivity(), R.string.contact_us_main_section_content)
-            ))
+            findNavController().navigate(
+                OptionsFragmentDirections.actionOptionsFragmentToAboutUsFragment(
+                    mainSectionName = ContextCompat.getString(
+                        requireActivity(),
+                        R.string.contact_us_main_section_name
+                    ),
+                    mainSectionContent = ContextCompat.getString(
+                        requireActivity(),
+                        R.string.contact_us_main_section_content
+                    )
+                )
+            )
         }
         binding.thanksBtn.setOnClickListener {
-            findNavController().navigate(OptionsFragmentDirections.actionOptionsFragmentToAboutUsFragment(
-                mainSectionName = ContextCompat.getString(requireActivity(), R.string.donate_become_sponsor),
-                mainSectionContent = ContextCompat.getString(requireActivity(), R.string.donate_become_sponsor_content)
-            ))
+            findNavController().navigate(
+                OptionsFragmentDirections.actionOptionsFragmentToAboutUsFragment(
+                    mainSectionName = ContextCompat.getString(
+                        requireActivity(),
+                        R.string.donate_become_sponsor
+                    ),
+                    mainSectionContent = ContextCompat.getString(
+                        requireActivity(),
+                        R.string.donate_become_sponsor_content
+                    )
+                )
+            )
         }
         binding.closeBtn.setOnClickListener {
             findNavController().popBackStack()
@@ -148,13 +196,6 @@ class OptionsFragment : Fragment() {
                 }
             }
             dialog.show(childFragmentManager, CHOOSE_THEME_DIALOG_TAG)
-        }
-        binding.supportBtn.setOnClickListener {
-            findNavController().navigate(
-                OptionsFragmentDirections.actionOptionsFragmentToSupportFragment(
-                    LAUNCHMODE = SupportFragmentLaunchMode.FROM_MAIN_MENU
-                )
-            )
         }
 
     }

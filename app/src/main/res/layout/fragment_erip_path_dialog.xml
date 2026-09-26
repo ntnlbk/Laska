@@ -43,32 +43,37 @@
 
         <!-- Step 1 -->
         <TextView
+            android:id="@+id/path1"
             style="@style/EripPathItemStyle"
             android:text="•  Платежи" />
 
         <!-- Step 2 -->
         <TextView
+            android:id="@+id/path2"
             style="@style/EripPathItemStyle"
             android:text="•  Банковские финансовые услуги" />
 
         <!-- Step 3 -->
         <TextView
+            android:id="@+id/path3"
             style="@style/EripPathItemStyle"
             android:text="•  Банки, НКФО" />
 
         <!-- Step 4 -->
         <TextView
+            android:id="@+id/path4"
             style="@style/EripPathItemStyle"
             android:text="•  Беларусбанк" />
 
         <!-- Step 5 -->
         <TextView
+            android:id="@+id/path5"
             style="@style/EripPathItemStyle"
             android:text="•  Пополнение счета" />
 
         <!-- Step 6 (Account IBAN) -->
         <TextView
-            android:id="@+id/tvEripAccount"
+            android:id="@+id/path6"
             style="@style/EripPathItemStyle"
             android:text="•  BY94AKBB30340019293080070000"/>
 

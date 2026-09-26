@@ -6,6 +6,7 @@ sealed class OptionsFragmentState {
     object Progress : OptionsFragmentState()
     data class Content(
         val settings: Settings,
+        val isSupportButtonVisible: Boolean
     ) : OptionsFragmentState()
     data class Error(
         val message: String

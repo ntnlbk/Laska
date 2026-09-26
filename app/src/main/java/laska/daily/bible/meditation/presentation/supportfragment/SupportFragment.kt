@@ -1,5 +1,6 @@
 package laska.daily.bible.meditation.presentation.supportfragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -10,11 +11,15 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.net.toUri
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentSupportBinding
+import laska.daily.bible.meditation.domain.donations.DonationsData
+import laska.daily.bible.meditation.domain.donations.GetDonationsDataUseCase
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -28,13 +33,22 @@ class SupportFragment : Fragment() {
     @Inject
     lateinit var paymentPrefs: SupportPaymentPrefs
 
+    @Inject
+    lateinit var getDonationsDataUseCase: GetDonationsDataUseCase
+
+    private lateinit var donationsData: DonationsData
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mode = args.LAUNCHMODE
         setupViews()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupViews() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            donationsData = getDonationsDataUseCase()
+        }
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
@@ -42,6 +56,7 @@ class SupportFragment : Fragment() {
 
         val editText = binding.customAmountEditText
         var isProgrammaticChange = false
+
         fun setErrorState(hasError: Boolean) {
             editText.isActivated = hasError
         }
@@ -80,7 +95,10 @@ class SupportFragment : Fragment() {
             return if (value != null && value > 0) value else null
         }
 
-        // 1. Text change listener
+        editText.setOnTouchListener { v, event ->
+            radioGroup.clearCheck()
+            false
+        }
         editText.doAfterTextChanged { text ->
             if (isProgrammaticChange) return@doAfterTextChanged
 
@@ -124,26 +142,23 @@ class SupportFragment : Fragment() {
             )
         }
         binding.btnSupportErip.setOnClickListener {
-            val browserIntent = Intent(Intent.ACTION_VIEW, "https://pay.raschet.by/".toUri());
+            val browserIntent =
+                Intent(Intent.ACTION_VIEW, donationsData.donationsUrl.toUri());
             paymentPrefs.isPaymentPending = true
             startActivity(browserIntent);
+
         }
 
         binding.btnPayQr.setOnClickListener {
-
-
             setErrorState(false)
-            val eripQrUrl = "https://pay.raschet.by/"
-
-            QrCodeDialogFragment.newInstance(eripQrUrl).show(
+            QrCodeDialogFragment.newInstance(donationsData.donationsUrl).show(
                 childFragmentManager,
                 QrCodeDialogFragment.TAG
             )
-
         }
 
         binding.btnEripPath.setOnClickListener {
-            EripPathDialogFragment.newInstance().show(
+            EripPathDialogFragment.newInstance(donationsData).show(
                 childFragmentManager,
                 EripPathDialogFragment.TAG
             )
@@ -167,6 +182,7 @@ class SupportFragment : Fragment() {
         parent?.removeView(binding.root)
         return binding.root
     }
+
     override fun onResume() {
         super.onResume()
 

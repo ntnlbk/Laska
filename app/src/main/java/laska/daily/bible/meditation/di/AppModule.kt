@@ -11,8 +11,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import laska.daily.bible.meditation.data.donations.DonationsRepositoryImpl
 import laska.daily.bible.meditation.data.firebase.AnalyticsRepositoryImpl
 import laska.daily.bible.meditation.domain.analytics.AnalyticsRepository
+import laska.daily.bible.meditation.domain.donations.DonationsRepository
 import javax.inject.Singleton
 
 @Module
@@ -34,6 +36,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAnalyticsRepository(impl: AnalyticsRepositoryImpl): AnalyticsRepository{
+        return impl
+    }
+
+    @Provides
+    @Singleton
+    fun provideDonationsRepository(impl: DonationsRepositoryImpl): DonationsRepository{
         return impl
     }
 

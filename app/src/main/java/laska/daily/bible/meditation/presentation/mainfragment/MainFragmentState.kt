@@ -5,7 +5,8 @@ sealed class MainFragmentState {
     data class Content(
         val date: String,
         val bibleReference: String,
-        val feastName: String
+        val feastName: String,
+        val isSupportButtonVisible: Boolean
     ): MainFragmentState()
 
     data class TextShowed(

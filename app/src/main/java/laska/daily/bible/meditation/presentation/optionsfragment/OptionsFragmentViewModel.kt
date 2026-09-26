@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import laska.daily.bible.meditation.domain.donations.GetDonationsDataUseCase
 import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
 import laska.daily.bible.meditation.domain.settings.Settings
 import laska.daily.bible.meditation.domain.settings.UpdateSettingsUseCase
@@ -16,14 +17,19 @@ import javax.inject.Inject
 @HiltViewModel
 class OptionsFragmentViewModel @Inject constructor(
     private val updateSettingsUseCase: UpdateSettingsUseCase,
-    private val getSettingsUseCase: GetSettingsUseCase
+    private val getSettingsUseCase: GetSettingsUseCase,
+    private val getDonationsDataUseCase: GetDonationsDataUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<OptionsFragmentState>(OptionsFragmentState.Progress)
     val state = _state.asStateFlow()
+    private var isSupportButtonVisible = false
 
     init {
-        observeSettings()
+        viewModelScope.launch {
+            isSupportButtonVisible = getDonationsDataUseCase().donationsFlag
+            observeSettings()
+        }
     }
 
     private fun observeSettings() {
@@ -38,7 +44,7 @@ class OptionsFragmentViewModel @Inject constructor(
                     )
                 }
                 .collect { settings ->
-                    _state.value = OptionsFragmentState.Content(settings)
+                    _state.value = OptionsFragmentState.Content(settings, isSupportButtonVisible)
                 }
         }
     }

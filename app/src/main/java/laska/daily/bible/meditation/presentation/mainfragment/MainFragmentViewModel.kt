@@ -32,6 +32,7 @@ import laska.daily.bible.meditation.domain.audio.AudioDownloadState
 import laska.daily.bible.meditation.domain.audio.CheckAudioDownloadedUseCase
 import laska.daily.bible.meditation.domain.audio.DownloadAudioUseCase
 import laska.daily.bible.meditation.domain.audio.ObserveDownloadAudioUseCase
+import laska.daily.bible.meditation.domain.donations.GetDonationsDataUseCase
 import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
 import laska.daily.bible.meditation.presentation.mainfragment.MainFragmentState.Companion.ERROR_INITIAL
 import laska.daily.bible.meditation.presentation.mainfragment.MainFragmentState.Companion.ERROR_WHILE_CHANGING_DATES
@@ -52,7 +53,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     private val connectionUtils: ConnectionUtils,
     @param:ApplicationContext private val application: Context,
     private val getSettingsUseCase: GetSettingsUseCase,
-    private val incrementCounterUseCase: IncrementCounterUseCase
+    private val incrementCounterUseCase: IncrementCounterUseCase,
+    private val getDonationsDataUseCase: GetDonationsDataUseCase
 ) : ViewModel() {
 
     private val _mainUIState = MutableStateFlow<MainFragmentState>(MainFragmentState.Progress)
@@ -72,9 +74,12 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     private var isFirstAudioEventSent = false
     private var isSecondAudioEventSent = false
 
+    private var isSupportButtonVisible = false
+
     init {
         initializeController()
         viewModelScope.launch {
+            isSupportButtonVisible = getDonationsDataUseCase().donationsFlag
             observeSettings()
             delay(50)
             setReading()
@@ -215,7 +220,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                 _mainUIState.value = MainFragmentState.Content(
                     actualReading?.dateFormatted ?: throw Exception(ERROR_MESSAGE),
                     actualReading?.bibleReference ?: throw Exception(ERROR_MESSAGE),
-                    actualReading?.feastName ?: throw Exception(ERROR_MESSAGE)
+                    actualReading?.feastName ?: throw Exception(ERROR_MESSAGE),
+                    isSupportButtonVisible
                 )
                 actualReading?.let {
                     val isDownloaded = checkAudioDownloadedUseCase(it.audioURL)
@@ -256,7 +262,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
             _mainUIState.value = MainFragmentState.Content(
                 actualReading?.dateFormatted ?: throw Exception(ERROR_MESSAGE),
                 actualReading?.bibleReference ?: throw Exception(ERROR_MESSAGE),
-                actualReading?.feastName ?: throw Exception(ERROR_MESSAGE)
+                actualReading?.feastName ?: throw Exception(ERROR_MESSAGE),
+                isSupportButtonVisible
             )
         } else {
             _mainUIState.value = MainFragmentState.Error("No text to show for now")
