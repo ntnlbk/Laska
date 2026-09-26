@@ -19,8 +19,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @Singleton
 class AnalyticsRepositoryImpl @Inject constructor(
-    private val analytics: FirebaseAnalytics,
-    @param:ApplicationContext private val context: Context
+    private val analytics: FirebaseAnalytics, @param:ApplicationContext private val context: Context
 ) : AnalyticsRepository {
 
     private val prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
@@ -62,6 +61,12 @@ class AnalyticsRepositoryImpl @Inject constructor(
             }
 
             CounterType.SUPPORT_COUNT -> TODO()
+            CounterType.DONATE_MAIN_SCREEN -> analytics.logEvent(DONATE_MAIN_SCREEN, null)
+            CounterType.DONATE_MENU -> analytics.logEvent(DONATE_MENU, null)
+            CounterType.DONATE_ERIP -> analytics.logEvent(DONATE_ERIP, null)
+            CounterType.DONATE_BELARUS_NOT -> analytics.logEvent(DONATE_BELARUS_NOT, null)
+            CounterType.DONATE_CLOSE -> analytics.logEvent(DONATE_CLOSE, null)
+            CounterType.DONATE_CONFIRMED -> analytics.logEvent(DONATE_CONFIRMED, null)
         }
     }
 
@@ -95,8 +100,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
                         "daily_reflection_text" to 0,
                         "support_count" to 0,
                     )
-                ),
-                SetOptions.merge()
+                ), SetOptions.merge()
             )
         } else {
             val updates = hashMapOf<String, Any>(
@@ -110,8 +114,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
 
     private fun getUserId(): String {
         var id = prefs.getString(
-            USER_ID_PREFERENCE_NAME,
-            null
+            USER_ID_PREFERENCE_NAME, null
         )
 
         if (id == null) {
@@ -120,8 +123,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
 
             prefs.edit {
                 putString(
-                    USER_ID_PREFERENCE_NAME,
-                    id
+                    USER_ID_PREFERENCE_NAME, id
                 )
             }
         }
@@ -134,5 +136,17 @@ class AnalyticsRepositoryImpl @Inject constructor(
         private const val DAILY_REFLECTION_TEXT = "daily_reflection_text"
         private const val SHARED_PREFERENCES_NAME = "app_preferences"
         private const val USER_ID_PREFERENCE_NAME = "user_id"
+
+        private const val DONATE_MAIN_SCREEN = "donate_main_screen"
+
+        private const val DONATE_MENU = "donate_menu"
+
+        private const val DONATE_ERIP = "donate_erip"
+
+        private const val DONATE_BELARUS_NOT = "donate_belarus_not"
+
+        private const val DONATE_CLOSE = "donate_close"
+
+        private const val DONATE_CONFIRMED = "donate_confirmed"
     }
 }

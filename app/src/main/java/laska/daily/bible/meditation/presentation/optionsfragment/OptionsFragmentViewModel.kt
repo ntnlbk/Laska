@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import laska.daily.bible.meditation.domain.analytics.CounterType
+import laska.daily.bible.meditation.domain.analytics.IncrementCounterUseCase
 import laska.daily.bible.meditation.domain.donations.GetDonationsDataUseCase
 import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
 import laska.daily.bible.meditation.domain.settings.Settings
@@ -18,7 +20,8 @@ import javax.inject.Inject
 class OptionsFragmentViewModel @Inject constructor(
     private val updateSettingsUseCase: UpdateSettingsUseCase,
     private val getSettingsUseCase: GetSettingsUseCase,
-    private val getDonationsDataUseCase: GetDonationsDataUseCase
+    private val getDonationsDataUseCase: GetDonationsDataUseCase,
+    private val incrementCounterUseCase: IncrementCounterUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<OptionsFragmentState>(OptionsFragmentState.Progress)
@@ -49,6 +52,9 @@ class OptionsFragmentViewModel @Inject constructor(
         }
     }
 
+    fun supportButtonClicked(){
+        incrementCounterUseCase(CounterType.DONATE_MENU)
+    }
     fun updateSettings(newSettings: Settings) {
         viewModelScope.launch {
             try {

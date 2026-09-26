@@ -54,6 +54,7 @@ class OptionsFragment : Fragment() {
                             is OptionsFragmentState.Content -> {
                                 if (it.isSupportButtonVisible) {
                                     binding.supportBtn.setOnClickListener {
+                                        viewModel.supportButtonClicked()
                                         findNavController().navigate(
                                             OptionsFragmentDirections.actionOptionsFragmentToSupportFragment(
                                                 LAUNCHMODE = SupportFragmentLaunchMode.FROM_MAIN_MENU

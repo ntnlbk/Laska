@@ -361,6 +361,10 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         }
     }
 
+    fun supportButtonClicked(){
+        incrementCounterUseCase(CounterType.DONATE_MAIN_SCREEN)
+    }
+
     fun goForward() {
 
         if (currentDayIndex == MAX_DAY_INDEX) {
@@ -426,6 +430,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         super.onCleared()
         mediaControllerFuture?.let { MediaController.releaseFuture(it) }
     }
+
 
     companion object {
         private const val PLAYER_BUTTONS_CHANGE_TIME_IN_MILLS = 15000L

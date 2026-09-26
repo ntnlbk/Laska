@@ -217,6 +217,7 @@ class MainFragment : Fragment() {
 
         }
         binding.supportBtn.setOnClickListener {
+            viewModel.supportButtonClicked()
             if (!errorBlocking) {
                 findNavController().navigate(
                     MainFragmentDirections.actionMainFragmentToSupportFragment(

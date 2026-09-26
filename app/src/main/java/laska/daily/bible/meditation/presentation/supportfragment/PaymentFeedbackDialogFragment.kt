@@ -7,13 +7,21 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.DialogPaymentFeedbackBinding
+import laska.daily.bible.meditation.domain.analytics.CounterType
+import laska.daily.bible.meditation.domain.analytics.IncrementCounterUseCase
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class PaymentFeedbackDialogFragment : BottomSheetDialogFragment() {
 
     private var _binding: DialogPaymentFeedbackBinding? = null
     private val binding get() = _binding!!
+
+    @Inject
+    lateinit var incrementCounterUseCase: IncrementCounterUseCase
 
     var onNavigateHomeRequested: (() -> Unit)? = null
     var onRetryRequested: (() -> Unit)? = null
@@ -37,6 +45,7 @@ class PaymentFeedbackDialogFragment : BottomSheetDialogFragment() {
 
         // Step 1 -> "Так, атрымалася" -> Advance ViewFlipper to Thank You view
         binding.btnSuccess.setOnClickListener {
+            incrementCounterUseCase(CounterType.DONATE_CONFIRMED)
             binding.viewFlipper.showNext()
         }
 

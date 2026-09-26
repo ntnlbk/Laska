@@ -18,6 +18,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentSupportBinding
+import laska.daily.bible.meditation.domain.analytics.CounterType
+import laska.daily.bible.meditation.domain.analytics.IncrementCounterUseCase
 import laska.daily.bible.meditation.domain.donations.DonationsData
 import laska.daily.bible.meditation.domain.donations.GetDonationsDataUseCase
 import javax.inject.Inject
@@ -35,6 +37,9 @@ class SupportFragment : Fragment() {
 
     @Inject
     lateinit var getDonationsDataUseCase: GetDonationsDataUseCase
+
+    @Inject
+    lateinit var incrementCounterUseCase: IncrementCounterUseCase
 
     private lateinit var donationsData: DonationsData
 
@@ -136,12 +141,14 @@ class SupportFragment : Fragment() {
             }
         }
         binding.tvNotFromBelarus.setOnClickListener {
+            incrementCounterUseCase(CounterType.DONATE_BELARUS_NOT)
             OutsideBySupportDialogFragment.newInstance().show(
                 childFragmentManager,
                 OutsideBySupportDialogFragment.TAG
             )
         }
         binding.btnSupportErip.setOnClickListener {
+            incrementCounterUseCase(CounterType.DONATE_ERIP)
             val browserIntent =
                 Intent(Intent.ACTION_VIEW, donationsData.donationsUrl.toUri());
             paymentPrefs.isPaymentPending = true
@@ -207,6 +214,7 @@ class SupportFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        incrementCounterUseCase(CounterType.DONATE_CLOSE)
         _binding = null
         super.onDestroyView()
     }
