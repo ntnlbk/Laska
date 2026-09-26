@@ -7,15 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import dagger.hilt.android.AndroidEntryPoint
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentSupportBinding
-import androidx.core.net.toUri
-import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -37,9 +36,6 @@ class SupportFragment : Fragment() {
 
     private fun setupViews() {
         binding.btnBack.setOnClickListener {
-            findNavController().popBackStack()
-        }
-        binding.closeBtn.setOnClickListener {
             findNavController().popBackStack()
         }
         val radioGroup = binding.toggleGroup
@@ -176,12 +172,18 @@ class SupportFragment : Fragment() {
 
         // Executed whenever the user comes back to the app/fragment
         if (paymentPrefs.isPaymentPending) {
-            // Show Toast message on first return
-            Toast.makeText(
-                requireContext(),
-                "Дзякуй за вашу падтрымку!",
-                Toast.LENGTH_LONG
-            ).show()
+            val feedbackDialog = PaymentFeedbackDialogFragment.newInstance()
+
+            feedbackDialog.onNavigateHomeRequested = {
+                // Navigate to Home screen/fragment
+                // e.g., findNavController().navigate(R.id.homeFragment)
+            }
+
+            feedbackDialog.onRetryRequested = {
+                // Optional: reset focus or scroll user to payment options
+            }
+
+            feedbackDialog.show(childFragmentManager, PaymentFeedbackDialogFragment.TAG)
 
             // Reset flag so it won't show again on subsequent screen transitions
             paymentPrefs.isPaymentPending = false

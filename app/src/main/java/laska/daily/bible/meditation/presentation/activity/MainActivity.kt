@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -19,9 +18,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
-import laska.daily.bible.meditation.presentation.supportfragment.SupportPaymentPrefs
 import laska.daily.bible.meditation.domain.Language
 import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
+import laska.daily.bible.meditation.presentation.supportfragment.PaymentFeedbackDialogFragment
+import laska.daily.bible.meditation.presentation.supportfragment.SupportPaymentPrefs
 import laska.daily.bible.meditation.presentation.uils.ConnectionUtils
 import laska.daily.bible.meditation.presentation.uils.ReviewHelper
 import javax.inject.Inject
@@ -116,11 +116,18 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         if (paymentPrefs.checkAndClearPaymentPending()) {
-            Toast.makeText(
-                this,
-                "Дзякуй за вашу падтрымку!",
-                Toast.LENGTH_LONG
-            ).show()
+            val feedbackDialog = PaymentFeedbackDialogFragment.newInstance()
+
+            feedbackDialog.onNavigateHomeRequested = {
+                // Navigate to Home screen/fragment
+                // e.g., findNavController().navigate(R.id.homeFragment)
+            }
+
+            feedbackDialog.onRetryRequested = {
+                // Optional: reset focus or scroll user to payment options
+            }
+
+            feedbackDialog.show(supportFragmentManager, PaymentFeedbackDialogFragment.TAG)
         }
     }
 }

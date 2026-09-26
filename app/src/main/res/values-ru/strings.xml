@@ -49,4 +49,10 @@
     <string name="donate_menu_title">Поддержать проект</string>
     <string name="erip_copied_text">Счёт скопирован в буфер обмена</string>
     <string name="email_copied_text">Почта скопирована в буфер обмена</string>
+    <string name="confirm_transfer_title">Получилось ли у вас поддержать Laska?</string>
+    <string name="confirm_transfer_yes">Да, получилось</string>
+    <string name="confirm_transfer_no">Нет, попробую ещё раз</string>
+    <string name="confirm_transfer_thank">Спасибо!</string>
+    <string name="confirm_transfer_thank_subtitle">Мобильное приложение Laska бесплатное и останется таким навсегда – благодаря вашей поддержке.</string>
+    <string name="confirm_transfer_thank_home">На главную</string>
 </resources>

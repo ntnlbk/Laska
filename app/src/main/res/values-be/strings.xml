@@ -49,4 +49,10 @@
     <string name="donate_menu_title">Падтрымаць праект</string>
     <string name="erip_copied_text">Пошта скапіявана</string>
     <string name="email_copied_text">Пошта скапіявана</string>
+    <string name="confirm_transfer_title">Ці ўдалося вам падтрымаць Laska?</string>
+    <string name="confirm_transfer_yes">Так, удалося</string>
+    <string name="confirm_transfer_no">Не, паспрабую яшчэ раз</string>
+    <string name="confirm_transfer_thank">Дзякуй!</string>
+    <string name="confirm_transfer_thank_subtitle">Мабільная праграма Laska бясплатная і застанецца такой назаўжды – дзякуючы вашай падтрымцы.</string>
+    <string name="confirm_transfer_thank_home">На галоўную</string>
 </resources>
