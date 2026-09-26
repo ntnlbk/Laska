@@ -43,7 +43,8 @@ class BecomeSponsorDialogFragment : BottomSheetDialogFragment() {
             val clip = ClipData.newPlainText("Sponsor Email", email)
             clipboard.setPrimaryClip(clip)
 
-            Toast.makeText(requireContext(), "Почта скопирована в буфер обмена", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.email_copied_text), Toast.LENGTH_SHORT).show()
             dismiss()
         }
     }

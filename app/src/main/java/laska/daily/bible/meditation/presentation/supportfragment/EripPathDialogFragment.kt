@@ -43,7 +43,8 @@ class EripPathDialogFragment : BottomSheetDialogFragment() {
             val clip = ClipData.newPlainText("ERIP Account", ibanText)
             clipboard.setPrimaryClip(clip)
 
-            Toast.makeText(requireContext(), "Счёт скопирован в буфер обмена", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.erip_copied_text), Toast.LENGTH_SHORT).show()
             dismiss()
         }
     }

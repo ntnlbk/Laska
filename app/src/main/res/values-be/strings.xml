@@ -47,4 +47,6 @@
     <string name="donate_become_sponsor_content">Хацелі б падтрымаць нас грунтоўна? Стаць спонсарам серыі разважанняў, ці новага раздзелу ў нашай мабільнай праграме? Напішыце нам laskamobi@gmail.com</string>
     <string name="donate_mail_copy">Скапіраваць пошту</string>
     <string name="donate_menu_title">Падтрымаць праект</string>
+    <string name="erip_copied_text">Пошта скапіявана</string>
+    <string name="email_copied_text">Пошта скапіявана</string>
 </resources>
