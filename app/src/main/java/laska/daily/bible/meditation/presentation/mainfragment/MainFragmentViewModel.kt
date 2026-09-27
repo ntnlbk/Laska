@@ -37,9 +37,11 @@ import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
 import laska.daily.bible.meditation.presentation.mainfragment.MainFragmentState.Companion.ERROR_INITIAL
 import laska.daily.bible.meditation.presentation.mainfragment.MainFragmentState.Companion.ERROR_WHILE_CHANGING_DATES
 import laska.daily.bible.meditation.presentation.service.AudioPlaybackService
+import laska.daily.bible.meditation.presentation.supportfragment.PopUpPrefs
 import laska.daily.bible.meditation.presentation.uils.ConnectionUtils
 import laska.daily.bible.meditation.presentation.uils.DateUtils
 import laska.daily.bible.meditation.presentation.uils.DateUtils.Companion.todayFormatted
+import java.util.UUID
 import javax.inject.Inject
 
 private const val ERROR_MESSAGE = "Паспрабуйце пазней"
@@ -54,7 +56,8 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     @param:ApplicationContext private val application: Context,
     private val getSettingsUseCase: GetSettingsUseCase,
     private val incrementCounterUseCase: IncrementCounterUseCase,
-    private val getDonationsDataUseCase: GetDonationsDataUseCase
+    private val getDonationsDataUseCase: GetDonationsDataUseCase,
+    private val popUpPrefs: PopUpPrefs
 ) : ViewModel() {
 
     private val _mainUIState = MutableStateFlow<MainFragmentState>(MainFragmentState.Progress)
@@ -289,6 +292,11 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                 }
             }
         }
+    }
+
+    fun popUpShown(){
+        popUpPrefs.lastPopupId = UUID.randomUUID().toString()
+        incrementCounterUseCase(CounterType.POP_UP_SHOWN)
     }
 
     private fun loadSongToPlayer(url: String) {

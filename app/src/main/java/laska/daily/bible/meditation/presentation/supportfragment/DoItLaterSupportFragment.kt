@@ -9,40 +9,28 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import laska.daily.bible.meditation.R
-import laska.daily.bible.meditation.databinding.DialogSupportIntroBinding
-import laska.daily.bible.meditation.presentation.mainfragment.MainFragmentDirections
+import laska.daily.bible.meditation.databinding.FragmentDoitlaterDialogfragmentBinding
+import laska.daily.bible.meditation.domain.analytics.IncrementCounterUseCase
+import javax.inject.Inject
 
-class SupportIntroDialogFragment : DialogFragment() {
+@AndroidEntryPoint
+class DoItLaterSupportFragment : DialogFragment() {
 
-    private var _binding: DialogSupportIntroBinding? = null
+    private var _binding: FragmentDoitlaterDialogfragmentBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialog)
-    }
+    @Inject
+    lateinit var incrementCounterUseCase: IncrementCounterUseCase
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DialogSupportIntroBinding.inflate(inflater, container, false)
+        _binding = FragmentDoitlaterDialogfragmentBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.btnNext.setOnClickListener {
-            findNavController().navigate(
-                MainFragmentDirections.actionMainFragmentToSupportFragment(
-                    LAUNCHMODE = SupportFragmentLaunchMode.FROM_POPUP
-                )
-            )
-            dismiss()
-        }
     }
 
     override fun onStart() {
@@ -59,7 +47,15 @@ class SupportIntroDialogFragment : DialogFragment() {
             // 3. Remove the dark dim overlay behind/above the window (including status bar)
             clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         }
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.btnClose.setOnClickListener { dismiss()
+            findNavController().popBackStack(R.id.mainFragment, false)}
+        binding.btnConfirm.setOnClickListener { dismiss()
+            findNavController().popBackStack(R.id.mainFragment, false)}
     }
 
     override fun onDestroyView() {
@@ -68,7 +64,7 @@ class SupportIntroDialogFragment : DialogFragment() {
     }
 
     companion object {
-        const val TAG = "SupportIntroDialogFragment"
-        fun newInstance() = SupportIntroDialogFragment()
+        const val TAG = "DoItLaterSupportFragment"
+        fun newInstance() = DoItLaterSupportFragment()
     }
 }

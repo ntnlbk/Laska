@@ -23,6 +23,7 @@ import laska.daily.bible.meditation.domain.analytics.CounterType
 import laska.daily.bible.meditation.domain.analytics.IncrementCounterUseCase
 import laska.daily.bible.meditation.domain.donations.DonationsData
 import laska.daily.bible.meditation.domain.donations.GetDonationsDataUseCase
+import laska.daily.bible.meditation.domain.usecase.SupportPromptManager
 import java.util.UUID
 import javax.inject.Inject
 
@@ -43,6 +44,9 @@ class SupportFragment : Fragment() {
     @Inject
     lateinit var incrementCounterUseCase: IncrementCounterUseCase
 
+    @Inject
+    lateinit var supportPromptManager: SupportPromptManager
+
     private lateinit var donationsData: DonationsData
 
     private val mode by lazy {
@@ -60,6 +64,9 @@ class SupportFragment : Fragment() {
             donationsData = getDonationsDataUseCase()
         }
         binding.btnBack.setOnClickListener {
+            if (mode == SupportFragmentLaunchMode.FROM_POPUP) {
+                incrementCounterUseCase(CounterType.POP_UP_DISMISSED)
+            }
             findNavController().popBackStack()
         }
         val radioGroup = binding.toggleGroup
@@ -172,6 +179,9 @@ class SupportFragment : Fragment() {
                     selectedSum
                 )
                 incrementCounterUseCase(CounterType.DONATE_ERIP)
+                if (mode == SupportFragmentLaunchMode.FROM_POPUP) {
+                    incrementCounterUseCase(CounterType.POP_UP_ERIP_CLICKED)
+                }
                 val browserIntent =
                     Intent(Intent.ACTION_VIEW, donationsData.donationsUrl.toUri());
                 startActivity(browserIntent);
@@ -201,8 +211,17 @@ class SupportFragment : Fragment() {
         }
 
         if (mode == SupportFragmentLaunchMode.FROM_POPUP) {
+            supportPromptManager.onPromptCompleted()
             binding.ivBottomDots.visibility = View.VISIBLE
             binding.tvDoItLater.visibility = View.VISIBLE
+            binding.tvDoItLater.setOnClickListener {
+                incrementCounterUseCase(CounterType.POP_UP_LATER_CLICKED)
+                supportPromptManager.onPromptDismissedLater()
+                DoItLaterSupportFragment.newInstance().show(
+                    childFragmentManager,
+                    OutsideBySupportDialogFragment.TAG
+                )
+            }
         }
     }
 

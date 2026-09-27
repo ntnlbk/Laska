@@ -25,11 +25,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentMainBinding
+import laska.daily.bible.meditation.domain.usecase.SupportPromptManager
 import laska.daily.bible.meditation.presentation.mainfragment.MainFragmentState.Companion.ERROR_INITIAL
 import laska.daily.bible.meditation.presentation.mainfragment.MainFragmentViewModel.Companion.TOTAL_DAYS_TO_SHOW
 import laska.daily.bible.meditation.presentation.supportfragment.SupportFragmentLaunchMode
 import laska.daily.bible.meditation.presentation.supportfragment.SupportIntroDialogFragment
 import laska.daily.bible.meditation.presentation.textfragment.TextFragmentBottomSheet
+import javax.inject.Inject
 
 @UnstableApi
 @AndroidEntryPoint
@@ -47,6 +49,9 @@ class MainFragment : Fragment() {
     private lateinit var gestureDetector: GestureDetector
     private var hasInitializedRootView = false
     private var errorBlocking: Boolean = false
+
+    @Inject
+    lateinit var supportPromptManager: SupportPromptManager
 
 
     override fun onCreateView(
@@ -260,18 +265,7 @@ class MainFragment : Fragment() {
                                     binding.supportBtn.visibility = View.INVISIBLE
                                 }
 
-                                val introDialog = SupportIntroDialogFragment.newInstance()
-                                introDialog.onNextClicked = {
-                                    findNavController().navigate(
-                                        MainFragmentDirections.actionMainFragmentToSupportFragment(
-                                            LAUNCHMODE = SupportFragmentLaunchMode.FROM_POPUP
-                                        )
-                                    )
-                                }
-                                introDialog.show(
-                                    parentFragmentManager,
-                                    SupportIntroDialogFragment.TAG
-                                )
+                                showDonationsPopup()
 
                             }
 
@@ -368,6 +362,17 @@ class MainFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun showDonationsPopup() {
+        if(supportPromptManager.shouldShowPrompt()){
+            viewModel.popUpShown()
+            val introDialog = SupportIntroDialogFragment.newInstance()
+            introDialog.show(
+                parentFragmentManager,
+                SupportIntroDialogFragment.TAG
+            )
         }
     }
 
