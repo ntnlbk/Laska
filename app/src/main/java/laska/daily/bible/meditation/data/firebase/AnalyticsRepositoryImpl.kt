@@ -115,7 +115,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
             CounterType.POP_UP_SHOWN -> {
                 analytics.logEvent(POP_UP_SHOWN, null)
                 val updates = hashMapOf<String, Any>(
-                    "pop_ups" to hashMapOf<String, Any>(
+                    "donation_offer" to hashMapOf<String, Any>(
                         popUpPrefs.lastPopupId to hashMapOf(
                             "created_at" to FieldValue.serverTimestamp()
                         )
@@ -134,7 +134,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
 
     private fun logPopUpOutcome(outcome: String) {
         val updates = hashMapOf<String, Any>(
-            "pop_ups" to hashMapOf<String, Any>(
+            "donation_offer" to hashMapOf<String, Any>(
                 popUpPrefs.lastPopupId to hashMapOf(
                     "outcome" to outcome
                 )
