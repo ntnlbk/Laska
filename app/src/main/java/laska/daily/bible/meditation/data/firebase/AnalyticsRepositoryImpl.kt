@@ -191,7 +191,12 @@ class AnalyticsRepositoryImpl @Inject constructor(
                 ), SetOptions.merge()
             )
         } else {
-            promptPrefs.sessionNumber += 1
+            if (promptPrefs.sessionNumber == 0) {
+                promptPrefs.sessionNumber = documentSnapshot.getLong("session_count")?.toInt() ?: 1
+            } else{
+                promptPrefs.sessionNumber += 1
+            }
+
             val updates = hashMapOf<String, Any>(
                 "last_session" to FieldValue.serverTimestamp(),
                 "session_count" to FieldValue.increment(1)
