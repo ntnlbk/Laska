@@ -14,6 +14,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -119,12 +120,21 @@ class MainActivity : AppCompatActivity() {
             val feedbackDialog = PaymentFeedbackDialogFragment.newInstance()
 
             feedbackDialog.onNavigateHomeRequested = {
-                // Navigate to Home screen/fragment
-                // e.g., findNavController().navigate(R.id.homeFragment)
+                val navHostFragment = supportFragmentManager
+                    .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+
+                val navController = navHostFragment.navController
+
+                navController.navigate(R.id.mainFragment)
             }
 
             feedbackDialog.onRetryRequested = {
-                // Optional: reset focus or scroll user to payment options
+                val navHostFragment = supportFragmentManager
+                    .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+
+                val navController = navHostFragment.navController
+
+                navController.navigate(R.id.supportFragment)
             }
 
             feedbackDialog.show(supportFragmentManager, PaymentFeedbackDialogFragment.TAG)

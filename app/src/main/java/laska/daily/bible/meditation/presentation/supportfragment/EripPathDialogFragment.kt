@@ -49,7 +49,7 @@ class EripPathDialogFragment : BottomSheetDialogFragment() {
             clipboard.setPrimaryClip(clip)
 
             Toast.makeText(requireContext(),
-                getString(R.string.erip_copied_text), Toast.LENGTH_SHORT).show()
+                getString(R.string.donate_erip_way_share_confirmation), Toast.LENGTH_SHORT).show()
             dismiss()
         }
         binding.path1.text = "•  " + donationsData.donationsEripPath[0]

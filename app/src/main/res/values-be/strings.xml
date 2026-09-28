@@ -47,8 +47,7 @@
     <string name="donate_become_sponsor_content">Хацелі б падтрымаць нас грунтоўна? Стаць спонсарам серыі разважанняў, ці новага раздзелу ў нашай мабільнай праграме? Напішыце нам laskamobi@gmail.com</string>
     <string name="donate_mail_copy">Скапіраваць пошту</string>
     <string name="donate_menu_title">Падтрымаць праект</string>
-    <string name="erip_copied_text">Пошта скапіявана</string>
-    <string name="email_copied_text">Пошта скапіявана</string>
+    <string name="email_copied_text">Пошта скапіравана</string>
     <string name="confirm_transfer_title">Ці ўдалося вам падтрымаць Laska?</string>
     <string name="confirm_transfer_yes">Так, удалося</string>
     <string name="confirm_transfer_no">Не, паспрабую яшчэ раз</string>
@@ -59,4 +58,7 @@
     <string name="donate_request_first_main">Laska бясплатная – і так будзе заўсёды. Вашая падтрымка можа гэтаму дапамагчы.</string>
     <string name="donate_request_main_next_window">Далей</string>
     <string name="donate_request_later">Падтрымаць пазней</string>
+    <string name="donate_erip_way_share_confirmation" >Рахунак скапіраваны</string>
+    <string name="donate_request_later_thank">Дзякуй!</string>
+    <string name="donate_request_later_subtitle">Нагадаем вам пра сябе праз 5 дзён</string>
 </resources>

@@ -39,6 +39,21 @@
             android:textStyle="bold" />
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/btnClose"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="40dp"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:background="@drawable/bg_circle_dark"
+        android:padding="12dp"
+        android:src="@drawable/close_btn_ic"
+        app:backgroundTint="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/support_main_tv"
         android:layout_width="wrap_content"
@@ -265,7 +280,7 @@
         android:id="@+id/tvNotFromBelarus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="9dp"
         android:fontFamily="@font/inter"
         android:text="@string/donate_belarus_not"
         android:textColor="#8E8E93"

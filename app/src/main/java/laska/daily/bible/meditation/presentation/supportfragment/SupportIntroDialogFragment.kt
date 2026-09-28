@@ -8,7 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.DialogSupportIntroBinding
 import laska.daily.bible.meditation.presentation.mainfragment.MainFragmentDirections
@@ -36,13 +39,17 @@ class SupportIntroDialogFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnNext.setOnClickListener {
-            findNavController().navigate(
-                MainFragmentDirections.actionMainFragmentToSupportFragment(
-                    LAUNCHMODE = SupportFragmentLaunchMode.FROM_POPUP
+            viewLifecycleOwner.lifecycleScope.launch {
+                findNavController().navigate(
+                    MainFragmentDirections.actionMainFragmentToSupportFragment(
+                        LAUNCHMODE = SupportFragmentLaunchMode.FROM_POPUP
+                    )
                 )
-            )
-            dismiss()
+                delay(180)
+                dismiss()
+            }
         }
+
     }
 
     override fun onStart() {

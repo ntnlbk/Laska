@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.DialogPaymentFeedbackBinding
 import laska.daily.bible.meditation.domain.analytics.CounterType
@@ -52,14 +55,20 @@ class PaymentFeedbackDialogFragment : BottomSheetDialogFragment() {
         // Step 1 -> "Не, паспрабаваць яшчэ раз" -> Dismiss and handle retry
         binding.btnRetry.setOnClickListener {
             incrementCounterUseCase(CounterType.DONATE_UNCONFIRMED)
-            dismiss()
-            onRetryRequested?.invoke()
+            viewLifecycleOwner.lifecycleScope.launch {
+                onRetryRequested?.invoke()
+                dismiss()
+            }
         }
 
         // Step 2 -> "На галоўную" -> Dismiss and navigate home
         binding.btnToMain.setOnClickListener {
-            dismiss()
-            onNavigateHomeRequested?.invoke()
+            viewLifecycleOwner.lifecycleScope.launch {
+                onNavigateHomeRequested?.invoke()
+                delay(400)
+                dismiss()
+            }
+
         }
     }
 

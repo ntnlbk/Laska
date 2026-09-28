@@ -64,9 +64,6 @@ class SupportFragment : Fragment() {
             donationsData = getDonationsDataUseCase()
         }
         binding.btnBack.setOnClickListener {
-            if (mode == SupportFragmentLaunchMode.FROM_POPUP) {
-                incrementCounterUseCase(CounterType.POP_UP_DISMISSED)
-            }
             findNavController().popBackStack()
         }
         val radioGroup = binding.toggleGroup
@@ -222,6 +219,19 @@ class SupportFragment : Fragment() {
                     OutsideBySupportDialogFragment.TAG
                 )
             }
+            binding.btnBack.visibility = View.GONE
+            binding.btnClose.visibility = View.VISIBLE
+            val params = binding.supportMainTv.layoutParams as? ViewGroup.MarginLayoutParams
+            params?.let {
+                val marginInDp = 47.5
+                val marginInPx = (marginInDp * resources.displayMetrics.density).toInt()
+                it.topMargin = marginInPx
+                binding.supportMainTv.layoutParams = it
+            }
+            binding.btnClose.setOnClickListener {
+                incrementCounterUseCase(CounterType.POP_UP_DISMISSED)
+                findNavController().popBackStack()
+            }
         }
     }
 
@@ -245,17 +255,14 @@ class SupportFragment : Fragment() {
             val feedbackDialog = PaymentFeedbackDialogFragment.newInstance()
 
             feedbackDialog.onNavigateHomeRequested = {
-                // Navigate to Home screen/fragment
-                // e.g., findNavController().navigate(R.id.homeFragment)
+                findNavController().popBackStack(R.id.mainFragment, inclusive = true)
             }
 
             feedbackDialog.onRetryRequested = {
-                // Optional: reset focus or scroll user to payment options
+
             }
 
             feedbackDialog.show(childFragmentManager, PaymentFeedbackDialogFragment.TAG)
-
-            // Reset flag so it won't show again on subsequent screen transitions
             paymentPrefs.isPaymentPending = false
         }
     }

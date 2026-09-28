@@ -46,6 +46,7 @@
         tools:layout="@layout/fragment_support" >
         <argument
             android:name="LAUNCH_MODE"
-            app:argType="laska.daily.bible.meditation.presentation.supportfragment.SupportFragmentLaunchMode" />
+            app:argType="laska.daily.bible.meditation.presentation.supportfragment.SupportFragmentLaunchMode"
+            android:defaultValue="FROM_MAIN_MENU" />
     </fragment>
 </navigation>
