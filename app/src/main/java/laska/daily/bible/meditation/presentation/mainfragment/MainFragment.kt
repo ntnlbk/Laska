@@ -264,13 +264,11 @@ class MainFragment : Fragment() {
                                 } else {
                                     binding.supportBtn.visibility = View.INVISIBLE
                                 }
-
-                                showDonationsPopup()
-
                             }
 
                             is MainFragmentState.Progress -> {
                                 binding.progressBar.visibility = View.VISIBLE
+                                showDonationsPopup()
                             }
 
                             is MainFragmentState.Error -> {
@@ -365,7 +363,7 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun showDonationsPopup() {
+    private suspend fun showDonationsPopup() {
         if(supportPromptManager.shouldShowPrompt()){
             viewModel.popUpShown()
             val introDialog = SupportIntroDialogFragment.newInstance()

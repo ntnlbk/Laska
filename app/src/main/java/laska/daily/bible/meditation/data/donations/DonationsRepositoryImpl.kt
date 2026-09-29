@@ -41,6 +41,15 @@ class DonationsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun checkPopupEnabled(): Boolean {
+        val querySnapshot = db
+            .collection("donations_android")
+            .get()
+            .await()
+        val docsMap = querySnapshot.documents.associateBy { it.id }
+        return docsMap["show_donations_pop_up"]?.getBoolean("value") ?: false
+    }
+
     private suspend fun fetchFromRemoteFirestore(): DonationsData {
         val querySnapshot = db
             .collection("donations_android")

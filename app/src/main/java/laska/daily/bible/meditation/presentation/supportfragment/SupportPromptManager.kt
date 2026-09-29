@@ -1,15 +1,20 @@
 package laska.daily.bible.meditation.domain.usecase
 
 import laska.daily.bible.meditation.domain.analytics.AnalyticsRepository
+import laska.daily.bible.meditation.domain.donations.CheckPopupEnabledUseCase
 import laska.daily.bible.meditation.presentation.supportfragment.SupportPromptPrefs
 import javax.inject.Inject
 
 class SupportPromptManager @Inject constructor(
     private val analyticsRepository: AnalyticsRepository,
-    private val promptPrefs: SupportPromptPrefs
+    private val promptPrefs: SupportPromptPrefs,
+    private val checkPopupEnabledUseCase: CheckPopupEnabledUseCase
 ) {
 
-    fun shouldShowPrompt(): Boolean {
+    suspend fun shouldShowPrompt(): Boolean {
+        if (!checkPopupEnabledUseCase()){
+            return false
+        }
         val currentSession = promptPrefs.sessionNumber
 
         // 1. Check if user dismissed prompt previously ("Later" clicked)

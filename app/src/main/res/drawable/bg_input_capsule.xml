@@ -5,7 +5,7 @@
         <shape android:shape="rectangle">
             <solid android:color="#1A1A1A" />
             <stroke android:width="1.5dp" android:color="#FF4D4D" />
-            <corners android:radius="100dp" />
+            <corners android:radius="24dp" />
         </shape>
     </item>
     <!-- Focused State (White border) -->
@@ -13,7 +13,7 @@
         <shape android:shape="rectangle">
             <solid android:color="#1A1A1A" />
             <stroke android:width="1.5dp" android:color="#ECDDAC" />
-            <corners android:radius="100dp" />
+            <corners android:radius="24dp" />
         </shape>
     </item>
     <!-- Default / Unfocused State (Gray border) -->
@@ -21,7 +21,7 @@
         <shape android:shape="rectangle">
             <solid android:color="#1A1A1A" />
             <stroke android:width="1.5dp" android:color="#3A3A3C" />
-            <corners android:radius="100dp" />
+            <corners android:radius="24dp" />
         </shape>
     </item>
 </selector>

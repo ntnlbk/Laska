@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity() {
 
                 val navController = navHostFragment.navController
 
-                navController.navigate(R.id.supportFragment)
+                navController.popBackStack(R.id.supportFragment, inclusive = false)
             }
 
             feedbackDialog.show(supportFragmentManager, PaymentFeedbackDialogFragment.TAG)
