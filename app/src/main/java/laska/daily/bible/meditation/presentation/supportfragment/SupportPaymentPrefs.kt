@@ -29,7 +29,6 @@ class SupportPaymentPrefs @Inject constructor(
 
     fun checkAndClearPaymentPending(): Boolean {
         return if (isPaymentPending) {
-            isPaymentPending = false
             true
         } else {
             false

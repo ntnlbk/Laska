@@ -126,6 +126,7 @@ class MainActivity : AppCompatActivity() {
                 val navController = navHostFragment.navController
 
                 navController.navigate(R.id.mainFragment)
+                paymentPrefs.isPaymentPending = false
             }
 
             feedbackDialog.onRetryRequested = {
@@ -135,6 +136,7 @@ class MainActivity : AppCompatActivity() {
                 val navController = navHostFragment.navController
 
                 navController.popBackStack(R.id.supportFragment, inclusive = false)
+                paymentPrefs.isPaymentPending = false
             }
 
             feedbackDialog.show(supportFragmentManager, PaymentFeedbackDialogFragment.TAG)

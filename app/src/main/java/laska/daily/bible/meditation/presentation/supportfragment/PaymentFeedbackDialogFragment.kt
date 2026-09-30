@@ -1,13 +1,16 @@
 package laska.daily.bible.meditation.presentation.supportfragment
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.FrameLayout
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -18,7 +21,7 @@ import laska.daily.bible.meditation.domain.analytics.IncrementCounterUseCase
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class PaymentFeedbackDialogFragment : BottomSheetDialogFragment() {
+class PaymentFeedbackDialogFragment : DialogFragment() {
 
     private var _binding: DialogPaymentFeedbackBinding? = null
     private val binding get() = _binding!!
@@ -74,6 +77,18 @@ class PaymentFeedbackDialogFragment : BottomSheetDialogFragment() {
 
     override fun onStart() {
         super.onStart()
+        dialog?.window?.apply {
+            // 1. Force the dialog window to match parent screen bounds
+            setLayout(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT
+            )
+            // 2. Make system dialog background transparent
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            // 3. Remove the dark dim overlay behind/above the window (including status bar)
+            clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        }
 
         // Explicitly specify  on findViewById
         val bottomSheet: FrameLayout? = dialog?.findViewById(com.google.android.material.R.id.design_bottom_sheet)

@@ -247,25 +247,6 @@ class SupportFragment : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        // Executed whenever the user comes back to the app/fragment
-        if (paymentPrefs.isPaymentPending) {
-            val feedbackDialog = PaymentFeedbackDialogFragment.newInstance()
-
-            feedbackDialog.onNavigateHomeRequested = {
-                findNavController().popBackStack(R.id.mainFragment, inclusive = true)
-            }
-
-            feedbackDialog.onRetryRequested = {
-
-            }
-
-            feedbackDialog.show(childFragmentManager, PaymentFeedbackDialogFragment.TAG)
-            paymentPrefs.isPaymentPending = false
-        }
-    }
 
     override fun onDestroyView() {
         incrementCounterUseCase(CounterType.DONATE_CLOSE)
