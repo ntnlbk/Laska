@@ -49,7 +49,7 @@
             android:id="@+id/rbEc"
             style="@style/Widget.AppCompat.CompoundButton.RadioButton"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="56dp"
             android:layout_weight="1"
             android:background="@drawable/bg_capsule_selector"
             android:backgroundTint="@null"
@@ -64,7 +64,7 @@
             android:id="@+id/rbRussia"
             style="@style/Widget.AppCompat.CompoundButton.RadioButton"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="56dp"
             android:layout_marginHorizontal="8dp"
             android:layout_weight="1"
             android:background="@drawable/bg_capsule_selector"
@@ -80,7 +80,7 @@
             android:id="@+id/rbOther"
             style="@style/Widget.AppCompat.CompoundButton.RadioButton"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="56dp"
             android:layout_weight="1"
             android:background="@drawable/bg_capsule_selector"
             android:backgroundTint="@null"
@@ -107,7 +107,7 @@
         android:textColor="@color/btn_confirm_text_selector"
         android:textSize="16sp"
         app:backgroundTint="@color/btn_confirm_bg_selector"
-        app:cornerRadius="100dp"
+        app:cornerRadius="24dp"
         app:layout_constraintTop_toBottomOf="@id/rgRegion" />
 
     <!-- Description Text -->

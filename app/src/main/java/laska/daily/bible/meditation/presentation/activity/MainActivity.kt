@@ -41,6 +41,8 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var paymentPrefs: SupportPaymentPrefs
 
+    private var donateFeedbackShowedOnce: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -85,6 +87,11 @@ class MainActivity : AppCompatActivity() {
 
         ReviewHelper(this).onAppLaunched(this)
 
+
+
+
+
+
     }
 
     private fun preloadDataAndManageSplash(splashOverlay: View) {
@@ -112,20 +119,10 @@ class MainActivity : AppCompatActivity() {
         splashOverlay.animate().alpha(0f).setDuration(500).withEndAction {
             splashOverlay.visibility = View.GONE
         }
-    }
-    override fun onResume() {
-        super.onResume()
-
-        if (paymentPrefs.checkAndClearPaymentPending()) {
+        if (paymentPrefs.checkAndClearPaymentPending() && !donateFeedbackShowedOnce) {
             val feedbackDialog = PaymentFeedbackDialogFragment.newInstance()
 
             feedbackDialog.onNavigateHomeRequested = {
-                val navHostFragment = supportFragmentManager
-                    .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
-
-                val navController = navHostFragment.navController
-
-                navController.navigate(R.id.mainFragment)
                 paymentPrefs.isPaymentPending = false
             }
 
@@ -135,11 +132,14 @@ class MainActivity : AppCompatActivity() {
 
                 val navController = navHostFragment.navController
 
-                navController.popBackStack(R.id.supportFragment, inclusive = false)
+                navController.navigate(R.id.supportFragment)
                 paymentPrefs.isPaymentPending = false
             }
 
             feedbackDialog.show(supportFragmentManager, PaymentFeedbackDialogFragment.TAG)
+            donateFeedbackShowedOnce = true
         }
     }
+
+
 }
