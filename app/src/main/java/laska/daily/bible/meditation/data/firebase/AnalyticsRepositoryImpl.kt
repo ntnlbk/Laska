@@ -160,11 +160,11 @@ class AnalyticsRepositoryImpl @Inject constructor(
     }
 
     private fun updateUser(updates: HashMap<String, Any>) {
-        db.collection("users_dev").document(userID).set(updates, SetOptions.merge())
+        db.collection("users").document(userID).set(updates, SetOptions.merge())
     }
 
     private suspend fun checkAndCreateUser(id: String) {
-        val userRef = db.collection("users_dev").document(id)
+        val userRef = db.collection("users").document(id)
         val documentSnapshot = try {
             userRef.get().await()
         } catch (e: Exception) {
