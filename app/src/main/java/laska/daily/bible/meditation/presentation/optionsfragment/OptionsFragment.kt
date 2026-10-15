@@ -155,9 +155,6 @@ class OptionsFragment : Fragment() {
                 )
             )
         }
-        binding.closeBtn.setOnClickListener {
-            findNavController().popBackStack()
-        }
         binding.languageBtn.setOnClickListener {
             val location = IntArray(2)
             binding.languageBtn.getLocationOnScreen(location)

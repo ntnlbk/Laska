@@ -216,12 +216,6 @@ class MainFragment : Fragment() {
         binding.minusBtn.setOnClickListener { viewModel.goBack15Sec() }
         binding.showTextBtn.setOnClickListener { if (!errorBlocking) viewModel.showTextButtonClicked() }
         binding.dotsIndicator.totalDots = TOTAL_DAYS_TO_SHOW
-        binding.btnMenu.setOnClickListener {
-            if (!errorBlocking) {
-                findNavController().navigate(MainFragmentDirections.actionMainFragmentToOptionsFragment())
-            }
-
-        }
         binding.supportBtn.setOnClickListener {
             viewModel.supportButtonClicked()
             if (!errorBlocking) {
@@ -231,6 +225,9 @@ class MainFragment : Fragment() {
                     )
                 )
             }
+        }
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
         }
     }
 

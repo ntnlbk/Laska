@@ -88,17 +88,74 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         val bottomNavigationView = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigationView)
-        bottomNavigationView.setupWithNavController(navController)
+
+
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.homeFragment -> {
+                    // Пытаемся просто "смахнуть" все экраны поверх HomeFragment, возвращаясь к нему
+                    val popped = navController.popBackStack(R.id.homeFragment, inclusive = false)
+                    if (!popped) {
+                        // Если мы были на другом табе и Home нет в текущем стеке — переходим туда
+                        navController.navigate(
+                            R.id.homeFragment,
+                            null,
+                            androidx.navigation.NavOptions.Builder()
+                                .setPopUpTo(R.id.homeFragment, inclusive = false, saveState = true)
+                                .setRestoreState(true)
+                                .setLaunchSingleTop(true)
+                                .build()
+                        )
+                    }
+                    true
+                }
+                R.id.coursesMainFragment -> {
+                    val popped = navController.popBackStack(R.id.coursesMainFragment, inclusive = false)
+                    if (!popped) {
+                        navController.navigate(
+                            R.id.coursesMainFragment,
+                            null,
+                            androidx.navigation.NavOptions.Builder()
+                                .setPopUpTo(R.id.homeFragment, inclusive = false, saveState = true)
+                                .setRestoreState(true)
+                                .setLaunchSingleTop(true)
+                                .build()
+                        )
+                    }
+                    true
+                }
+                R.id.optionsFragment -> {
+                    val popped = navController.popBackStack(R.id.optionsFragment, inclusive = false)
+                    if (!popped) {
+                        navController.navigate(
+                            R.id.optionsFragment,
+                            null,
+                            androidx.navigation.NavOptions.Builder()
+                                .setPopUpTo(R.id.homeFragment, inclusive = false, saveState = true)
+                                .setRestoreState(true)
+                                .setLaunchSingleTop(true)
+                                .build()
+                        )
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.homeFragment,
                 R.id.coursesMainFragment,
                 R.id.optionsFragment,
-                R.id.courseFragment-> {
+                R.id.courseFragment -> {
                     bottomNavigationView.visibility = View.VISIBLE
-                    if (destination.id == R.id.courseFragment) {
-                        bottomNavigationView.menu.findItem(R.id.coursesMainFragment)?.isChecked = true
+
+                    // Синхронизируем подсветку кнопок в нижнем меню с текущим экраном
+                    when (destination.id) {
+                        R.id.homeFragment -> bottomNavigationView.menu.findItem(R.id.homeFragment)?.isChecked = true
+                        R.id.coursesMainFragment, R.id.courseFragment -> bottomNavigationView.menu.findItem(R.id.coursesMainFragment)?.isChecked = true
+                        R.id.optionsFragment -> bottomNavigationView.menu.findItem(R.id.optionsFragment)?.isChecked = true
                     }
                 }
                 else -> {

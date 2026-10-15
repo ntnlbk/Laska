@@ -19,14 +19,14 @@
         <Button
             android:id="@+id/btnToMain"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="620dp"
             android:text="Блок разважання" />
 
         <Button
             android:id="@+id/btnToCourse"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Курс" />
+            android:layout_height="390dp"
+            android:text="Выбранный курс" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

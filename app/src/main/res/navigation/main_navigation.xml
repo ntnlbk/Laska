@@ -55,7 +55,9 @@
         android:label="CoursesMainFragment" >
         <action
             android:id="@+id/action_coursesMainFragment_to_courseFragment"
-            app:destination="@id/courseFragment" />
+            app:destination="@id/courseFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/coursesMainFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -66,7 +68,9 @@
             app:destination="@id/mainFragment" />
         <action
             android:id="@+id/action_homeFragment_to_courseFragment"
-            app:destination="@id/courseFragment" />
+            app:destination="@id/courseFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/courseFragment"
