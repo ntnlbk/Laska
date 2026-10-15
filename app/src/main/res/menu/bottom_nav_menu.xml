@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:title="home" />
+<!--        android:icon="@drawable/icon_fullsize"-->
+
+
+    <item
+        android:id="@+id/coursesMainFragment"
+        android:title="courses" />
+<!--        android:icon="@drawable/icon_fullsize"-->
+
+
+    <item
+        android:id="@+id/optionsFragment"
+        android:title="options"/>
+<!--        android:icon="@drawable/icon_fullsize"-->
+
+</menu>

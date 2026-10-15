@@ -50,6 +50,7 @@ converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", versi
 converter-scalars-v290 = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "converterScalars" }
 core = { module = "com.google.zxing:core", version.ref = "core" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 gson-v2101 = { module = "com.google.code.gson:gson", version.ref = "gsonVersion" }

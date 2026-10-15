@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -81,6 +82,31 @@ class MainActivity : AppCompatActivity() {
             )
         )
         setContentView(R.layout.activity_main)
+
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        val bottomNavigationView = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.homeFragment,
+                R.id.coursesMainFragment,
+                R.id.optionsFragment,
+                R.id.courseFragment-> {
+                    bottomNavigationView.visibility = View.VISIBLE
+                    if (destination.id == R.id.courseFragment) {
+                        bottomNavigationView.menu.findItem(R.id.coursesMainFragment)?.isChecked = true
+                    }
+                }
+                else -> {
+                    bottomNavigationView.visibility = View.GONE
+                }
+            }
+        }
+
 
         val splashOverlay = findViewById<View>(R.id.splash_overlay)
         preloadDataAndManageSplash(splashOverlay)
