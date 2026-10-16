@@ -61,4 +61,7 @@
     <string name="donate_erip_way_share_confirmation" >Рахунак скапіраваны</string>
     <string name="donate_request_later_thank">Дзякуй!</string>
     <string name="donate_request_later_subtitle">Нагадаем вам пра сябе праз 5 дзён</string>
+    <string name="bottom_menu_main">Галоўная</string>
+    <string name="bottom_menu_courses">Курсы</string>
+    <string name="bottom_menu_options">Налады</string>
 </resources>

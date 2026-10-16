@@ -61,4 +61,7 @@
     <string name="donate_erip_way_share_confirmation" >Счёт скопирован</string>
     <string name="donate_request_later_thank">Спасибо!</string>
     <string name="donate_request_later_subtitle">Напомним вам о себе через 5 дней</string>
+    <string name="bottom_menu_main">Главная</string>
+    <string name="bottom_menu_courses">Курсы</string>
+    <string name="bottom_menu_options">Настройки</string>
 </resources>

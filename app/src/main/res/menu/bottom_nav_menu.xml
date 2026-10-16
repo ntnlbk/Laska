@@ -2,19 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/homeFragment"
-        android:title="home" />
-<!--        android:icon="@drawable/icon_fullsize"-->
+        android:title="@string/bottom_menu_main"
+        android:icon="@drawable/bottom_menu_main_ic"/>
 
 
     <item
         android:id="@+id/coursesMainFragment"
-        android:title="courses" />
-<!--        android:icon="@drawable/icon_fullsize"-->
+        android:title="@string/bottom_menu_courses"
+        android:icon="@drawable/bottom_menu_courses_ic"/>
 
 
     <item
         android:id="@+id/optionsFragment"
-        android:title="options"/>
-<!--        android:icon="@drawable/icon_fullsize"-->
+        android:title="@string/bottom_menu_options"
+        android:icon="@drawable/bottom_menu_options"/>
 
 </menu>
