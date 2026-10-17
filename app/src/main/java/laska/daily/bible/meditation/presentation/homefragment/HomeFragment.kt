@@ -1,72 +1,133 @@
 package laska.daily.bible.meditation.presentation.homefragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
 import laska.daily.bible.meditation.R
+import laska.daily.bible.meditation.databinding.FragmentHomeBinding
+import laska.daily.bible.meditation.domain.courses.Author
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var _binding: FragmentHomeBinding? = null
+    private val binding: FragmentHomeBinding
+        get() = _binding ?: throw Exception("FragmentHomeBinding is null")
+
+    private var backgroundVidePlayer: ExoPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+    ): View {
+        if (_binding == null) {
+            _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        }
+        val parent = binding.root.parent as? ViewGroup
+        parent?.removeView(binding.root)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<View>(R.id.btnToMain).setOnClickListener {
+
+        setupBackgroundPlayer()
+
+        binding.btnToMain.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_mainFragment)
         }
 
-        view.findViewById<View>(R.id.btnToCourse).setOnClickListener {
+        binding.btnToCourse.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_courseFragment)
+        }
+
+
+        val authorsAdapter = AuthorsAdapter({})
+        val sampleAuthors = listOf(
+            Author(name = "а. Яўген Голуб", imageResId = R.drawable.test_author_ic),
+            Author(name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
+            Author(name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
+            Author(name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon)
+        )
+        binding.rvAuthors.adapter = authorsAdapter
+        authorsAdapter.submitList(sampleAuthors)
+    }
+    override fun onResume() {
+        super.onResume()
+        backgroundVidePlayer?.playWhenReady = true
+    }
+    override fun onPause() {
+        super.onPause()
+        backgroundVidePlayer?.playWhenReady = false
+    }
+
+    override fun onDestroy() {
+        backgroundVidePlayer?.release()
+        backgroundVidePlayer = null
+        _binding = null
+        super.onDestroy()
+    }
+
+    private fun setupBackgroundPlayer() {
+        val playerView = binding.playerView
+
+        backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build().apply {
+            playerView.player = this
+
+            val mediaItem = MediaItem.fromUri(
+                "android.resource://${requireContext().packageName}/${R.raw.background}"
+            )
+            setMediaItem(mediaItem)
+            repeatMode = Player.REPEAT_MODE_ALL
+            volume = 0f
+
+            playWhenReady = true
+
+            addListener(object : Player.Listener {
+                override fun onRenderedFirstFrame() {
+                    startPostponedEnterTransition()
+                }
+
+                override fun onPlaybackStateChanged(playbackState: Int) {
+                    if (playbackState == Player.STATE_READY) {
+                        startPostponedEnterTransition()
+                        play()
+                    }
+                }
+
+                override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+                    super.onPlayerError(error)
+                    seekTo(0)
+                    prepare()
+                    play()
+                    startPostponedEnterTransition()
+                }
+            })
+
+            prepare()
         }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun findTextureView(viewGroup: android.view.ViewGroup): android.view.TextureView? {
+        for (i in 0 until viewGroup.childCount) {
+            val child = viewGroup.getChildAt(i)
+            if (child is android.view.TextureView) {
+                return child
+            } else if (child is android.view.ViewGroup) {
+                val found = findTextureView(child)
+                if (found != null) return found
             }
+        }
+        return null
     }
+
 }

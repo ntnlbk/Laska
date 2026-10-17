@@ -67,5 +67,11 @@
         <item name="android:minHeight">64dp</item>
         <item name="android:paddingBottom">12dp</item>
     </style>
+    <style name="HomeFragmentCourseImageRounded">
+        <item name="cornerSize">24dp</item>
+    </style>
+    <style name="CircleImageStyle">
+        <item name="cornerSize">50%</item>
+    </style>
 
 </resources>
