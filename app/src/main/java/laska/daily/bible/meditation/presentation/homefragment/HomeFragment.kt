@@ -79,10 +79,10 @@ class HomeFragment : Fragment() {
 
         val authorsAdapter = AuthorsAdapter({})
         val sampleAuthors = listOf(
-            Author(name = "а. Яўген Голуб", imageResId = R.drawable.test_author_ic),
-            Author(name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
-            Author(name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
-            Author(name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon)
+            Author(id = "1", name = "а. Яўген Голуб", imageResId = R.drawable.test_author_ic),
+            Author(id = "2", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
+            Author(id = "3", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
+            Author(id = "4", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon)
         )
         binding.rvAuthors.adapter = authorsAdapter
         authorsAdapter.submitList(sampleAuthors)
@@ -123,10 +123,12 @@ class HomeFragment : Fragment() {
         scrollAnimator = animator
         animator.start()
     }
+
     override fun onResume() {
         super.onResume()
         backgroundVidePlayer?.playWhenReady = true
     }
+
     override fun onPause() {
         super.onPause()
         backgroundVidePlayer?.playWhenReady = false
