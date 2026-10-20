@@ -76,5 +76,14 @@
         android:id="@+id/courseFragment"
         android:name="laska.daily.bible.meditation.presentation.coursefragment.CourseFragment"
         android:label="fragment_course"
-        tools:layout="@layout/fragment_course" />
+        tools:layout="@layout/fragment_course" >
+        <action
+            android:id="@+id/action_courseFragment_to_episodeFragment"
+            app:destination="@id/episodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/episodeFragment"
+        android:name="laska.daily.bible.meditation.presentation.episodefragment.EpisodeFragment"
+        android:label="fragment_episode"
+        tools:layout="@layout/fragment_episode" />
 </navigation>

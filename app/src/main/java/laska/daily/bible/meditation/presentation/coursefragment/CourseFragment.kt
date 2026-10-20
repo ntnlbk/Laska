@@ -52,7 +52,7 @@ class CourseFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         if (_binding == null) {
             _binding = FragmentCourseBinding.inflate(inflater, container, false)
         }
@@ -131,14 +131,10 @@ class CourseFragment : Fragment() {
                         .setImageResource(R.drawable.ic_play)
                 }
             }
-
-
-            // Вешаем клик
             episodeView.setOnClickListener {
-                // Клик по эпизоду
+                findNavController().navigate(R.id.action_courseFragment_to_episodeFragment)
             }
 
-            // Добавляем в вертикальный LinearLayout
             binding.containerEpisodes.addView(episodeView)
         }
     }

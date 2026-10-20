@@ -132,6 +132,7 @@ class HomeFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         backgroundVidePlayer?.playWhenReady = false
+        binding.homeScrollView.scrollTo(0, 0)
     }
 
     override fun onDestroy() {
