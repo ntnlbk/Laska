@@ -1,9 +1,13 @@
 package laska.daily.bible.meditation.presentation.homefragment
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import androidx.fragment.app.Fragment
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -16,6 +20,7 @@ import laska.daily.bible.meditation.domain.courses.Author
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
+
     private val binding: FragmentHomeBinding
         get() = _binding ?: throw Exception("FragmentHomeBinding is null")
 
@@ -40,10 +45,31 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val btnToMain = binding.btnToMain
+
+        btnToMain.post {
+            val parentHeight = btnToMain.rootView.height
+
+            val targetHeight = parentHeight -
+                    (300 * resources.displayMetrics.density).toInt()
+
+            btnToMain.layoutParams = btnToMain.layoutParams.apply {
+                height = targetHeight
+            }
+        }
+
         setupBackgroundPlayer()
 
         binding.btnToMain.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_mainFragment)
+            backgroundVidePlayer?.playWhenReady = false
+            scrollToTopSmoothly {
+                backgroundVidePlayer?.release()
+                backgroundVidePlayer = null
+
+                findNavController().navigate(
+                    R.id.action_homeFragment_to_mainFragment
+                )
+            }
         }
 
         binding.btnToCourse.setOnClickListener {
@@ -60,6 +86,42 @@ class HomeFragment : Fragment() {
         )
         binding.rvAuthors.adapter = authorsAdapter
         authorsAdapter.submitList(sampleAuthors)
+
+    }
+
+
+    private var scrollAnimator: ValueAnimator? = null
+
+    private fun scrollToTopSmoothly(onFinished: () -> Unit) {
+        val scrollView = binding.homeScrollView
+
+        scrollAnimator?.cancel()
+
+        val animator = ValueAnimator.ofInt(scrollView.scrollY, 0).apply {
+            duration = 200L
+            interpolator = LinearInterpolator()
+
+            addUpdateListener {
+                scrollView.scrollTo(0, it.animatedValue as Int)
+            }
+
+            addListener(object : AnimatorListenerAdapter() {
+                private var cancelled = false
+
+                override fun onAnimationCancel(animation: Animator) {
+                    cancelled = true
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    if (!cancelled && _binding != null) {
+                        onFinished()
+                    }
+                }
+            })
+        }
+
+        scrollAnimator = animator
+        animator.start()
     }
     override fun onResume() {
         super.onResume()
@@ -117,12 +179,12 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun findTextureView(viewGroup: android.view.ViewGroup): android.view.TextureView? {
+    private fun findTextureView(viewGroup: ViewGroup): android.view.TextureView? {
         for (i in 0 until viewGroup.childCount) {
             val child = viewGroup.getChildAt(i)
             if (child is android.view.TextureView) {
                 return child
-            } else if (child is android.view.ViewGroup) {
+            } else if (child is ViewGroup) {
                 val found = findTextureView(child)
                 if (found != null) return found
             }
