@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#1b1b1b"
+    android:orientation="horizontal"
+    android:paddingBottom="12dp">
+
+    <ImageView
+        android:id="@+id/ivEpisodeStatus"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="@drawable/bg_course_episode_ic"
+        android:padding="25dp"
+        android:src="@drawable/ic_play"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginStart="12dp"
+        >
+
+        <TextView
+            android:id="@+id/tvEpisodeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter"
+            android:text="01 Episode title"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="01 Episode title" />
+        <TextView
+            android:id="@+id/tvEpisodeSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter"
+            android:text="Subtitle"
+            android:textColor="#989898"
+            android:textSize="14sp"
+            tools:text="Subtitle" />
+        <TextView
+            android:id="@+id/tvEpisodeTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter"
+            android:text="5 мин"
+            android:textColor="#989898"
+            android:textSize="14sp"
+            tools:text="5 мин" />
+    </LinearLayout>
+
+</LinearLayout>
