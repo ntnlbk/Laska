@@ -64,4 +64,6 @@
     <string name="bottom_menu_main">Главная</string>
     <string name="bottom_menu_courses">Курсы</string>
     <string name="bottom_menu_options">Настройки</string>
+    <string name="featured_home_placement">featured</string>
+    <string name="regular_home_placement">regular</string>
 </resources>

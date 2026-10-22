@@ -4,17 +4,23 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
+import coil.load
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentHomeBinding
 
@@ -35,11 +41,7 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        if (_binding == null) {
-            _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        }
-        val parent = binding.root.parent as? ViewGroup
-        parent?.removeView(binding.root)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -47,30 +49,57 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupBackgroundPlayer()
         setupOnClickListeners()
+        observeViewModel()
 
+    }
 
-//        val authorsAdapter = AuthorsAdapter({})
-//        val sampleAuthors = listOf(
-//            Author(id = "1", name = "а. Яўген Голуб", imageResId = R.drawable.test_author_ic),
-//            Author(id = "2", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
-//            Author(id = "3", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
-//            Author(id = "4", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon)
-//        )
-//        binding.rvAuthors.adapter = authorsAdapter
-//        authorsAdapter.submitList(sampleAuthors)
-
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.homeUIState.collect {
+                        when (it){
+                            is HomeFragmentState.Content -> {
+                                Log.d("COURSES", "CONTENT")
+                                binding.dateTv.text = it.date
+                                binding.bibleRefTv.text = it.bibleReference
+                                binding.tvFeaturedSection.text = it.featuredSectionTitle
+                                binding.tvEpisodesCount.text = it.featuredCourseSessionsNumber.toString()
+                                binding.tvFeaturedCourseTitle.text = it.featuredCourseTitle
+                                binding.tvFeaturedCourseDescription.text = it.featuredCourseDescription
+                                binding.ivFeaturedCourseLogo.load(
+                                    it.featuredCourseImageURL
+                                ) {
+                                    crossfade(true)
+                                    placeholder(R.drawable.home_fragment_courses_section_test_img)
+                                    error(R.drawable.home_fragment_courses_section_test_img)
+                                }
+                                val authorsAdapter = AuthorsAdapter({})
+                                binding.rvAuthors.adapter = authorsAdapter
+                                authorsAdapter.submitList(it.featuredCourseAuthors)
+                            }
+                            is HomeFragmentState.Error -> Log.d("COURSES", "ERROR")
+                            HomeFragmentState.Progress -> Log.d("COURSES", "PROGRESS")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setupOnClickListeners() {
         binding.btnToMain.setOnClickListener {
             backgroundVidePlayer?.playWhenReady = false
-            scrollToTopSmoothly {
-                backgroundVidePlayer?.release()
-                backgroundVidePlayer = null
 
-                findNavController().navigate(
-                    R.id.action_homeFragment_to_mainFragment
-                )
+            scrollToTopSmoothly {
+                if (_binding != null &&
+                    viewLifecycleOwner.lifecycle.currentState
+                        .isAtLeast(Lifecycle.State.CREATED)
+                ) {
+                    findNavController().navigate(
+                        R.id.action_homeFragment_to_mainFragment
+                    )
+                }
             }
         }
 
@@ -78,6 +107,7 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_homeFragment_to_courseFragment)
         }
     }
+
     private fun scrollToTopSmoothly(onFinished: () -> Unit) {
         val scrollView = binding.homeScrollView
 
@@ -121,11 +151,14 @@ class HomeFragment : Fragment() {
         binding.homeScrollView.scrollTo(0, 0)
     }
 
-    override fun onDestroy() {
-        backgroundVidePlayer?.release()
-        backgroundVidePlayer = null
+    override fun onDestroyView() {
+        scrollAnimator?.cancel()
+        scrollAnimator = null
+
+        releaseBackgroundPlayer()
+
         _binding = null
-        super.onDestroy()
+        super.onDestroyView()
     }
 
     private fun setupBackgroundPlayer() {
@@ -164,7 +197,6 @@ class HomeFragment : Fragment() {
                 override fun onPlaybackStateChanged(playbackState: Int) {
                     if (playbackState == Player.STATE_READY) {
                         startPostponedEnterTransition()
-                        play()
                     }
                 }
 
@@ -179,6 +211,16 @@ class HomeFragment : Fragment() {
 
             prepare()
         }
+    }
+
+    private fun releaseBackgroundPlayer() {
+        backgroundVidePlayer?.let { player ->
+            binding.playerView.player = null
+            player.stop()
+            player.release()
+        }
+
+        backgroundVidePlayer = null
     }
 
 }

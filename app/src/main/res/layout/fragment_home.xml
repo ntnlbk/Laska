@@ -130,6 +130,7 @@
                 android:paddingHorizontal="24dp">
 
                 <TextView
+                    android:id="@+id/tvFeaturedSection"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter"
@@ -146,6 +147,7 @@
                     android:layout_height="228dp">
 
                     <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/ivFeaturedCourseLogo"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
@@ -153,6 +155,7 @@
                         app:shapeAppearanceOverlay="@style/HomeFragmentCourseImageRounded" />
 
                     <TextView
+                        android:id="@+id/tvEpisodesCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
@@ -170,6 +173,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
+                    android:id="@+id/tvFeaturedCourseTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
@@ -182,6 +186,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
+                    android:id="@+id/tvFeaturedCourseDescription"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:lineSpacingExtra="4dp"

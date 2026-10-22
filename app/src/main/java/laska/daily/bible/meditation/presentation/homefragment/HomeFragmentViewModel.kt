@@ -40,11 +40,13 @@ class HomeFragmentViewModel @Inject constructor(
             val currentReading = getReadingUseCase(todayFormatted(), currentLanguage)
             val course = getCourseForHomeScreenUseCase(currentLanguage)
             _homeUIState.value = HomeFragmentState.Content(
-                date = currentReading.date,
+                date = currentReading.dateFormatted,
                 bibleReference = currentReading.bibleReference,
-                featuredSectionTitle = course.title,
+                featuredSectionTitle = "FROM FIREBASE",
                 featuredCourseImageURL = course.imageURL,
+                featuredCourseSessionsNumber = course.episodeCount,
                 featuredCourseTitle = course.title,
+                featuredCourseDescription = course.shortDescription,
                 featuredCourseAuthors = course.authors
             )
         }

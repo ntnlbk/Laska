@@ -113,6 +113,9 @@ dependencies {
     // ZXing for dynamic QR code bitmap generation
     implementation(libs.core)
 
+    // Coil for image loading
+    implementation(libs.coil)
+
     implementation(libs.gson.v2101)
 }
 

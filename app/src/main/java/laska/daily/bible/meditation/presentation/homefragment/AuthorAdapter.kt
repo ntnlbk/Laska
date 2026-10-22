@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.google.android.material.imageview.ShapeableImageView
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.domain.courses.Author
@@ -22,7 +23,6 @@ class AuthorsAdapter(
     }
 
     override fun onBindViewHolder(holder: AuthorViewHolder, position: Int) {
-        // Метод getItem(position) встроен в ListAdapter
         holder.bind(getItem(position))
     }
 
@@ -33,11 +33,15 @@ class AuthorsAdapter(
         fun bind(author: Author) {
             tvName.text = author.name
 
-//            if (author.imageResId != null) {
-//                ivAvatar.setImageResource(author.imageResId)
-//            } else {
-//                ivAvatar.setImageResource(R.drawable.bottom_menu_main_ic)
-//            }
+            if (author.imageURL != "") {
+                ivAvatar.load(author.imageURL){
+                    crossfade(true)
+                    placeholder(R.drawable.author_default_ic)
+                    error(R.drawable.author_default_ic)
+                }
+            } else {
+                ivAvatar.setImageResource(R.drawable.author_default_ic)
+            }
 
             itemView.setOnClickListener {
                 onAuthorClick(author)
@@ -45,7 +49,6 @@ class AuthorsAdapter(
         }
     }
 
-    // --- DiffUtil для авторов ---
     class AuthorDiffCallback : DiffUtil.ItemCallback<Author>() {
         override fun areItemsTheSame(oldItem: Author, newItem: Author): Boolean {
             return oldItem.id == newItem.id // Сравниваем по уникальному id автора

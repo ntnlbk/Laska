@@ -9,7 +9,9 @@ sealed class HomeFragmentState {
         val bibleReference: String,
         val featuredSectionTitle: String,
         val featuredCourseImageURL: String,
+        val featuredCourseSessionsNumber: Int,
         val featuredCourseTitle: String,
+        val featuredCourseDescription: String,
         val featuredCourseAuthors: List<Author>
     ) : HomeFragmentState()
 

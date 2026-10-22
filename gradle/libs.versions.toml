@@ -1,5 +1,6 @@
 [versions]
 agp = "8.7.3"
+coil = "2.7.0"
 converterScalars = "2.9.0"
 core = "3.5.4"
 coreKtx = "1.13.1"
@@ -47,6 +48,7 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 androidx-navigation-compose-v277 = { module = "androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationComposeVersion" }
 androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationComposeVersion" }
+coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit" }
 converter-scalars-v290 = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "converterScalars" }
 core = { module = "com.google.zxing:core", version.ref = "core" }
