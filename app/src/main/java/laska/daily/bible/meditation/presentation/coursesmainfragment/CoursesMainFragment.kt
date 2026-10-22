@@ -1,16 +1,12 @@
 package laska.daily.bible.meditation.presentation.coursesmainfragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import laska.daily.bible.meditation.R
-import laska.daily.bible.meditation.domain.courses.Author
-import laska.daily.bible.meditation.domain.courses.Course
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -50,45 +46,45 @@ class CoursesMainFragment : Fragment() {
         val recyclerView: RecyclerView = view.findViewById(R.id.rvCourses)
 
         // Тестовые данные
-        val sampleAuthors = listOf(
-            Author(id = "1", name = "а. Яўген Голуб", imageResId = R.drawable.test_author_ic),
-            Author(id = "2", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
-            Author(id = "3", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
-            Author(id = "4", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon)
-        )
-
-        val sampleCourses = listOf(
-            Course(
-                id = "1",
-                imageRes = R.drawable.home_fragment_courses_section_test_img,
-                sessionsCount = "26 sessions",
-                title = "Name",
-                description = "Short description short Short description short",
-                authors = sampleAuthors
-            ),
-            Course(
-                id = "2",
-                imageRes = R.drawable.home_fragment_courses_section_test_img,
-                sessionsCount = "26 sessions",
-                title = "Name",
-                description = "Short description short Short description short",
-                authors = sampleAuthors
-            ),
-            Course(
-                id = "3",
-                imageRes = R.drawable.home_fragment_courses_section_test_img,
-                sessionsCount = "26 sessions",
-                title = "Name",
-                description = "Short description short Short description short",
-                authors = sampleAuthors
-            )
-        )
-
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val adapter =
-            CourseAdapter({ findNavController().navigate(R.id.action_coursesMainFragment_to_courseFragment) })
-        adapter.submitList(sampleCourses)
-        recyclerView.adapter = adapter
+//        val sampleAuthors = listOf(
+//            Author(id = "1", name = "а. Яўген Голуб", imageResId = R.drawable.test_author_ic),
+//            Author(id = "2", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
+//            Author(id = "3", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
+//            Author(id = "4", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon)
+//        )
+//
+//        val sampleCourses = listOf(
+//            Course(
+//                id = "1",
+//                imageRes = R.drawable.home_fragment_courses_section_test_img,
+//                sessionsCount = "26 sessions",
+//                title = "Name",
+//                description = "Short description short Short description short",
+//                authors = sampleAuthors
+//            ),
+//            Course(
+//                id = "2",
+//                imageRes = R.drawable.home_fragment_courses_section_test_img,
+//                sessionsCount = "26 sessions",
+//                title = "Name",
+//                description = "Short description short Short description short",
+//                authors = sampleAuthors
+//            ),
+//            Course(
+//                id = "3",
+//                imageRes = R.drawable.home_fragment_courses_section_test_img,
+//                sessionsCount = "26 sessions",
+//                title = "Name",
+//                description = "Short description short Short description short",
+//                authors = sampleAuthors
+//            )
+//        )
+//
+//        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+//        val adapter =
+//            CourseAdapter({ findNavController().navigate(R.id.action_coursesMainFragment_to_courseFragment) })
+//        adapter.submitList(sampleCourses)
+//        recyclerView.adapter = adapter
     }
 
     companion object {
