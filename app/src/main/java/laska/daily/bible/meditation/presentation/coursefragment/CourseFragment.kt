@@ -6,15 +6,9 @@ import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentCourseBinding
-import laska.daily.bible.meditation.domain.courses.Author
-import laska.daily.bible.meditation.domain.courses.Episode
 import laska.daily.bible.meditation.presentation.homefragment.AuthorsAdapter
 
 // TODO: Rename parameter arguments, choose names that match
@@ -64,14 +58,14 @@ class CourseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val authorsAdapter = AuthorsAdapter({})
-        val sampleAuthors = listOf(
-            Author(id = "1", name = "а. Яўген Голуб", imageResId = R.drawable.test_author_ic),
-            Author(id = "2", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
-            Author(id = "3", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
-            Author(id = "4", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon)
-        )
-        binding.rvAuthors.adapter = authorsAdapter
-        authorsAdapter.submitList(sampleAuthors)
+//        val sampleAuthors = listOf(
+//            Author(id = "1", name = "а. Яўген Голуб", imageResId = R.drawable.test_author_ic),
+//            Author(id = "2", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
+//            Author(id = "3", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
+//            Author(id = "4", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon)
+//        )
+//        binding.rvAuthors.adapter = authorsAdapter
+//        authorsAdapter.submitList(sampleAuthors)
         val detailedInformationButton = binding.detailedInformationBtn
         val informationTv = binding.informationTv
         detailedInformationButton.setOnClickListener {
@@ -90,53 +84,53 @@ class CourseFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        val episodes = listOf(
-            Episode(0, "Episode title", "subtitle", "5 min", true, false),
-            Episode(1, "Episode title", "subtitle", "5 min", true, false),
-            Episode(2, "Episode title", "subtitle", "5 min", true, false),
-            Episode(3, "Episode title", "subtitle", "5 min", true, false),
-            Episode(4, "Episode title", "subtitle", "5 min", false, false),
-            Episode(5, "Episode title", "subtitle", "5 min", false, true),
-            Episode(6, "Episode title", "subtitle", "5 min", false, true),
-            Episode(7, "Episode title", "subtitle", "5 min", false, true),
-        )
-        binding.containerEpisodes.removeAllViews() // Очищаем на всякий случай
-        for (episode in episodes) {
-            // Надуваем макет одного эпизода (item_episode.xml)
-            val episodeView = LayoutInflater.from(requireContext())
-                .inflate(R.layout.item_episode, binding.containerEpisodes, false)
-
-            // Наполняем данными
-            episodeView.findViewById<TextView>(R.id.tvEpisodeTitle).text =
-                "${episode.number} ${episode.title}"
-            episodeView.findViewById<TextView>(R.id.tvEpisodeSubtitle).text = episode.subtitle
-            episodeView.findViewById<TextView>(R.id.tvEpisodeTime).text = episode.time
-
-            if (episode.isClosed) {
-                episodeView.findViewById<ImageView>(R.id.ivEpisodeStatus)
-                    .setImageResource(R.drawable.ic_closed_episode)
-                episodeView.findViewById<TextView>(R.id.tvEpisodeTitle)
-                    .setTextColor("#717274".toColorInt())
-                episodeView.findViewById<TextView>(R.id.tvEpisodeSubtitle)
-                    .setTextColor("#4d4d4d".toColorInt())
-                episodeView.findViewById<TextView>(R.id.tvEpisodeTime)
-                    .setTextColor("#4d4d4d".toColorInt())
-
-            } else {
-                if (episode.isCompleted) {
-                    episodeView.findViewById<ImageView>(R.id.ivEpisodeStatus)
-                        .setImageResource(R.drawable.ic_completed)
-                } else {
-                    episodeView.findViewById<ImageView>(R.id.ivEpisodeStatus)
-                        .setImageResource(R.drawable.ic_play)
-                }
-            }
-            episodeView.setOnClickListener {
-                findNavController().navigate(R.id.action_courseFragment_to_episodeFragment)
-            }
-
-            binding.containerEpisodes.addView(episodeView)
-        }
+//        val episodes = listOf(
+//            Episode(0, "Episode title", "subtitle", "5 min", true, false),
+//            Episode(1, "Episode title", "subtitle", "5 min", true, false),
+//            Episode(2, "Episode title", "subtitle", "5 min", true, false),
+//            Episode(3, "Episode title", "subtitle", "5 min", true, false),
+//            Episode(4, "Episode title", "subtitle", "5 min", false, false),
+//            Episode(5, "Episode title", "subtitle", "5 min", false, true),
+//            Episode(6, "Episode title", "subtitle", "5 min", false, true),
+//            Episode(7, "Episode title", "subtitle", "5 min", false, true),
+//        )
+//        binding.containerEpisodes.removeAllViews() // Очищаем на всякий случай
+//        for (episode in episodes) {
+//            // Надуваем макет одного эпизода (item_episode.xml)
+//            val episodeView = LayoutInflater.from(requireContext())
+//                .inflate(R.layout.item_episode, binding.containerEpisodes, false)
+//
+//            // Наполняем данными
+//            episodeView.findViewById<TextView>(R.id.tvEpisodeTitle).text =
+//                "${episode.number} ${episode.title}"
+//            episodeView.findViewById<TextView>(R.id.tvEpisodeSubtitle).text = episode.subtitle
+//            episodeView.findViewById<TextView>(R.id.tvEpisodeTime).text = episode.time
+//
+//            if (episode.isClosed) {
+//                episodeView.findViewById<ImageView>(R.id.ivEpisodeStatus)
+//                    .setImageResource(R.drawable.ic_closed_episode)
+//                episodeView.findViewById<TextView>(R.id.tvEpisodeTitle)
+//                    .setTextColor("#717274".toColorInt())
+//                episodeView.findViewById<TextView>(R.id.tvEpisodeSubtitle)
+//                    .setTextColor("#4d4d4d".toColorInt())
+//                episodeView.findViewById<TextView>(R.id.tvEpisodeTime)
+//                    .setTextColor("#4d4d4d".toColorInt())
+//
+//            } else {
+//                if (episode.isCompleted) {
+//                    episodeView.findViewById<ImageView>(R.id.ivEpisodeStatus)
+//                        .setImageResource(R.drawable.ic_completed)
+//                } else {
+//                    episodeView.findViewById<ImageView>(R.id.ivEpisodeStatus)
+//                        .setImageResource(R.drawable.ic_play)
+//                }
+//            }
+//            episodeView.setOnClickListener {
+//                findNavController().navigate(R.id.action_courseFragment_to_episodeFragment)
+//            }
+//
+//            binding.containerEpisodes.addView(episodeView)
+//        }
     }
 
     companion object {

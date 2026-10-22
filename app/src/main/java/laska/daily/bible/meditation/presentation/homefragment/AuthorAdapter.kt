@@ -33,11 +33,11 @@ class AuthorsAdapter(
         fun bind(author: Author) {
             tvName.text = author.name
 
-            if (author.imageResId != null) {
-                ivAvatar.setImageResource(author.imageResId)
-            } else {
-                ivAvatar.setImageResource(R.drawable.bottom_menu_main_ic)
-            }
+//            if (author.imageResId != null) {
+//                ivAvatar.setImageResource(author.imageResId)
+//            } else {
+//                ivAvatar.setImageResource(R.drawable.bottom_menu_main_ic)
+//            }
 
             itemView.setOnClickListener {
                 onAuthorClick(author)

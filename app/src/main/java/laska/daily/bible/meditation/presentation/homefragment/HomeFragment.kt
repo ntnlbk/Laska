@@ -9,14 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentHomeBinding
-import laska.daily.bible.meditation.domain.courses.Author
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
@@ -24,11 +26,10 @@ class HomeFragment : Fragment() {
     private val binding: FragmentHomeBinding
         get() = _binding ?: throw Exception("FragmentHomeBinding is null")
 
-    private var backgroundVidePlayer: ExoPlayer? = null
+    private val viewModel: HomeFragmentViewModel by activityViewModels()
+    private var scrollAnimator: ValueAnimator? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private var backgroundVidePlayer: ExoPlayer? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,22 +45,23 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val btnToMain = binding.btnToMain
-
-        btnToMain.post {
-            val parentHeight = btnToMain.rootView.height
-
-            val targetHeight = parentHeight -
-                    (300 * resources.displayMetrics.density).toInt()
-
-            btnToMain.layoutParams = btnToMain.layoutParams.apply {
-                height = targetHeight
-            }
-        }
-
         setupBackgroundPlayer()
+        setupOnClickListeners()
 
+
+//        val authorsAdapter = AuthorsAdapter({})
+//        val sampleAuthors = listOf(
+//            Author(id = "1", name = "а. Яўген Голуб", imageResId = R.drawable.test_author_ic),
+//            Author(id = "2", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
+//            Author(id = "3", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
+//            Author(id = "4", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon)
+//        )
+//        binding.rvAuthors.adapter = authorsAdapter
+//        authorsAdapter.submitList(sampleAuthors)
+
+    }
+
+    private fun setupOnClickListeners() {
         binding.btnToMain.setOnClickListener {
             backgroundVidePlayer?.playWhenReady = false
             scrollToTopSmoothly {
@@ -75,23 +77,7 @@ class HomeFragment : Fragment() {
         binding.btnToCourse.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_courseFragment)
         }
-
-
-        val authorsAdapter = AuthorsAdapter({})
-        val sampleAuthors = listOf(
-            Author(id = "1", name = "а. Яўген Голуб", imageResId = R.drawable.test_author_ic),
-            Author(id = "2", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
-            Author(id = "3", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon),
-            Author(id = "4", name = "a. Имя Фамилия", imageResId = R.drawable.default_author_icon)
-        )
-        binding.rvAuthors.adapter = authorsAdapter
-        authorsAdapter.submitList(sampleAuthors)
-
     }
-
-
-    private var scrollAnimator: ValueAnimator? = null
-
     private fun scrollToTopSmoothly(onFinished: () -> Unit) {
         val scrollView = binding.homeScrollView
 
@@ -143,6 +129,19 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupBackgroundPlayer() {
+
+        val btnToMain = binding.btnToMain
+
+        btnToMain.post {
+            val parentHeight = btnToMain.rootView.height
+
+            val targetHeight = parentHeight -
+                    (300 * resources.displayMetrics.density).toInt()
+
+            btnToMain.layoutParams = btnToMain.layoutParams.apply {
+                height = targetHeight
+            }
+        }
         val playerView = binding.playerView
 
         backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build().apply {
@@ -180,19 +179,6 @@ class HomeFragment : Fragment() {
 
             prepare()
         }
-    }
-
-    private fun findTextureView(viewGroup: ViewGroup): android.view.TextureView? {
-        for (i in 0 until viewGroup.childCount) {
-            val child = viewGroup.getChildAt(i)
-            if (child is android.view.TextureView) {
-                return child
-            } else if (child is ViewGroup) {
-                val found = findTextureView(child)
-                if (found != null) return found
-            }
-        }
-        return null
     }
 
 }

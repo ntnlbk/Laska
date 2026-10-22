@@ -1,7 +1,8 @@
 package laska.daily.bible.meditation.domain.courses
 
 data class Author(
-    val id: String,
+    val id: Int,
     val name: String,
-    val imageResId: Int? = null
+    val imageURL: String,
+    val description: String
 )
