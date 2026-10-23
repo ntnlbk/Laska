@@ -6,10 +6,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.domain.courses.Course
+import laska.daily.bible.meditation.presentation.homefragment.AuthorsAdapter
 
 class CourseAdapter(
     private val onCourseClick: (Course) -> Unit
@@ -30,29 +33,31 @@ class CourseAdapter(
     }
 
     override fun onBindViewHolder(holder: CourseViewHolder, position: Int) {
-//        val course = getItem(position) // Получаем элемент из встроенного списка
-//
-//        holder.ivCourseImage.setImageResource(course.imageRes)
-//        holder.tvSessionsCount.text = course.sessionsCount
-//        holder.tvCourseTitle.text = course.title
-//        holder.tvCourseDescription.text = course.description
-//
-//        // Вложенный список авторов
-//        val authorAdapter = AuthorsAdapter({})
-//        authorAdapter.submitList(course.authors)
-//        holder.rvAuthors.layoutManager = LinearLayoutManager(
-//            holder.itemView.context,
-//            LinearLayoutManager.HORIZONTAL,
-//            false
-//        )
-//        holder.rvAuthors.adapter = authorAdapter
-//
-//        holder.itemView.setOnClickListener {
-//            onCourseClick(course)
-//        }
+        val course = getItem(position)
+        holder.ivCourseImage.load(course.imageURL)
+        {
+            crossfade(true)
+            placeholder(R.drawable.home_fragment_courses_section_test_img)
+            error(R.drawable.home_fragment_courses_section_test_img)
+        }
+        holder.tvSessionsCount.text = course.episodeCount.toString()
+        holder.tvCourseTitle.text = course.title
+        holder.tvCourseDescription.text = course.shortDescription
+
+        val authorAdapter = AuthorsAdapter({})
+        authorAdapter.submitList(course.authors)
+        holder.rvAuthors.layoutManager = LinearLayoutManager(
+            holder.itemView.context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        holder.rvAuthors.adapter = authorAdapter
+
+        holder.itemView.setOnClickListener {
+            onCourseClick(course)
+        }
     }
 
-    // --- DiffUtil для сравнения элементов ---
     class CourseDiffCallback : DiffUtil.ItemCallback<Course>() {
         override fun areItemsTheSame(oldItem: Course, newItem: Course): Boolean {
             return oldItem.id == newItem.id // Сравниваем по уникальному ID

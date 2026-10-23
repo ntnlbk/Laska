@@ -74,7 +74,7 @@ class HomeFragment : Fragment() {
                                     placeholder(R.drawable.home_fragment_courses_section_test_img)
                                     error(R.drawable.home_fragment_courses_section_test_img)
                                 }
-                                val authorsAdapter = AuthorsAdapter({})
+                                val authorsAdapter = AuthorsAdapter {}
                                 binding.rvAuthors.adapter = authorsAdapter
                                 authorsAdapter.submitList(it.featuredCourseAuthors)
                             }

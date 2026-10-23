@@ -1,5 +1,6 @@
 package laska.daily.bible.meditation.presentation.homefragment
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,6 +12,7 @@ import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.domain.GetReadingUseCase
 import laska.daily.bible.meditation.domain.Language
 import laska.daily.bible.meditation.domain.courses.GetCourseForHomeScreenUseCase
+import laska.daily.bible.meditation.domain.courses.GetFeaturedSectionNameByLanguageUseCase
 import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
 import laska.daily.bible.meditation.presentation.uils.DateUtils.Companion.todayFormatted
 import javax.inject.Inject
@@ -20,6 +22,7 @@ class HomeFragmentViewModel @Inject constructor(
     private val getReadingUseCase: GetReadingUseCase,
     private val getCourseForHomeScreenUseCase: GetCourseForHomeScreenUseCase,
     private val getSettingsUseCase: GetSettingsUseCase,
+    private val getFeaturedSectionNameByLanguageUseCase: GetFeaturedSectionNameByLanguageUseCase
 ): ViewModel() {
     private val _homeUIState = MutableStateFlow<HomeFragmentState>(HomeFragmentState.Progress)
     val homeUIState = _homeUIState.asStateFlow()
@@ -29,7 +32,7 @@ class HomeFragmentViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             observeSettings()
-            delay(50)
+            delay(100)
             setContent()
         }
     }
@@ -39,10 +42,11 @@ class HomeFragmentViewModel @Inject constructor(
         try {
             val currentReading = getReadingUseCase(todayFormatted(), currentLanguage)
             val course = getCourseForHomeScreenUseCase(currentLanguage)
+            val featuredSectionName = getFeaturedSectionNameByLanguageUseCase(currentLanguage)
             _homeUIState.value = HomeFragmentState.Content(
                 date = currentReading.dateFormatted,
                 bibleReference = currentReading.bibleReference,
-                featuredSectionTitle = "FROM FIREBASE",
+                featuredSectionTitle = featuredSectionName,
                 featuredCourseImageURL = course.imageURL,
                 featuredCourseSessionsNumber = course.episodeCount,
                 featuredCourseTitle = course.title,
@@ -51,6 +55,7 @@ class HomeFragmentViewModel @Inject constructor(
             )
         }
         catch(e: Exception) {
+            Log.d("COURSES", e.message.toString())
             _homeUIState.value = HomeFragmentState.Error("Failed to load content")
         }
 
