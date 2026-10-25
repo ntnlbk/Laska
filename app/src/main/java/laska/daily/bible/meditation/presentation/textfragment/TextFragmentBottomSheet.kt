@@ -3,6 +3,7 @@ package laska.daily.bible.meditation.presentation.textfragment
 import android.app.Dialog
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -319,10 +320,23 @@ class TextFragmentBottomSheet : BottomSheetDialogFragment() {
 
             progressBar.progress = progress
         }
-        binding.tv1.text = dialogArguments.reflectionTextIntro
-        binding.tv2.text = dialogArguments.bibleTextPlain
-        binding.tv3.text = dialogArguments.reflectionTextBody
-        binding.dateTv.text = dialogArguments.date + "\n" + dialogArguments.bibleRef
+
+        if (dialogArguments.bibleTextPlain.isEmpty()) {
+            binding.tv2.visibility = View.GONE
+        } else {
+            binding.tv2.text = dialogArguments.bibleTextPlain
+        }
+        if (dialogArguments.reflectionTextIntro.isEmpty()) {
+            binding.tv1.visibility = View.GONE
+        } else {
+            binding.tv1.text = dialogArguments.reflectionTextIntro
+        }
+        binding.tv3.text = Html.fromHtml(dialogArguments.reflectionTextBody)
+        if (dialogArguments.date.isEmpty()) {
+            binding.dateTv.text = dialogArguments.bibleRef
+        } else {
+            binding.dateTv.text = dialogArguments.date + "\n" + dialogArguments.bibleRef
+        }
         binding.btnBack.setOnClickListener {
             dialog?.cancel()
         }

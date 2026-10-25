@@ -17,6 +17,8 @@ import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentEpisodeBinding
 import laska.daily.bible.meditation.presentation.homefragment.AuthorsAdapter
+import laska.daily.bible.meditation.presentation.mainfragment.DialogArguments
+import laska.daily.bible.meditation.presentation.textfragment.TextFragmentBottomSheet
 
 @AndroidEntryPoint
 class EpisodeFragment : Fragment() {
@@ -49,25 +51,34 @@ class EpisodeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.episodeUIState.collect {
-                        when (it) {
+                    viewModel.episodeUIState.collect { state ->
+                        when (state) {
                             is EpisodeFragmentState.Content -> {
                                 binding.progressBar.visibility = View.INVISIBLE
-                                binding.ivEpisodeCover.load(it.imageUrl) {
+                                binding.ivEpisodeCover.load(state.imageUrl) {
                                     crossfade(true)
                                     error(R.drawable.home_fragment_courses_section_test_img)
                                 }
-                                binding.dateTv.text = it.title
-                                binding.bibleRefTv.text = it.reference
-                                binding.feastNameTv.text = it.subtitle
+                                binding.dateTv.text = state.title
+                                binding.bibleRefTv.text = state.reference
+                                binding.feastNameTv.text = state.subtitle
                                 val authorsAdapter = AuthorsAdapter({})
                                 binding.rvAuthors.adapter = authorsAdapter
-                                authorsAdapter.submitList(it.authors)
+                                authorsAdapter.submitList(state.authors)
                                 binding.ivEpisodeCover.visibility = View.VISIBLE
+                                binding.showTextBtn.setOnClickListener {
+                                    val instance = TextFragmentBottomSheet.newInstance(
+                                        DialogArguments(
+                                            bibleRef = state.title,
+                                            reflectionTextBody = state.text
+                                        )
+                                    )
+                                    instance.show(requireActivity().supportFragmentManager, TextFragmentBottomSheet.TAG)
+                                }
                             }
 
                             is EpisodeFragmentState.Error -> {
-                                Log.d("COURSES", it.message)
+                                Log.d("COURSES", state.message)
                             }
 
                             EpisodeFragmentState.Progress -> {
