@@ -1,9 +1,14 @@
 package laska.daily.bible.meditation.data.mappers
 
+import laska.daily.bible.meditation.data.retrofit.courses.AuthorDTO
 import laska.daily.bible.meditation.data.retrofit.courses.AuthorShortDTO
+import laska.daily.bible.meditation.data.retrofit.courses.CourseDTO
 import laska.daily.bible.meditation.data.retrofit.courses.CourseShortDTO
+import laska.daily.bible.meditation.data.retrofit.courses.EpisodeShortDTO
 import laska.daily.bible.meditation.domain.courses.Author
 import laska.daily.bible.meditation.domain.courses.Course
+import laska.daily.bible.meditation.domain.courses.Episode
+import laska.daily.bible.meditation.domain.courses.EpisodeState
 import javax.inject.Inject
 
 class CoursesMapper @Inject constructor(
@@ -11,7 +16,7 @@ class CoursesMapper @Inject constructor(
     private val homePlacementMapper: HomePlacementMapper
 ) {
 
-    fun mapAuthorShortDTOToAuthorDataModel(authorShortDTO: AuthorShortDTO): Author{
+    fun mapAuthorShortDTOToAuthorDataModel(authorShortDTO: AuthorShortDTO): Author {
         return Author(
             id = authorShortDTO.id,
             name = authorShortDTO.name,
@@ -19,7 +24,17 @@ class CoursesMapper @Inject constructor(
             description = ""
         )
     }
-    fun mapCourseShortDtoToCourseDataModel(courseShortDTO: CourseShortDTO): Course{
+
+    fun mapAuthorDTOToAuthorDataModel(authorDTO: AuthorDTO): Author {
+        return Author(
+            id = authorDTO.id,
+            name = authorDTO.name,
+            imageURL = authorDTO.photo.url,
+            description = authorDTO.description
+        )
+    }
+
+    fun mapCourseShortDtoToCourseDataModel(courseShortDTO: CourseShortDTO): Course {
         return Course(
             id = courseShortDTO.id,
             title = courseShortDTO.title,
@@ -32,6 +47,37 @@ class CoursesMapper @Inject constructor(
             episodeCount = courseShortDTO.episodesCount,
             episodeAvailableCount = courseShortDTO.episodesAvailableCount
         )
+    }
 
+    fun mapShortEpisodeDTOToEpisodeDataModel(episodeShortDTO: EpisodeShortDTO): Episode {
+        return Episode(
+            id = episodeShortDTO.id,
+            courseId = episodeShortDTO.courseId,
+            number = episodeShortDTO.number,
+            title = episodeShortDTO.title,
+            subtitle = episodeShortDTO.subtitle,
+            scriptureReference = "",
+            imageURL = "",
+            authors = listOf(),
+            audioURL = "",
+            duration = episodeShortDTO.duration,
+            text = "",
+            state = EpisodeState.LOCKED
+        )
+    }
+
+    fun mapCourseDTOToCourseDataModel(courseDTO: CourseDTO): Course{
+        return Course(
+            id = courseDTO.id,
+            title = courseDTO.title,
+            language = languageMapper.mapStringToLanguage(courseDTO.language),
+            homePlacement = homePlacementMapper.mapStringToHomePlacement(courseDTO.homePlacement),
+            shortDescription = courseDTO.shortDescription,
+            description = courseDTO.description,
+            imageURL = courseDTO.cover.url,
+            authors = courseDTO.authors.map { mapAuthorDTOToAuthorDataModel(it) },
+            episodeCount = courseDTO.episodesCount,
+            episodeAvailableCount = courseDTO.episodesAvailableCount
+        )
     }
 }

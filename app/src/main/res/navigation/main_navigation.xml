@@ -80,6 +80,9 @@
         <action
             android:id="@+id/action_courseFragment_to_episodeFragment"
             app:destination="@id/episodeFragment" />
+        <argument
+            android:name="courseId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/episodeFragment"

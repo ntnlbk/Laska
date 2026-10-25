@@ -38,27 +38,34 @@ class CoursesRepositoryImpl @Inject constructor(
     override suspend fun getCourses(language: Language): List<Course> {
 
         val coursesFromApi = CoursesApiService.CoursesApi.retrofitService.getCourses()
-        return coursesFromApi.items.
-            filter {
-                it.language == languageMapper.mapLanguageToString(language)
-            }
-            .map {
-            courseMapper.mapCourseShortDtoToCourseDataModel(it)
+        return coursesFromApi.items.filter {
+            it.language == languageMapper.mapLanguageToString(language)
         }
+            .map {
+                courseMapper.mapCourseShortDtoToCourseDataModel(it)
+            }
 
     }
 
     override suspend fun getEpisodesByCourseId(courseId: Int): List<Episode> {
-        TODO("Not yet implemented")
+        val episodesFromApi = CoursesApiService.CoursesApi.retrofitService.getEpisodes(courseId)
+        return episodesFromApi.items.map {
+            courseMapper.mapShortEpisodeDTOToEpisodeDataModel(it)
+        }
     }
 
     override suspend fun getFeaturedSectionNameByLanguage(language: Language): String {
         val db = Firebase.firestore
         val featuredSectionNameDocument =
             db.collection("courses_android").document("featured_section_title").get().await()
-        return when (language){
+        return when (language) {
             Language.RU -> featuredSectionNameDocument.getString("value_ru") ?: "Новинка LASKA"
             Language.BY -> featuredSectionNameDocument.getString("value_by") ?: "Навінка LASKA"
         }
+    }
+
+    override suspend fun getCourse(courseId: Int): Course {
+        val courseFromApi = CoursesApiService.CoursesApi.retrofitService.getCourse(courseId)
+        return courseMapper.mapCourseDTOToCourseDataModel(courseFromApi)
     }
 }

@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -23,12 +24,6 @@ class CoursesMainFragment : Fragment() {
         get() = _binding ?: throw Exception("FragmentCoursesMainBinding is null")
 
     private val viewModel: CoursesMainFragmentViewModel by activityViewModels()
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,13 +42,19 @@ class CoursesMainFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.coursesMainFragmentState.collect {
-                        when (it) {
+                    viewModel.coursesMainFragmentState.collect { state ->
+                        when (state) {
                             is CoursesMainFragmentState.Content -> {
                                 val recyclerView = binding.rvCourses
                                 recyclerView.layoutManager = LinearLayoutManager(requireContext())
-                                val adapter = CourseAdapter {}
-                                adapter.submitList(it.courses)
+                                val adapter = CourseAdapter {
+                                    val action =
+                                        CoursesMainFragmentDirections.actionCoursesMainFragmentToCourseFragment(
+                                            it.id
+                                        )
+                                    findNavController().navigate(action)
+                                }
+                                adapter.submitList(state.courses)
                                 recyclerView.adapter = adapter
                             }
 

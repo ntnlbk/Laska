@@ -12,7 +12,8 @@ sealed class HomeFragmentState {
         val featuredCourseSessionsNumber: Int,
         val featuredCourseTitle: String,
         val featuredCourseDescription: String,
-        val featuredCourseAuthors: List<Author>
+        val featuredCourseAuthors: List<Author>,
+        val featuredCourseId: Int
     ) : HomeFragmentState()
 
     data class Error(val message: String) : HomeFragmentState()

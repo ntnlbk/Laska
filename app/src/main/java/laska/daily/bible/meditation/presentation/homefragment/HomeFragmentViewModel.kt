@@ -51,7 +51,8 @@ class HomeFragmentViewModel @Inject constructor(
                 featuredCourseSessionsNumber = course.episodeCount,
                 featuredCourseTitle = course.title,
                 featuredCourseDescription = course.shortDescription,
-                featuredCourseAuthors = course.authors
+                featuredCourseAuthors = course.authors,
+                featuredCourseId = course.id
             )
         }
         catch(e: Exception) {

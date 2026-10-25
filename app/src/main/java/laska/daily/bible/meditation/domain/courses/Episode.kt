@@ -12,6 +12,5 @@ data class Episode(
     val audioURL: String,
     val duration: Int,
     val text: String,
-    val isAvailable: Boolean,
-    val availableFrom: String?,
+    val state: EpisodeState,
 )

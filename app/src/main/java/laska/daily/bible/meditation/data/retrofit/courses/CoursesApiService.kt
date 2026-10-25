@@ -5,6 +5,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 class CoursesApiService {
 
@@ -19,10 +20,19 @@ class CoursesApiService {
     }
 
     interface CoursesApiService {
-
         @GET("courses")
         suspend fun getCourses(
         ): CoursesDTO
+
+        @GET("courses/{id}/episodes")
+        suspend fun getEpisodes(
+            @Path("id") id: Int,
+        ): EpisodesDTO
+
+        @GET("courses/{id}")
+        suspend fun getCourse(
+            @Path("id") id: Int
+        ): CourseDTO
 
     }
 

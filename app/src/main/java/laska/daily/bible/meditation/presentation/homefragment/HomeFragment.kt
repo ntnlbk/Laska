@@ -57,18 +57,20 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.homeUIState.collect {
-                        when (it){
+                    viewModel.homeUIState.collect { state ->
+                        when (state) {
                             is HomeFragmentState.Content -> {
                                 Log.d("COURSES", "CONTENT")
-                                binding.dateTv.text = it.date
-                                binding.bibleRefTv.text = it.bibleReference
-                                binding.tvFeaturedSection.text = it.featuredSectionTitle
-                                binding.tvEpisodesCount.text = it.featuredCourseSessionsNumber.toString()
-                                binding.tvFeaturedCourseTitle.text = it.featuredCourseTitle
-                                binding.tvFeaturedCourseDescription.text = it.featuredCourseDescription
+                                binding.dateTv.text = state.date
+                                binding.bibleRefTv.text = state.bibleReference
+                                binding.tvFeaturedSection.text = state.featuredSectionTitle
+                                binding.tvEpisodesCount.text =
+                                    state.featuredCourseSessionsNumber.toString()
+                                binding.tvFeaturedCourseTitle.text = state.featuredCourseTitle
+                                binding.tvFeaturedCourseDescription.text =
+                                    state.featuredCourseDescription
                                 binding.ivFeaturedCourseLogo.load(
-                                    it.featuredCourseImageURL
+                                    state.featuredCourseImageURL
                                 ) {
                                     crossfade(true)
                                     placeholder(R.drawable.home_fragment_courses_section_test_img)
@@ -76,7 +78,14 @@ class HomeFragment : Fragment() {
                                 }
                                 val authorsAdapter = AuthorsAdapter {}
                                 binding.rvAuthors.adapter = authorsAdapter
-                                authorsAdapter.submitList(it.featuredCourseAuthors)
+                                authorsAdapter.submitList(state.featuredCourseAuthors)
+                                binding.btnToCourse.setOnClickListener {
+                                    val action =
+                                        HomeFragmentDirections.actionHomeFragmentToCourseFragment(
+                                            state.featuredCourseId
+                                        )
+                                    findNavController().navigate(action)
+                                }
                             }
                             is HomeFragmentState.Error -> Log.d("COURSES", "ERROR")
                             HomeFragmentState.Progress -> Log.d("COURSES", "PROGRESS")
@@ -103,9 +112,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        binding.btnToCourse.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_courseFragment)
-        }
+
     }
 
     private fun scrollToTopSmoothly(onFinished: () -> Unit) {

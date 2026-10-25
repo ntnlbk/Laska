@@ -8,4 +8,6 @@ interface CoursesRepository {
     suspend fun getEpisodesByCourseId(courseId: Int): List<Episode>
 
     suspend fun getFeaturedSectionNameByLanguage(language: Language): String
+
+    suspend fun getCourse(courseId: Int): Course
 }
