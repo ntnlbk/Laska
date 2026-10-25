@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -23,7 +23,7 @@ class CoursesMainFragment : Fragment() {
     private val binding: FragmentCoursesMainBinding
         get() = _binding ?: throw Exception("FragmentCoursesMainBinding is null")
 
-    private val viewModel: CoursesMainFragmentViewModel by activityViewModels()
+    private val viewModel: CoursesMainFragmentViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

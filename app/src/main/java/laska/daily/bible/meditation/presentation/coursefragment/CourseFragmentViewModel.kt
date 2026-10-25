@@ -1,5 +1,6 @@
 package laska.daily.bible.meditation.presentation.coursefragment
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,26 +18,30 @@ import javax.inject.Inject
 class CourseFragmentViewModel @Inject constructor(
     private val getCourseUseCase: GetCourseUseCase,
     private val getEpisodesByCourseIdUseCase: GetEpisodesByCourseIdUseCase,
-    private val getSettingsUseCase: GetSettingsUseCase
+    private val getSettingsUseCase: GetSettingsUseCase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val args: CourseFragmentArgs = CourseFragmentArgs.fromSavedStateHandle(savedStateHandle)
     private val _courseUIState = MutableStateFlow<CourseFragmentState>(CourseFragmentState.Progress)
     val courseUIState = _courseUIState.asStateFlow()
 
     lateinit var currentLanguage: Language
 
-    var currentCourseId: Int = 0
+    private val currentCourseId = args.courseId
 
     init {
         viewModelScope.launch {
             observeSettings()
+            setContent()
         }
     }
 
-    suspend fun setContent(courseId: Int) {
+    suspend fun setContent() {
         _courseUIState.value = CourseFragmentState.Progress
         try {
-            val course = getCourseUseCase(courseId)
-            val episodes = getEpisodesByCourseIdUseCase(courseId)
+            val course = getCourseUseCase(currentCourseId)
+            val episodes = getEpisodesByCourseIdUseCase(currentCourseId)
             _courseUIState.value = CourseFragmentState.Content(
                 course = course,
                 episodes = episodes
@@ -52,7 +57,7 @@ class CourseFragmentViewModel @Inject constructor(
             getSettingsUseCase().collect { settings ->
                 if (currentLanguage != settings.language) {
                     currentLanguage = settings.language
-                    setContent(currentCourseId)
+                    setContent()
                 }
             }
         }

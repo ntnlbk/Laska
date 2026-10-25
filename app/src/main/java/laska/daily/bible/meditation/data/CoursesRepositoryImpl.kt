@@ -68,4 +68,12 @@ class CoursesRepositoryImpl @Inject constructor(
         val courseFromApi = CoursesApiService.CoursesApi.retrofitService.getCourse(courseId)
         return courseMapper.mapCourseDTOToCourseDataModel(courseFromApi)
     }
+
+    override suspend fun getEpisode(
+        courseId: Int,
+        episodeId: Int
+    ): Episode {
+        val episodeFromApi = CoursesApiService.CoursesApi.retrofitService.getEpisode(courseId, episodeId)
+        return courseMapper.mapEpisodeDTOToEpisodeDataModel(episodeFromApi)
+    }
 }

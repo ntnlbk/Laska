@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -32,7 +32,7 @@ class HomeFragment : Fragment() {
     private val binding: FragmentHomeBinding
         get() = _binding ?: throw Exception("FragmentHomeBinding is null")
 
-    private val viewModel: HomeFragmentViewModel by activityViewModels()
+    private val viewModel: HomeFragmentViewModel by viewModels()
     private var scrollAnimator: ValueAnimator? = null
 
     private var backgroundVidePlayer: ExoPlayer? = null

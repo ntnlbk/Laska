@@ -88,5 +88,12 @@
         android:id="@+id/episodeFragment"
         android:name="laska.daily.bible.meditation.presentation.episodefragment.EpisodeFragment"
         android:label="fragment_episode"
-        tools:layout="@layout/fragment_episode" />
+        tools:layout="@layout/fragment_episode" >
+        <argument
+            android:name="courseId"
+            app:argType="integer" />
+        <argument
+            android:name="episodeId"
+            app:argType="integer" />
+    </fragment>
 </navigation>

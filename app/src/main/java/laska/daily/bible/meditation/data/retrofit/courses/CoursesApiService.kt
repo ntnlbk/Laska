@@ -11,10 +11,14 @@ class CoursesApiService {
 
     companion object {
         private const val BASE_URL = "https://alef.laska.mobi/wp-json/laska/v1/"
+
+        private val json = Json{
+            ignoreUnknownKeys = true
+        }
         private val retrofit =
             Retrofit.Builder()
                 .addConverterFactory(
-                    Json.asConverterFactory("application/json".toMediaType())
+                    json.asConverterFactory("application/json".toMediaType())
                 )
                 .baseUrl(BASE_URL).build()
     }
@@ -34,6 +38,11 @@ class CoursesApiService {
             @Path("id") id: Int
         ): CourseDTO
 
+        @GET("courses/{courseId}/episodes/{episodeId}")
+        suspend fun getEpisode(
+            @Path("courseId") courseId: Int,
+            @Path("episodeId") episodeId: Int
+        ) : EpisodeDTO
     }
 
     object CoursesApi {

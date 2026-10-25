@@ -4,6 +4,7 @@ import laska.daily.bible.meditation.data.retrofit.courses.AuthorDTO
 import laska.daily.bible.meditation.data.retrofit.courses.AuthorShortDTO
 import laska.daily.bible.meditation.data.retrofit.courses.CourseDTO
 import laska.daily.bible.meditation.data.retrofit.courses.CourseShortDTO
+import laska.daily.bible.meditation.data.retrofit.courses.EpisodeDTO
 import laska.daily.bible.meditation.data.retrofit.courses.EpisodeShortDTO
 import laska.daily.bible.meditation.domain.courses.Author
 import laska.daily.bible.meditation.domain.courses.Course
@@ -66,7 +67,25 @@ class CoursesMapper @Inject constructor(
         )
     }
 
-    fun mapCourseDTOToCourseDataModel(courseDTO: CourseDTO): Course{
+    fun mapEpisodeDTOToEpisodeDataModel(episodeDTO: EpisodeDTO): Episode {
+        return Episode(
+            id = episodeDTO.id,
+            courseId = episodeDTO.courseId,
+            number = episodeDTO.number,
+            title = episodeDTO.title,
+            subtitle = episodeDTO.subtitle,
+            scriptureReference = episodeDTO.scriptureReference,
+            imageURL = episodeDTO.cover.url,
+            authors = episodeDTO.authors.map { mapAuthorShortDTOToAuthorDataModel(it) },
+            audioURL = episodeDTO.audio.url,
+            duration = episodeDTO.audio.duration,
+            text = episodeDTO.blocks.filter { it.blockType == "text" }
+                .joinToString(separator = "\n") { it.data.html ?: "" },
+            state = EpisodeState.AVAILABLE
+        )
+    }
+
+    fun mapCourseDTOToCourseDataModel(courseDTO: CourseDTO): Course {
         return Course(
             id = courseDTO.id,
             title = courseDTO.title,
