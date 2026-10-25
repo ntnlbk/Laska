@@ -52,9 +52,9 @@ class EpisodeFragment : Fragment() {
                     viewModel.episodeUIState.collect {
                         when (it) {
                             is EpisodeFragmentState.Content -> {
+                                binding.progressBar.visibility = View.INVISIBLE
                                 binding.ivEpisodeCover.load(it.imageUrl) {
                                     crossfade(true)
-                                    placeholder(R.drawable.home_fragment_courses_section_test_img)
                                     error(R.drawable.home_fragment_courses_section_test_img)
                                 }
                                 binding.dateTv.text = it.title
@@ -63,6 +63,7 @@ class EpisodeFragment : Fragment() {
                                 val authorsAdapter = AuthorsAdapter({})
                                 binding.rvAuthors.adapter = authorsAdapter
                                 authorsAdapter.submitList(it.authors)
+                                binding.ivEpisodeCover.visibility = View.VISIBLE
                             }
 
                             is EpisodeFragmentState.Error -> {
@@ -70,7 +71,7 @@ class EpisodeFragment : Fragment() {
                             }
 
                             EpisodeFragmentState.Progress -> {
-                                Log.d("COURSES", "PROGRESS")
+                                binding.progressBar.visibility = View.VISIBLE
                             }
                         }
                     }

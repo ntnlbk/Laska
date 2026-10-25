@@ -45,6 +45,7 @@ class CoursesMainFragment : Fragment() {
                     viewModel.coursesMainFragmentState.collect { state ->
                         when (state) {
                             is CoursesMainFragmentState.Content -> {
+                                binding.progressBar.visibility = View.INVISIBLE
                                 val recyclerView = binding.rvCourses
                                 recyclerView.layoutManager = LinearLayoutManager(requireContext())
                                 val adapter = CourseAdapter {
@@ -63,7 +64,7 @@ class CoursesMainFragment : Fragment() {
                             }
 
                             CoursesMainFragmentState.Progress -> {
-
+                                binding.progressBar.visibility = View.VISIBLE
                             }
                         }
                     }

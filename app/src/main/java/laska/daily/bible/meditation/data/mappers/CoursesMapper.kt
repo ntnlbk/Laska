@@ -63,7 +63,7 @@ class CoursesMapper @Inject constructor(
             audioURL = "",
             duration = episodeShortDTO.duration,
             text = "",
-            state = EpisodeState.LOCKED
+            state = EpisodeState.AVAILABLE
         )
     }
 

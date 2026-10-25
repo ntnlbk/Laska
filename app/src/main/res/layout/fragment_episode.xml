@@ -10,8 +10,6 @@
     android:focusable="true">
 
 
-
-
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
@@ -264,12 +262,14 @@
         app:layout_constraintBottom_toTopOf="@id/bible_ref_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="01 Episode title episode" />
+        tools:text="01 Episode title episode" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivEpisodeCover"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        tools:visibility="visible"
+        android:visibility="invisible"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_episode_test"
         android:layout_marginTop="104dp"
@@ -294,7 +294,7 @@
         app:layout_constraintBottom_toTopOf="@id/feast_name_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="Matthew 21:21–35" />
+        tools:text="Matthew 21:21–35" />
 
     <TextView
         android:id="@+id/feast_name_tv"
@@ -308,7 +308,7 @@
         app:layout_constraintBottom_toTopOf="@id/rvAuthors"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="Subtitle" />
+        tools:text="Subtitle" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

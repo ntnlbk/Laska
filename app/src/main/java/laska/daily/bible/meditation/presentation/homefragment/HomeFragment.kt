@@ -169,7 +169,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupBackgroundPlayer() {
-
+        val playerView = binding.playerView
+        playerView.alpha = 0f
         val btnToMain = binding.btnToMain
 
         btnToMain.post {
@@ -182,7 +183,7 @@ class HomeFragment : Fragment() {
                 height = targetHeight
             }
         }
-        val playerView = binding.playerView
+
 
         backgroundVidePlayer = ExoPlayer.Builder(requireContext()).build().apply {
             playerView.player = this
@@ -199,6 +200,11 @@ class HomeFragment : Fragment() {
             addListener(object : Player.Listener {
                 override fun onRenderedFirstFrame() {
                     startPostponedEnterTransition()
+                    _binding?.playerView?.animate()
+                        ?.alpha(1f)
+                        ?.setDuration(150L)
+                        ?.start()
+
                 }
 
                 override fun onPlaybackStateChanged(playbackState: Int) {

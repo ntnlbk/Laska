@@ -37,7 +37,6 @@ class CourseAdapter(
         holder.ivCourseImage.load(course.imageURL)
         {
             crossfade(true)
-            placeholder(R.drawable.home_fragment_courses_section_test_img)
             error(R.drawable.home_fragment_courses_section_test_img)
         }
         holder.tvSessionsCount.text = course.episodeCount.toString()

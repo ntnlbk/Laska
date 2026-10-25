@@ -75,8 +75,9 @@ class CourseFragment : Fragment() {
                                 val authorsAdapter = AuthorsAdapter({})
                                 binding.rvAuthors.adapter = authorsAdapter
                                 authorsAdapter.submitList(it.course.authors)
+                                binding.tvEpisodesCount.text = it.course.episodeCount.toString() + " sessions"
                                 binding.containerEpisodes.removeAllViews()
-
+                                binding.detailedInformationBtn.visibility = View.VISIBLE
 
                                 for (episode in it.episodes) {
                                     // Надуваем макет одного эпизода (item_episode.xml)
@@ -128,10 +129,14 @@ class CourseFragment : Fragment() {
                                     }
                                     binding.containerEpisodes.addView(episodeView)
                                 }
+                                binding.progressBar.visibility = View.INVISIBLE
+                                binding.btnStartCourse.visibility = View.VISIBLE
                             }
 
                             is CourseFragmentState.Error -> Log.d("COURSES", "ERROR, " + it.message)
-                            CourseFragmentState.Progress -> Log.d("COURSES", "PROGRESS")
+                            CourseFragmentState.Progress -> {
+                                binding.progressBar.visibility = View.VISIBLE
+                            }
                         }
                     }
                 }
