@@ -175,6 +175,21 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         }
     }
 
+    fun ensureMainAudioLoaded() {
+        actualReading?.let { reading ->
+            mediaController?.let { controller ->
+                if (controller.currentMediaItem?.mediaId != reading.audioURL) {
+                    controller.pause()
+                    controller.clearMediaItems()
+                    viewModelScope.launch {
+                        if (checkAudioDownloadedUseCase(reading.audioURL)) {
+                            loadSongToPlayer(reading.audioURL)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     private fun observeSettings() {
         viewModelScope.launch {

@@ -1,8 +1,12 @@
 package laska.daily.bible.meditation.presentation.episodefragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.GestureDetector
+import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
@@ -21,7 +25,7 @@ import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentEpisodeBinding
 import laska.daily.bible.meditation.presentation.homefragment.AuthorsAdapter
 import laska.daily.bible.meditation.presentation.mainfragment.DialogArguments
-import laska.daily.bible.meditation.presentation.textfragment.TextFragmentBottomSheet
+import laska.daily.bible.meditation.presentation.textfragment.EpisodeTextFragmentBottomSheet
 
 @AndroidEntryPoint
 class EpisodeFragment : Fragment() {
@@ -31,7 +35,10 @@ class EpisodeFragment : Fragment() {
         get() = _binding ?: throw Exception("FragmentEpisodeBinding is null")
 
     private val viewModel: EpisodeFragmentViewModel by viewModels()
+
+    private lateinit var gestureDetector: GestureDetector
     private var isSeekBarTouched = false
+    private var textBottomSheetInstance: EpisodeTextFragmentBottomSheet? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,10 +51,61 @@ class EpisodeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-
         observeViewModel()
-
+        initGestures()
     }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initGestures() {
+        gestureDetector = GestureDetector(
+            requireContext(),
+            object : SimpleOnGestureListener() {
+
+                private val SWIPE_THRESHOLD = 100
+                private val SWIPE_VELOCITY_THRESHOLD = 100
+
+                override fun onFling(
+                    e1: MotionEvent?,
+                    e2: MotionEvent,
+                    velocityX: Float,
+                    velocityY: Float
+                ): Boolean {
+
+                    val diffX = e2.x - (e1?.x ?: 0f)
+                    val diffY = e2.y - (e1?.y ?: 0f)
+
+                    if (Math.abs(diffX) > Math.abs(diffY)) {
+                        if (Math.abs(diffX) > SWIPE_THRESHOLD &&
+                            Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD
+                        ) {
+                            return true
+                        }
+                    } else {
+                        if (Math.abs(diffY) > SWIPE_THRESHOLD &&
+                            Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD
+                        ) {
+                            if (diffY < 0) {
+                                onSwipeUp()
+                            }
+                            return true
+                        }
+                    }
+
+
+                    return false
+                }
+            })
+        val root = binding.root
+
+        root.setOnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            true
+        }
+    }
+    private fun onSwipeUp() {
+        binding.showTextBtn.callOnClick()
+    }
+
 
     private fun setupViews() {
         binding.btnBack.setOnClickListener {
@@ -90,15 +148,20 @@ class EpisodeFragment : Fragment() {
                                 binding.ivEpisodeCover.visibility = View.VISIBLE
                                 binding.songTimeTv.text = state.duration
                                 binding.showTextBtn.setOnClickListener {
-                                    val instance = TextFragmentBottomSheet.newInstance(
+                                    textBottomSheetInstance = EpisodeTextFragmentBottomSheet.newInstance(
                                         DialogArguments(
                                             bibleRef = state.title,
                                             reflectionTextBody = state.text
                                         )
-                                    )
-                                    instance.show(
+                                    ).apply {
+                                        // Привязываем клик к ViewModel родительского фрагмента
+                                        onPlayClick = {
+                                            viewModel.playButtonClicked(state.audioUrl, state.title)
+                                        }
+                                    }
+                                    textBottomSheetInstance?.show(
                                         requireActivity().supportFragmentManager,
-                                        TextFragmentBottomSheet.TAG
+                                        EpisodeTextFragmentBottomSheet.TAG
                                     )
                                 }
 
@@ -122,6 +185,7 @@ class EpisodeFragment : Fragment() {
                 }
                 launch {
                     viewModel.playerUIState.collect {
+                        textBottomSheetInstance?.updatePlayerState(it)
                         when (it) {
                             is AudioPlayerState.Downloaded -> {
                                 binding.progressBar.visibility = View.INVISIBLE
