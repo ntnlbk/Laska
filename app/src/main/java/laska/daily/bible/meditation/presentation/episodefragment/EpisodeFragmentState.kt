@@ -12,7 +12,8 @@ sealed class EpisodeFragmentState {
         val subtitle: String,
         val authors: List<Author>,
         val text: String,
-        val audioUrl: String
+        val audioUrl: String,
+        val duration: String
     ) : EpisodeFragmentState()
 
     data class Error(val message: String) : EpisodeFragmentState()

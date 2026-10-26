@@ -88,6 +88,7 @@ class EpisodeFragment : Fragment() {
                                 binding.rvAuthors.adapter = authorsAdapter
                                 authorsAdapter.submitList(state.authors)
                                 binding.ivEpisodeCover.visibility = View.VISIBLE
+                                binding.songTimeTv.text = state.duration
                                 binding.showTextBtn.setOnClickListener {
                                     val instance = TextFragmentBottomSheet.newInstance(
                                         DialogArguments(

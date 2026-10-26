@@ -70,25 +70,41 @@ class EpisodeFragmentViewModel @Inject constructor(
     private fun initializeController(url: String, title: String) {
         val sessionToken = SessionToken(
             application,
-            ComponentName(application, AudioPlaybackService::class.java)
+            ComponentName(
+                application,
+                AudioPlaybackService::class.java
+            )
         )
-        mediaControllerFuture = MediaController.Builder(application, sessionToken).buildAsync()
+
+        mediaControllerFuture =
+            MediaController.Builder(application, sessionToken).buildAsync()
+
         mediaControllerFuture?.addListener({
-            mediaController = mediaControllerFuture?.get()
-            setupPlayerListeners()
-            mediaController?.pause()
-            mediaController?.clearMediaItems()
-            _playerUIState.value = AudioPlayerState.Initial
-            if (_playerUIState.value is AudioPlayerState.Downloaded) {
-                url.let { url ->
-                    loadSongToPlayer(url, title)
-                    viewModelScope.launch {
+            try {
+                mediaController = mediaControllerFuture?.get()
+
+                setupPlayerListeners()
+
+                mediaController?.pause()
+                mediaController?.clearMediaItems()
+
+                _playerUIState.value = AudioPlayerState.Initial
+
+                viewModelScope.launch {
+                    val isDownloaded = checkAudioDownloadedUseCase(url)
+
+                    if (isDownloaded) {
+                        loadSongToPlayer(url, title)
                         waitForReadyAndEmitDuration()
                     }
                 }
+            } catch (e: Exception) {
+                _playerUIState.value =
+                    AudioPlayerState.Error(
+                        e.message ?: "Failed to initialize audio player"
+                    )
             }
-
-        }, ContextCompat.getMainExecutor(application)) // Выполняем в главном потоке
+        }, ContextCompat.getMainExecutor(application))
     }
 
     private fun startProgressUpdater() {
@@ -275,13 +291,10 @@ class EpisodeFragmentViewModel @Inject constructor(
                 subtitle = episode.subtitle,
                 authors = episode.authors,
                 text = episode.text,
-                audioUrl = episode.audioURL
+                audioUrl = episode.audioURL,
+                duration = formatTime(episode.duration.toLong())
             )
             initializeController(episode.audioURL, episode.title)
-            val isDownloaded = checkAudioDownloadedUseCase(episode.audioURL)
-            if (isDownloaded) {
-                loadSongToPlayer(episode.audioURL, episode.title)
-            }
         } catch (e: Exception) {
             _episodeUIState.value = EpisodeFragmentState.Error(e.message.toString())
         }
