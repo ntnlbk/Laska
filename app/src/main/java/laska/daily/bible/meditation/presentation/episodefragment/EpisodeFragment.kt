@@ -5,6 +5,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -28,6 +31,7 @@ class EpisodeFragment : Fragment() {
         get() = _binding ?: throw Exception("FragmentEpisodeBinding is null")
 
     private val viewModel: EpisodeFragmentViewModel by viewModels()
+    private var isSeekBarTouched = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,12 +43,30 @@ class EpisodeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.btnBack.setOnClickListener {
-            findNavController().popBackStack()
-        }
+        setupViews()
 
         observeViewModel()
 
+    }
+
+    private fun setupViews() {
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
+        binding.plusBtn.setOnClickListener { viewModel.goForward15Sec() }
+        binding.minusBtn.setOnClickListener { viewModel.goBack15Sec() }
+
+        binding.songSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {}
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+                isSeekBarTouched = true
+            }
+
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+                viewModel.seekTo(binding.songSeekbar.progress.toLong())
+                isSeekBarTouched = false
+            }
+        })
     }
 
     private fun observeViewModel() {
@@ -73,7 +95,17 @@ class EpisodeFragment : Fragment() {
                                             reflectionTextBody = state.text
                                         )
                                     )
-                                    instance.show(requireActivity().supportFragmentManager, TextFragmentBottomSheet.TAG)
+                                    instance.show(
+                                        requireActivity().supportFragmentManager,
+                                        TextFragmentBottomSheet.TAG
+                                    )
+                                }
+
+                                binding.playBtn.setOnClickListener {
+                                    viewModel.playButtonClicked(
+                                        state.audioUrl,
+                                        state.title
+                                    )
                                 }
                             }
 
@@ -83,6 +115,66 @@ class EpisodeFragment : Fragment() {
 
                             EpisodeFragmentState.Progress -> {
                                 binding.progressBar.visibility = View.VISIBLE
+                            }
+                        }
+                    }
+                }
+                launch {
+                    viewModel.playerUIState.collect {
+                        when (it) {
+                            is AudioPlayerState.Downloaded -> {
+                                binding.progressBar.visibility = View.INVISIBLE
+                                binding.minusBtn.isEnabled = true
+                                binding.plusBtn.isEnabled = true
+                                binding.songSeekbar.isClickable = true
+                            }
+
+                            is AudioPlayerState.Downloading -> {
+                                binding.progressBar.visibility = View.VISIBLE
+                            }
+
+                            is AudioPlayerState.Error -> {
+                                binding.progressBar.visibility = View.INVISIBLE
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.check_connection_to_listen),
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            }
+
+                            is AudioPlayerState.Initial -> {
+                                binding.minusBtn.isEnabled = false
+                                binding.plusBtn.isEnabled = false
+                                binding.songSeekbar.isClickable = false
+                                binding.songSeekbar.progress = 0
+                                binding.actualTimeTv.text = getString(R.string._00_00)
+                                binding.playBtn.setImageDrawable(
+                                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_play)
+                                )
+                            }
+
+                            is AudioPlayerState.Paused -> {
+                                binding.songSeekbar.max = it.maxProgress
+                                binding.songTimeTv.text = it.songTime
+                                binding.actualTimeTv.text = it.currentPosition
+                                if (!isSeekBarTouched)
+                                    binding.songSeekbar.progress = it.progress
+                                binding.playBtn.setImageDrawable(
+                                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_play)
+                                )
+                            }
+
+                            is AudioPlayerState.Playing -> {
+                                if (!isSeekBarTouched) {
+                                    binding.songSeekbar.progress = it.progress
+                                    binding.songSeekbar.max = it.max
+                                }
+                                binding.songTimeTv.text = it.songTime
+                                binding.actualTimeTv.text = it.currentPosition
+                                binding.playBtn.setImageDrawable(
+                                    ContextCompat.getDrawable(requireContext(), R.drawable.pause_ic)
+                                )
                             }
                         }
                     }

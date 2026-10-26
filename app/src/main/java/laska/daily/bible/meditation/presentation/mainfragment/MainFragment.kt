@@ -12,7 +12,7 @@ import android.widget.SeekBar
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -41,7 +41,7 @@ class MainFragment : Fragment() {
     private val binding: FragmentMainBinding
         get() = _binding ?: throw Exception("FragmentMainBinding is null")
 
-    private val viewModel: MainFragmentViewModel by activityViewModels()
+    private val viewModel: MainFragmentViewModel by viewModels()
 
     private var backgroundVidePlayer: ExoPlayer? = null
 
@@ -361,7 +361,7 @@ class MainFragment : Fragment() {
     }
 
     private suspend fun showDonationsPopup() {
-        if(supportPromptManager.shouldShowPrompt()){
+        if (supportPromptManager.shouldShowPrompt()) {
             viewModel.popUpShown()
             val introDialog = SupportIntroDialogFragment.newInstance()
             introDialog.show(

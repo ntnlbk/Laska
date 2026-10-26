@@ -100,16 +100,19 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
         mediaControllerFuture?.addListener({
             mediaController = mediaControllerFuture?.get()
             setupPlayerListeners()
-            if (_playerUIState.value is AudioPlayerState.Downloaded) {
-                actualReading?.audioURL?.let { url ->
-                    loadSongToPlayer(url)
-                    viewModelScope.launch {
-                        waitForReadyAndEmitDuration()
+
+            mediaController?.pause()
+            mediaController?.clearMediaItems()
+            _playerUIState.value = AudioPlayerState.Initial
+
+            actualReading?.let { reading ->
+                viewModelScope.launch {
+                    if (checkAudioDownloadedUseCase(reading.audioURL)) {
+                        loadSongToPlayer(reading.audioURL)
                     }
                 }
             }
-
-        }, ContextCompat.getMainExecutor(application)) // Выполняем в главном потоке
+        }, ContextCompat.getMainExecutor(application))
     }
 
     private fun setupPlayerListeners() {
