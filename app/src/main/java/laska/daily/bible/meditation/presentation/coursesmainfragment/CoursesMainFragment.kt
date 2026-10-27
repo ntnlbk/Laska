@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.databinding.FragmentCoursesMainBinding
+import laska.daily.bible.meditation.presentation.coursefragment.AuthorDetailsDialogFragment
 
 @AndroidEntryPoint
 class CoursesMainFragment : Fragment() {
@@ -48,13 +49,23 @@ class CoursesMainFragment : Fragment() {
                                 binding.progressBar.visibility = View.INVISIBLE
                                 val recyclerView = binding.rvCourses
                                 recyclerView.layoutManager = LinearLayoutManager(requireContext())
-                                val adapter = CourseAdapter {
+                                val adapter = CourseAdapter({
+                                    AuthorDetailsDialogFragment.newInstance(
+                                        it.imageURL,
+                                        it.name,
+                                        it.description
+                                    ).show(
+                                        childFragmentManager,
+                                        AuthorDetailsDialogFragment.TAG
+                                    )
+                                }) {
                                     val action =
                                         CoursesMainFragmentDirections.actionCoursesMainFragmentToCourseFragment(
                                             it.id
                                         )
                                     findNavController().navigate(action)
                                 }
+
                                 adapter.submitList(state.courses)
                                 recyclerView.adapter = adapter
                             }

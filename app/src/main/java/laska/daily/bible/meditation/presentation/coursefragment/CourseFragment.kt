@@ -72,7 +72,16 @@ class CourseFragment : Fragment() {
                                 }
                                 binding.tvCourseTitle.text = it.course.title
                                 binding.informationTv.text = it.course.description
-                                val authorsAdapter = AuthorsAdapter({})
+                                val authorsAdapter = AuthorsAdapter({
+                                    AuthorDetailsDialogFragment.newInstance(
+                                        it.imageURL,
+                                        it.name,
+                                        it.description
+                                    ).show(
+                                        childFragmentManager,
+                                        AuthorDetailsDialogFragment.TAG
+                                    )
+                                })
                                 binding.rvAuthors.adapter = authorsAdapter
                                 authorsAdapter.submitList(it.course.authors)
                                 binding.tvEpisodesCount.text = it.course.episodeCount.toString() + " sessions"

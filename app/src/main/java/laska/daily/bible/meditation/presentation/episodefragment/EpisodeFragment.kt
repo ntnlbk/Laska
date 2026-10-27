@@ -23,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentEpisodeBinding
+import laska.daily.bible.meditation.presentation.coursefragment.AuthorDetailsDialogFragment
 import laska.daily.bible.meditation.presentation.homefragment.AuthorsAdapter
 import laska.daily.bible.meditation.presentation.mainfragment.DialogArguments
 import laska.daily.bible.meditation.presentation.textfragment.EpisodeTextFragmentBottomSheet
@@ -142,7 +143,16 @@ class EpisodeFragment : Fragment() {
                                 binding.dateTv.text = state.title
                                 binding.bibleRefTv.text = state.reference
                                 binding.feastNameTv.text = state.subtitle
-                                val authorsAdapter = AuthorsAdapter({})
+                                val authorsAdapter = AuthorsAdapter({
+                                    AuthorDetailsDialogFragment.newInstance(
+                                        it.imageURL,
+                                        it.name,
+                                        it.description
+                                    ).show(
+                                        childFragmentManager,
+                                        AuthorDetailsDialogFragment.TAG
+                                    )
+                                })
                                 binding.rvAuthors.adapter = authorsAdapter
                                 authorsAdapter.submitList(state.authors)
                                 binding.ivEpisodeCover.visibility = View.VISIBLE

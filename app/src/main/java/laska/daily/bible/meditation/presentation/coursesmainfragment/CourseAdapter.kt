@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import laska.daily.bible.meditation.R
+import laska.daily.bible.meditation.domain.courses.Author
 import laska.daily.bible.meditation.domain.courses.Course
 import laska.daily.bible.meditation.presentation.homefragment.AuthorsAdapter
 
 class CourseAdapter(
+    private val onAuthorClick: (Author) -> Unit,
     private val onCourseClick: (Course) -> Unit
 ) : ListAdapter<Course, CourseAdapter.CourseViewHolder>(CourseDiffCallback()) {
 
@@ -43,7 +45,9 @@ class CourseAdapter(
         holder.tvCourseTitle.text = course.title
         holder.tvCourseDescription.text = course.shortDescription
 
-        val authorAdapter = AuthorsAdapter({})
+        val authorAdapter = AuthorsAdapter({
+            onAuthorClick(it)
+        })
         authorAdapter.submitList(course.authors)
         holder.rvAuthors.layoutManager = LinearLayoutManager(
             holder.itemView.context,
