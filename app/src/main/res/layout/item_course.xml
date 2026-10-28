@@ -42,7 +42,7 @@
         android:id="@+id/tvCourseTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/inter"
         android:text="Course title"
         android:textColor="#FFFFFF"
@@ -57,6 +57,7 @@
         android:layout_marginTop="6dp"
         android:letterSpacing="0"
         android:lineSpacingExtra="4dp"
+        android:maxLines="2"
         android:text="Short description short description hort description short description short "
         android:textColor="#989898"
         android:textSize="16sp" />

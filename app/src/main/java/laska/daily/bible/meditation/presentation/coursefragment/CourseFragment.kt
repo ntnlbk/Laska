@@ -24,6 +24,7 @@ import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentCourseBinding
 import laska.daily.bible.meditation.domain.courses.EpisodeState
 import laska.daily.bible.meditation.presentation.homefragment.AuthorsAdapter
+import kotlin.math.roundToInt
 
 
 @AndroidEntryPoint
@@ -84,7 +85,8 @@ class CourseFragment : Fragment() {
                                 })
                                 binding.rvAuthors.adapter = authorsAdapter
                                 authorsAdapter.submitList(it.course.authors)
-                                binding.tvEpisodesCount.text = it.course.episodeCount.toString() + " sessions"
+                                binding.tvEpisodesCount.text =
+                                    it.course.episodeCount.toString() + " sessions"
                                 binding.containerEpisodes.removeAllViews()
                                 binding.detailedInformationBtn.visibility = View.VISIBLE
 
@@ -102,8 +104,10 @@ class CourseFragment : Fragment() {
                                         "${episode.number} ${episode.title}"
                                     episodeView.findViewById<TextView>(R.id.tvEpisodeSubtitle).text =
                                         episode.subtitle
-                                    episodeView.findViewById<TextView>(R.id.tvEpisodeTime).text =
-                                        episode.duration.toString()
+                                    episodeView.findViewById<TextView>(R.id.tvEpisodeTime).text = (
+                                            (episode.duration.toFloat() / 60).roundToInt()
+                                                .toString()
+                                                    + " мин")
 
                                     when (episode.state) {
                                         EpisodeState.AVAILABLE -> {
