@@ -61,6 +61,9 @@ class EpisodeFragmentViewModel @Inject constructor(
     private var mediaControllerFuture: ListenableFuture<MediaController>? = null
     private var mediaController: MediaController? = null
 
+    private var isMarkedCompleted = false
+    private var currentEpisodeId: Int? = null
+
     init {
         viewModelScope.launch {
             loadEpisodeData() // Было: setContent()
@@ -135,6 +138,16 @@ class EpisodeFragmentViewModel @Inject constructor(
                             duration.toInt(),
                             currentPosition.toInt()
                         )
+                    }
+                }
+                if (duration > 0 && !isMarkedCompleted && currentEpisodeId != null) {
+                    val progressPercent = (currentPosition.toFloat() / duration.toFloat()) * 100f
+
+                    if (progressPercent >= 70f) {
+                        isMarkedCompleted = true
+                        val episodeIdToComplete = currentEpisodeId!!
+                        markEpisodeAsCompletedUseCase(episodeIdToComplete)
+
                     }
                 }
             }
@@ -297,6 +310,7 @@ class EpisodeFragmentViewModel @Inject constructor(
                 duration = formatTime(episode.duration.toLong()),
                 episodeId = episode.id
             )
+            currentEpisodeId = episode.id
             initializeController(episode.audioURL, episode.title)
         } catch (e: Exception) {
             _episodeUIState.value = EpisodeFragmentState.Error(e.message.toString())

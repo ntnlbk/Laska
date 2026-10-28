@@ -14,6 +14,7 @@ import laska.daily.bible.meditation.domain.Language
 import laska.daily.bible.meditation.domain.courses.Course
 import laska.daily.bible.meditation.domain.courses.CoursesRepository
 import laska.daily.bible.meditation.domain.courses.Episode
+import laska.daily.bible.meditation.domain.courses.EpisodeState
 import laska.daily.bible.meditation.domain.courses.HomePlacement
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -53,9 +54,39 @@ class CoursesRepositoryImpl @Inject constructor(
 
     override suspend fun getEpisodesByCourseId(courseId: Int): List<Episode> {
         val episodesFromApi = CoursesApiService.CoursesApi.retrofitService.getEpisodes(courseId)
-        return episodesFromApi.items.map {
+        val episodesAllAvailable = episodesFromApi.items.map {
             courseMapper.mapShortEpisodeDTOToEpisodeDataModel(it)
         }
+
+        val dbDao = ReadingRoomDatabase.getDatabase(application).userCompletedEpisodesDao()
+        val userCompletedEpisodes = dbDao.getAllUserCompletedEpisodes()
+
+        val completedEpisodeIds = userCompletedEpisodes.map { it.episodeId }.toSet()
+
+        val sortedEpisodes = episodesAllAvailable.sortedBy { it.number }
+
+        val episodes = sortedEpisodes.mapIndexed { index, episode ->
+            val isCompleted = completedEpisodeIds.contains(episode.id)
+
+            val newState = when {
+                isCompleted -> EpisodeState.COMPLETED
+
+                index < 3 -> EpisodeState.AVAILABLE
+
+                else -> {
+                    val requiredEpisode = sortedEpisodes[index - 3]
+                    if (completedEpisodeIds.contains(requiredEpisode.id)) {
+                        EpisodeState.AVAILABLE
+                    } else {
+                        EpisodeState.LOCKED
+                    }
+                }
+            }
+
+            episode.copy(state = newState)
+        }
+
+        return episodes
     }
 
     override suspend fun getFeaturedSectionNameByLanguage(language: Language): String {

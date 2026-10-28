@@ -277,7 +277,7 @@ class EpisodeTextFragmentBottomSheet : BottomSheetDialogFragment() {
             }
 
             progressBar.progress = progress
-            if(progress == 100){
+            if(progress >= 90){
                 settingViewModel.episodeCompleted(
                     dialogArguments.episodeId
                 )
