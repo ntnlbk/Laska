@@ -10,6 +10,7 @@ interface CoursesRepository {
     suspend fun getFeaturedSectionNameByLanguage(language: Language): String
 
     suspend fun getCourse(courseId: Int): Course
-
     suspend fun getEpisode(courseId: Int, episodeId: Int): Episode
+
+    suspend fun markEpisodeAsCompleted(episodeId: Int)
 }

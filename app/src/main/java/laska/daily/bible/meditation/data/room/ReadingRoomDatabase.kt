@@ -5,9 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [ReadingDBModel::class], version = 1)
+@Database(entities = [ReadingDBModel::class, UserCompletedEpisodesDBModel::class], version = 2)
 abstract class ReadingRoomDatabase: RoomDatabase() {
     abstract fun readingDao(): ReadingDao
+
+    abstract fun userCompletedEpisodesDao(): UserCompletedEpisodesDAO
 
     companion object {
         @Volatile
@@ -21,7 +23,7 @@ abstract class ReadingRoomDatabase: RoomDatabase() {
                     context.applicationContext,
                     ReadingRoomDatabase::class.java,
                     "readings_db"
-                )
+                ).fallbackToDestructiveMigration(false)
                     .build()
                 INSTANCE = instance
                 // return instance

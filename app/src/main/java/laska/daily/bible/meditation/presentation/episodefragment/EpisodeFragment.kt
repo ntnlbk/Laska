@@ -147,7 +147,7 @@ class EpisodeFragment : Fragment() {
                                     AuthorDetailsDialogFragment.newInstance(
                                         it.imageURL,
                                         it.name,
-                                        it.description
+                                        it.description,
                                     ).show(
                                         childFragmentManager,
                                         AuthorDetailsDialogFragment.TAG
@@ -161,7 +161,8 @@ class EpisodeFragment : Fragment() {
                                     textBottomSheetInstance = EpisodeTextFragmentBottomSheet.newInstance(
                                         DialogArguments(
                                             bibleRef = state.title,
-                                            reflectionTextBody = state.text
+                                            reflectionTextBody = state.text,
+                                            episodeId = state.episodeId
                                         )
                                     ).apply {
                                         // Привязываем клик к ViewModel родительского фрагмента

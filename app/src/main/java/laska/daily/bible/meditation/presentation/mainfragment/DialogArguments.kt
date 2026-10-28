@@ -10,6 +10,7 @@ data class DialogArguments(
     val reflectionTextBody: String = "",
     val songMaxProgress: Int = 0,
     val actualProgress: Int = 0,
-    val date: String = ""
+    val date: String = "",
+    val episodeId: Int = 0
 ): Serializable
 

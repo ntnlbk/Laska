@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import laska.daily.bible.meditation.domain.courses.MarkEpisodeAsCompletedUseCase
 import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
 import laska.daily.bible.meditation.domain.settings.Settings
 import laska.daily.bible.meditation.domain.settings.UpdateSettingsUseCase
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TextFragmentOptionsViewModel @Inject constructor(
     private val getSettingsUseCase: GetSettingsUseCase,
-    private val updateSettingsUseCase: UpdateSettingsUseCase
+    private val updateSettingsUseCase: UpdateSettingsUseCase,
+    private val markEpisodeAsCompletedUseCase: MarkEpisodeAsCompletedUseCase
 ): ViewModel() {
     private val _state = MutableStateFlow<TextFragmentOptionsState>(TextFragmentOptionsState.Progress)
     val state = _state.asStateFlow()
@@ -54,4 +56,9 @@ class TextFragmentOptionsViewModel @Inject constructor(
         }
     }
 
+    fun episodeCompleted(episodeId: Int){
+        viewModelScope.launch {
+            markEpisodeAsCompletedUseCase(episodeId)
+        }
+    }
 }

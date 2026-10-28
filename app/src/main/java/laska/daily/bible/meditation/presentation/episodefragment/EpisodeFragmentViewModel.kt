@@ -28,6 +28,7 @@ import laska.daily.bible.meditation.domain.audio.CheckAudioDownloadedUseCase
 import laska.daily.bible.meditation.domain.audio.DownloadAudioUseCase
 import laska.daily.bible.meditation.domain.audio.ObserveDownloadAudioUseCase
 import laska.daily.bible.meditation.domain.courses.GetEpisodeUseCase
+import laska.daily.bible.meditation.domain.courses.MarkEpisodeAsCompletedUseCase
 import laska.daily.bible.meditation.presentation.service.AudioPlaybackService
 import laska.daily.bible.meditation.presentation.uils.ConnectionUtils
 import javax.inject.Inject
@@ -41,6 +42,7 @@ class EpisodeFragmentViewModel @Inject constructor(
     private val checkAudioDownloadedUseCase: CheckAudioDownloadedUseCase,
     @param:ApplicationContext private val application: Context,
     private val connectionUtils: ConnectionUtils,
+    private val markEpisodeAsCompletedUseCase: MarkEpisodeAsCompletedUseCase
 ) : ViewModel() {
 
     private val args: EpisodeFragmentArgs =
@@ -292,7 +294,8 @@ class EpisodeFragmentViewModel @Inject constructor(
                 authors = episode.authors,
                 text = episode.text,
                 audioUrl = episode.audioURL,
-                duration = formatTime(episode.duration.toLong())
+                duration = formatTime(episode.duration.toLong()),
+                episodeId = episode.id
             )
             initializeController(episode.audioURL, episode.title)
         } catch (e: Exception) {

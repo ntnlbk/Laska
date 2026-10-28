@@ -277,6 +277,11 @@ class EpisodeTextFragmentBottomSheet : BottomSheetDialogFragment() {
             }
 
             progressBar.progress = progress
+            if(progress == 100){
+                settingViewModel.episodeCompleted(
+                    dialogArguments.episodeId
+                )
+            }
         }
 
         if (dialogArguments.bibleTextPlain.isEmpty()) {

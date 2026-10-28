@@ -13,7 +13,8 @@ sealed class EpisodeFragmentState {
         val authors: List<Author>,
         val text: String,
         val audioUrl: String,
-        val duration: String
+        val duration: String,
+        val episodeId: Int
     ) : EpisodeFragmentState()
 
     data class Error(val message: String) : EpisodeFragmentState()

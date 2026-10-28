@@ -1,5 +1,6 @@
 package laska.daily.bible.meditation.data
 
+import android.app.Application
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
@@ -7,6 +8,8 @@ import laska.daily.bible.meditation.data.mappers.CoursesMapper
 import laska.daily.bible.meditation.data.mappers.HomePlacementMapper
 import laska.daily.bible.meditation.data.mappers.LanguageMapper
 import laska.daily.bible.meditation.data.retrofit.courses.CoursesApiService
+import laska.daily.bible.meditation.data.room.ReadingRoomDatabase
+import laska.daily.bible.meditation.data.room.UserCompletedEpisodesDBModel
 import laska.daily.bible.meditation.domain.Language
 import laska.daily.bible.meditation.domain.courses.Course
 import laska.daily.bible.meditation.domain.courses.CoursesRepository
@@ -20,6 +23,7 @@ class CoursesRepositoryImpl @Inject constructor(
     private val languageMapper: LanguageMapper,
     private val courseMapper: CoursesMapper,
     private val homePlacementMapper: HomePlacementMapper,
+    private val application: Application,
 ) : CoursesRepository {
     override suspend fun getCourseForHomeScreen(language: Language): Course {
 
@@ -73,7 +77,13 @@ class CoursesRepositoryImpl @Inject constructor(
         courseId: Int,
         episodeId: Int
     ): Episode {
-        val episodeFromApi = CoursesApiService.CoursesApi.retrofitService.getEpisode(courseId, episodeId)
+        val episodeFromApi =
+            CoursesApiService.CoursesApi.retrofitService.getEpisode(courseId, episodeId)
         return courseMapper.mapEpisodeDTOToEpisodeDataModel(episodeFromApi)
+    }
+
+    override suspend fun markEpisodeAsCompleted(episodeId: Int) {
+        val dbDao = ReadingRoomDatabase.getDatabase(application).userCompletedEpisodesDao()
+        dbDao.insertUserCompletedEpisode(UserCompletedEpisodesDBModel(episodeId))
     }
 }
