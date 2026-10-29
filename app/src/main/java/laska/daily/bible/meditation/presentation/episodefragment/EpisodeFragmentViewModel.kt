@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.domain.audio.AudioDownloadState
 import laska.daily.bible.meditation.domain.audio.CheckAudioDownloadedUseCase
+import laska.daily.bible.meditation.domain.audio.DeleteAllCachedAudioUseCase
 import laska.daily.bible.meditation.domain.audio.DownloadAudioUseCase
 import laska.daily.bible.meditation.domain.audio.ObserveDownloadAudioUseCase
 import laska.daily.bible.meditation.domain.courses.GetEpisodeUseCase
@@ -42,7 +43,8 @@ class EpisodeFragmentViewModel @Inject constructor(
     private val checkAudioDownloadedUseCase: CheckAudioDownloadedUseCase,
     @param:ApplicationContext private val application: Context,
     private val connectionUtils: ConnectionUtils,
-    private val markEpisodeAsCompletedUseCase: MarkEpisodeAsCompletedUseCase
+    private val markEpisodeAsCompletedUseCase: MarkEpisodeAsCompletedUseCase,
+    private val deleteAllCachedAudioUseCase: DeleteAllCachedAudioUseCase
 ) : ViewModel() {
 
     private val args: EpisodeFragmentArgs =
@@ -271,6 +273,7 @@ class EpisodeFragmentViewModel @Inject constructor(
             waitForReadyAndEmitDuration()
             mediaController?.play()
         } else {
+            deleteAllCachedAudioUseCase()
             if (connectionUtils.isInternetAvailable()) {
                 downloadAudioUseCase(url)
                 observeDownloadAudioUseCase(url).collect { domainStatus ->

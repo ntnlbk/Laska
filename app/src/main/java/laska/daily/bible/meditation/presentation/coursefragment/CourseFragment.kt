@@ -120,11 +120,27 @@ class CourseFragment : Fragment() {
                                         EpisodeState.AVAILABLE -> {
                                             episodeView.findViewById<ImageView>(R.id.ivEpisodeStatus)
                                                 .setImageResource(R.drawable.ic_play)
+                                            episodeView.setOnClickListener {
+                                                val action =
+                                                    CourseFragmentDirections.actionCourseFragmentToEpisodeFragment(
+                                                        args.courseId,
+                                                        episode.id
+                                                    )
+                                                findNavController().navigate(action)
+                                            }
                                         }
 
                                         EpisodeState.COMPLETED -> {
                                             episodeView.findViewById<ImageView>(R.id.ivEpisodeStatus)
                                                 .setImageResource(R.drawable.ic_completed)
+                                            episodeView.setOnClickListener {
+                                                val action =
+                                                    CourseFragmentDirections.actionCourseFragmentToEpisodeFragment(
+                                                        args.courseId,
+                                                        episode.id
+                                                    )
+                                                findNavController().navigate(action)
+                                            }
                                         }
 
                                         EpisodeState.LOCKED -> {
@@ -139,14 +155,6 @@ class CourseFragment : Fragment() {
                                         }
                                     }
 
-                                    episodeView.setOnClickListener {
-                                        val action =
-                                            CourseFragmentDirections.actionCourseFragmentToEpisodeFragment(
-                                                args.courseId,
-                                                episode.id
-                                            )
-                                        findNavController().navigate(action)
-                                    }
                                     binding.containerEpisodes.addView(episodeView)
                                 }
                                 binding.progressBar.visibility = View.INVISIBLE
