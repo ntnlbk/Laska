@@ -30,7 +30,7 @@
             android:fontFamily="@font/inter"
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
-            android:text="26 sessions"
+            tools:text="26 sessions"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -44,7 +44,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:fontFamily="@font/inter"
-        android:text="Course title"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -58,7 +57,7 @@
         android:letterSpacing="0"
         android:lineSpacingExtra="4dp"
         android:maxLines="2"
-        android:text="Short description short description hort description short description short "
+        tools:text="Short description short description hort description short description short "
         android:textColor="#989898"
         android:textSize="16sp" />
 

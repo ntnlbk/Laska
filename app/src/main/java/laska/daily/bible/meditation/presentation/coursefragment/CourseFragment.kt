@@ -100,8 +100,13 @@ class CourseFragment : Fragment() {
                                 })
                                 binding.rvAuthors.adapter = authorsAdapter
                                 authorsAdapter.submitList(state.course.authors)
+                                val countString = if (state.course.episodeCount < 5){
+                                     getString(R.string.course_main_sessions_number_24)
+                                } else {
+                                    getString(R.string.course_main_sessions_number)
+                                }
                                 binding.tvEpisodesCount.text =
-                                    state.course.episodeCount.toString() + " sessions"
+                                    state.course.episodeCount.toString() + " " + countString
                                 binding.containerEpisodes.removeAllViews()
 
                                 for (episode in state.episodes) {
@@ -201,10 +206,10 @@ class CourseFragment : Fragment() {
             })
             if (informationTv.maxLines == 2) {
                 informationTv.maxLines = Int.MAX_VALUE
-                detailedInformationButton.text = "Скрыть"
+                detailedInformationButton.text = getString(R.string.course_main_about_hide)
             } else {
                 informationTv.maxLines = 2
-                detailedInformationButton.text = "Подробнее о курсе"
+                detailedInformationButton.text = getString(R.string.course_main_about)
             }
         }
         binding.btnBack.setOnClickListener {

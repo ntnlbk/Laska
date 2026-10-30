@@ -64,8 +64,13 @@ class HomeFragment : Fragment() {
                                 binding.dateTv.text = state.date
                                 binding.bibleRefTv.text = state.bibleReference
                                 binding.tvFeaturedSection.text = state.featuredSectionTitle
+                                val countString = if (state.featuredCourseSessionsNumber < 5){
+                                    getString(R.string.course_main_sessions_number_24)
+                                } else {
+                                    getString(R.string.course_main_sessions_number)
+                                }
                                 binding.tvEpisodesCount.text =
-                                    state.featuredCourseSessionsNumber.toString()
+                                    state.featuredCourseSessionsNumber.toString() + " " + countString
                                 binding.tvFeaturedCourseTitle.text = state.featuredCourseTitle
                                 binding.tvFeaturedCourseDescription.text =
                                     state.featuredCourseDescription

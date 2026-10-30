@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getString
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -41,7 +42,12 @@ class CourseAdapter(
             crossfade(true)
             error(R.drawable.home_fragment_courses_section_test_img)
         }
-        holder.tvSessionsCount.text = course.episodeCount.toString()
+        val countString = if (course.episodeCount < 5) {
+            getString(holder.itemView.context, R.string.course_main_sessions_number_24)
+        } else {
+            getString(holder.itemView.context, R.string.course_main_sessions_number)
+        }
+        holder.tvSessionsCount.text = course.episodeCount.toString() + " " + countString
         holder.tvCourseTitle.text = course.title
         holder.tvCourseDescription.text = course.shortDescription
 

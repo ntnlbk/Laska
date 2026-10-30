@@ -64,6 +64,9 @@
     <string name="bottom_menu_main">Галоўная</string>
     <string name="bottom_menu_courses">Курсы</string>
     <string name="bottom_menu_options">Налады</string>
-    <string name="featured_home_placement">featured</string>
-    <string name="regular_home_placement">regular</string>
+    <string name="course_main_about">Падрабязней пра курс</string>
+    <string name="course_main_about_hide">Схаваць</string>
+    <string name="course_main_start">Пачаць курс</string>
+    <string name="course_main_sessions_number_24">эпізоды</string>
+    <string name="course_main_sessions_number">эпізодаў</string>
 </resources>

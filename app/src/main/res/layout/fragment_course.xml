@@ -108,7 +108,7 @@
                 android:lineSpacingExtra="4dp"
                 tools:visibility="visible"
                 android:visibility="invisible"
-                android:text="Подробнее о курсе"
+                android:text="@string/course_main_about"
                 android:textColor="#ECDDAC"
                 android:textSize="16sp" />
 
@@ -135,7 +135,7 @@
                 android:visibility="invisible"
                 tools:visibility="visible"
                 tools:text="Начать курс"
-                android:text="Начать курс"
+                android:text="@string/course_main_start"
                 android:textAllCaps="false"
                 android:textColor="#1A1A1A"
                 android:textSize="16sp"
