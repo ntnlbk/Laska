@@ -95,5 +95,8 @@
         <argument
             android:name="episodeId"
             app:argType="integer" />
+        <argument
+            android:name="courseImageUrl"
+            app:argType="string" />
     </fragment>
 </navigation>

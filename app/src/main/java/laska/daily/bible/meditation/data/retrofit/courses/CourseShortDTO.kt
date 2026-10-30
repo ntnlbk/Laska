@@ -13,7 +13,7 @@ data class CourseShortDTO(
     val homePlacement: String,
     @SerialName("short_description")
     val shortDescription: String,
-    val cover: ImageDTO,
+    val cover: ImageDTO?,
     val authors: List<AuthorShortDTO>,
     @SerialName("episodes_count")
     val episodesCount: Int,

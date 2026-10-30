@@ -16,7 +16,7 @@ data class CourseDTO(
     @SerialName("short_description")
     val shortDescription: String,
     val description: String,
-    val cover: ImageDTO,
+    val cover: ImageDTO?,
     val authors: List<AuthorDTO>,
     @SerialName("episodes_count")
     val episodesCount: Int,

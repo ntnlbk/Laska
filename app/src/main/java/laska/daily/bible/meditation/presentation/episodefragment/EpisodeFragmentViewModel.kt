@@ -311,7 +311,8 @@ class EpisodeFragmentViewModel @Inject constructor(
                 text = episode.text,
                 audioUrl = episode.audioURL,
                 duration = formatTime(episode.duration.toLong()),
-                episodeId = episode.id
+                episodeId = episode.id,
+                courseImageUrl = args.courseImageUrl
             )
             currentEpisodeId = episode.id
             initializeController(episode.audioURL, episode.title)

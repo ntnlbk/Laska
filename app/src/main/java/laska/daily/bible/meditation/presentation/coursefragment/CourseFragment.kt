@@ -22,6 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentCourseBinding
+import laska.daily.bible.meditation.domain.courses.Episode
 import laska.daily.bible.meditation.domain.courses.EpisodeState
 import laska.daily.bible.meditation.presentation.homefragment.AuthorsAdapter
 import kotlin.math.roundToInt
@@ -68,18 +69,25 @@ class CourseFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.courseUIState.collect {
-                        when (it) {
+                    viewModel.courseUIState.collect { state ->
+                        when (state) {
                             is CourseFragmentState.Content -> {
                                 binding.ivCourseImage.load(
-                                    it.course.imageURL
+                                    state.course.imageURL
                                 ) {
                                     crossfade(true)
                                     placeholder(R.drawable.home_fragment_courses_section_test_img)
                                     error(R.drawable.home_fragment_courses_section_test_img)
                                 }
-                                binding.tvCourseTitle.text = it.course.title
-                                binding.informationTv.text = it.course.description
+                                binding.tvCourseTitle.text = state.course.title
+                                if(state.course.description == ""){
+                                    binding.informationTv.visibility = View.GONE
+                                    binding.detailedInformationBtn.visibility = View.GONE
+                                } else {
+                                    binding.detailedInformationBtn.visibility = View.VISIBLE
+                                    binding.informationTv.text = state.course.description
+                                }
+
                                 val authorsAdapter = AuthorsAdapter({
                                     AuthorDetailsDialogFragment.newInstance(
                                         it.imageURL,
@@ -91,13 +99,12 @@ class CourseFragment : Fragment() {
                                     )
                                 })
                                 binding.rvAuthors.adapter = authorsAdapter
-                                authorsAdapter.submitList(it.course.authors)
+                                authorsAdapter.submitList(state.course.authors)
                                 binding.tvEpisodesCount.text =
-                                    it.course.episodeCount.toString() + " sessions"
+                                    state.course.episodeCount.toString() + " sessions"
                                 binding.containerEpisodes.removeAllViews()
-                                binding.detailedInformationBtn.visibility = View.VISIBLE
 
-                                for (episode in it.episodes) {
+                                for (episode in state.episodes) {
                                     // Надуваем макет одного эпизода (item_episode.xml)
                                     val episodeView = LayoutInflater.from(requireContext())
                                         .inflate(
@@ -109,8 +116,14 @@ class CourseFragment : Fragment() {
                                     // Наполняем данными
                                     episodeView.findViewById<TextView>(R.id.tvEpisodeTitle).text =
                                         "${episode.number} ${episode.title}"
-                                    episodeView.findViewById<TextView>(R.id.tvEpisodeSubtitle).text =
-                                        episode.subtitle
+
+                                    if (episode.subtitle == "") {
+                                        episodeView.findViewById<TextView>(R.id.tvEpisodeSubtitle).visibility =
+                                            View.GONE
+                                    } else {
+                                        episodeView.findViewById<TextView>(R.id.tvEpisodeSubtitle).text =
+                                            episode.subtitle
+                                    }
                                     episodeView.findViewById<TextView>(R.id.tvEpisodeTime).text = (
                                             (episode.duration.toFloat() / 60).roundToInt()
                                                 .toString()
@@ -121,12 +134,7 @@ class CourseFragment : Fragment() {
                                             episodeView.findViewById<ImageView>(R.id.ivEpisodeStatus)
                                                 .setImageResource(R.drawable.ic_play)
                                             episodeView.setOnClickListener {
-                                                val action =
-                                                    CourseFragmentDirections.actionCourseFragmentToEpisodeFragment(
-                                                        args.courseId,
-                                                        episode.id
-                                                    )
-                                                findNavController().navigate(action)
+                                                openEpisodeFragment(episode, state)
                                             }
                                         }
 
@@ -134,12 +142,7 @@ class CourseFragment : Fragment() {
                                             episodeView.findViewById<ImageView>(R.id.ivEpisodeStatus)
                                                 .setImageResource(R.drawable.ic_completed)
                                             episodeView.setOnClickListener {
-                                                val action =
-                                                    CourseFragmentDirections.actionCourseFragmentToEpisodeFragment(
-                                                        args.courseId,
-                                                        episode.id
-                                                    )
-                                                findNavController().navigate(action)
+                                                openEpisodeFragment(episode, state)
                                             }
                                         }
 
@@ -161,7 +164,11 @@ class CourseFragment : Fragment() {
                                 binding.btnStartCourse.visibility = View.VISIBLE
                             }
 
-                            is CourseFragmentState.Error -> Log.d("COURSES", "ERROR, " + it.message)
+                            is CourseFragmentState.Error -> Log.d(
+                                "COURSES",
+                                "ERROR, " + state.message
+                            )
+
                             CourseFragmentState.Progress -> {
                                 binding.progressBar.visibility = View.VISIBLE
                             }
@@ -170,6 +177,19 @@ class CourseFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun openEpisodeFragment(
+        episode: Episode,
+        state: CourseFragmentState.Content
+    ) {
+        val action =
+            CourseFragmentDirections.actionCourseFragmentToEpisodeFragment(
+                args.courseId,
+                episode.id,
+                state.course.imageURL
+            )
+        findNavController().navigate(action)
     }
 
     private fun setupViews() {

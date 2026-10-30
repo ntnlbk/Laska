@@ -136,13 +136,31 @@ class EpisodeFragment : Fragment() {
                         when (state) {
                             is EpisodeFragmentState.Content -> {
                                 binding.progressBar.visibility = View.INVISIBLE
-                                binding.ivEpisodeCover.load(state.imageUrl) {
-                                    crossfade(true)
-                                    error(R.drawable.home_fragment_courses_section_test_img)
+                                if (state.imageUrl == R.drawable.home_fragment_courses_section_test_img.toString()){
+                                    binding.ivEpisodeCover.load(state.courseImageUrl) {
+                                        crossfade(true)
+                                        error(R.drawable.home_fragment_courses_section_test_img)
+                                    }
                                 }
+                                else {
+                                    binding.ivEpisodeCover.load(state.imageUrl) {
+                                        crossfade(true)
+                                        error(R.drawable.home_fragment_courses_section_test_img)
+                                    }
+                                }
+
                                 binding.dateTv.text = state.title
-                                binding.bibleRefTv.text = state.reference
-                                binding.feastNameTv.text = state.subtitle
+                                if(state.reference == ""){
+                                    binding.bibleRefTv.visibility = View.GONE
+                                } else {
+                                    binding.bibleRefTv.text = state.reference
+                                }
+
+                                if(state.subtitle == ""){
+                                    binding.feastNameTv.visibility = View.GONE
+                                } else {
+                                    binding.feastNameTv.text = state.subtitle
+                                }
                                 val authorsAdapter = AuthorsAdapter({
                                     AuthorDetailsDialogFragment.newInstance(
                                         it.imageURL,

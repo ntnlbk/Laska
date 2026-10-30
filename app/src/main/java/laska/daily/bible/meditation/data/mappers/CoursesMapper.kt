@@ -1,5 +1,6 @@
 package laska.daily.bible.meditation.data.mappers
 
+import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.data.retrofit.courses.AuthorDTO
 import laska.daily.bible.meditation.data.retrofit.courses.AuthorShortDTO
 import laska.daily.bible.meditation.data.retrofit.courses.CourseDTO
@@ -43,7 +44,7 @@ class CoursesMapper @Inject constructor(
             homePlacement = homePlacementMapper.mapStringToHomePlacement(courseShortDTO.homePlacement),
             shortDescription = courseShortDTO.shortDescription,
             description = "",
-            imageURL = courseShortDTO.cover.url,
+            imageURL = if (courseShortDTO.cover != null) courseShortDTO.cover.url else R.drawable.home_fragment_courses_section_test_img.toString(),
             authors = courseShortDTO.authors.map { mapAuthorShortDTOToAuthorDataModel(it) },
             episodeCount = courseShortDTO.episodesCount,
             episodeAvailableCount = courseShortDTO.episodesAvailableCount
@@ -75,10 +76,10 @@ class CoursesMapper @Inject constructor(
             title = episodeDTO.title,
             subtitle = episodeDTO.subtitle,
             scriptureReference = episodeDTO.scriptureReference,
-            imageURL = episodeDTO.cover.url,
+            imageURL = if (episodeDTO.cover != null) episodeDTO.cover.url else R.drawable.home_fragment_courses_section_test_img.toString(),
             authors = episodeDTO.authors.map { mapAuthorShortDTOToAuthorDataModel(it) },
-            audioURL = episodeDTO.audio.url,
-            duration = episodeDTO.audio.duration,
+            audioURL = if (episodeDTO.audio != null) episodeDTO.audio.url else "",
+            duration = if (episodeDTO.audio != null) episodeDTO.audio.duration else 0,
             text = episodeDTO.blocks.filter { it.blockType == "text" }
                 .joinToString(separator = "\n") { it.data.html ?: "" },
             state = EpisodeState.AVAILABLE
@@ -93,7 +94,7 @@ class CoursesMapper @Inject constructor(
             homePlacement = homePlacementMapper.mapStringToHomePlacement(courseDTO.homePlacement),
             shortDescription = courseDTO.shortDescription,
             description = courseDTO.description,
-            imageURL = courseDTO.cover.url,
+            imageURL = if (courseDTO.cover != null) courseDTO.cover.url else R.drawable.home_fragment_courses_section_test_img.toString(),
             authors = courseDTO.authors.map { mapAuthorDTOToAuthorDataModel(it) },
             episodeCount = courseDTO.episodesCount,
             episodeAvailableCount = courseDTO.episodesAvailableCount

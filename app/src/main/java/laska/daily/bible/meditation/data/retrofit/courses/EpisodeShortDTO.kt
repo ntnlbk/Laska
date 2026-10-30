@@ -14,7 +14,7 @@ data class EpisodeShortDTO(
     val number: Int,
     val title: String,
     val subtitle: String = "",
-    val duration: Int,
+    val duration: Int = 0,
     val availability: EpisodeAvailabilityDTO
 ) {
 }

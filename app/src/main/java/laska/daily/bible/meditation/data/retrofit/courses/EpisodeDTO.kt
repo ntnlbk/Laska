@@ -18,9 +18,9 @@ data class EpisodeDTO(
     val subtitle: String = "",
     @SerialName("scripture_reference")
     val scriptureReference: String = "",
-    val cover: ImageDTO,
+    val cover: ImageDTO?,
     val authors: List<AuthorShortDTO>,
-    val audio: AudioDTO,
+    val audio: AudioDTO?,
     val text: String?,
     val blocks: List<EpisodeBlockDTO>,
     val availability: EpisodeAvailabilityDTO,

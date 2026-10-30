@@ -14,7 +14,8 @@ sealed class EpisodeFragmentState {
         val text: String,
         val audioUrl: String,
         val duration: String,
-        val episodeId: Int
+        val episodeId: Int,
+        val courseImageUrl: String
     ) : EpisodeFragmentState()
 
     data class Error(val message: String) : EpisodeFragmentState()
