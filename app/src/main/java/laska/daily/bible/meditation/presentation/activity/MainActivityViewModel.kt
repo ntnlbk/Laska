@@ -2,23 +2,22 @@ package laska.daily.bible.meditation.presentation.activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import laska.daily.bible.meditation.domain.GetReadingUseCase
-import laska.daily.bible.meditation.domain.Language
-import laska.daily.bible.meditation.domain.audio.CheckAudioDownloadedUseCase
-import laska.daily.bible.meditation.domain.audio.DeleteAllCachedAudioUseCase
-import laska.daily.bible.meditation.domain.audio.DownloadAudioUseCase
-import laska.daily.bible.meditation.presentation.uils.ConnectionUtils
-import laska.daily.bible.meditation.presentation.uils.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import laska.daily.bible.meditation.domain.GetReadingUseCase
+import laska.daily.bible.meditation.domain.Language
 import laska.daily.bible.meditation.domain.analytics.StartSessionUseCase
+import laska.daily.bible.meditation.domain.audio.CheckAudioDownloadedUseCase
+import laska.daily.bible.meditation.domain.audio.DeleteAllCachedAudioUseCase
+import laska.daily.bible.meditation.domain.audio.DownloadAudioUseCase
 import laska.daily.bible.meditation.domain.courses.GetCourseForHomeScreenUseCase
 import laska.daily.bible.meditation.domain.courses.GetCoursesUseCase
-import laska.daily.bible.meditation.domain.courses.GetFeaturedSectionNameByLanguageUseCase
 import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
+import laska.daily.bible.meditation.presentation.uils.ConnectionUtils
+import laska.daily.bible.meditation.presentation.uils.DateUtils
 import javax.inject.Inject
 
 @HiltViewModel
