@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.domain.analytics.StartSessionUseCase
+import laska.daily.bible.meditation.domain.courses.GetCourseForHomeScreenUseCase
 import laska.daily.bible.meditation.domain.courses.GetCoursesUseCase
 import laska.daily.bible.meditation.domain.courses.GetFeaturedSectionNameByLanguageUseCase
 import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
@@ -29,7 +30,7 @@ class MainActivityViewModel @Inject constructor(
     private val deleteAllCachedAudioUseCase: DeleteAllCachedAudioUseCase,
     private val getSettingsUseCase: GetSettingsUseCase,
     private val startSessionUseCase: StartSessionUseCase,
-    private val getFeaturedSectionNameByLanguageUseCase: GetFeaturedSectionNameByLanguageUseCase,
+    private val getCourseForHomeScreenUseCase: GetCourseForHomeScreenUseCase,
     private val getCoursesUseCase: GetCoursesUseCase
 ) : ViewModel() {
 
@@ -64,7 +65,7 @@ class MainActivityViewModel @Inject constructor(
         try {
             delay(50)
             val actualReading = getReadingUseCase(DateUtils.todayFormatted(), language)
-            getFeaturedSectionNameByLanguageUseCase(language)
+            getCourseForHomeScreenUseCase(language)
             getCoursesUseCase(language)
             val isDownloaded = isDownloadedUseCase(actualReading.audioURL)
             if (!isDownloaded) {
