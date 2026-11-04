@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#19181a"
     android:clipToPadding="false"
     android:id="@+id/homeScrollView"
     android:fillViewport="true">
@@ -26,8 +27,7 @@
                 android:id="@+id/btnToMain"
                 android:layout_width="match_parent"
                 android:layout_height="600dp"
-                android:orientation="vertical"
-                android:background="@drawable/home_fragment_first_gradient">
+                android:orientation="vertical">
 
                 <FrameLayout
                     android:id="@+id/mainVideoContainer"
@@ -66,7 +66,6 @@
                             android:layout_weight="1" />
                         <LinearLayout
                             android:id="@+id/secondPart"
-                            android:background="@drawable/home_fragment_first_gradient"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:paddingTop="5dp"
@@ -125,8 +124,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="#1B1B1B"
-                android:paddingTop="36dp"
+                android:background="@drawable/rounded_top_corners"
+                android:paddingTop="40dp"
                 android:paddingHorizontal="24dp">
 
                 <TextView
@@ -169,6 +168,16 @@
                         android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="61dp"
+                        android:layout_height="29dp"
+                        app:srcCompat="@drawable/ic_new_tv"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        />
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
