@@ -60,6 +60,7 @@ class HomeFragment : Fragment() {
                     viewModel.homeUIState.collect { state ->
                         when (state) {
                             is HomeFragmentState.Content -> {
+                                binding.progressBar.visibility = View.INVISIBLE
                                 Log.d("COURSES", "CONTENT")
                                 binding.dateTv.text = state.date
                                 binding.bibleRefTv.text = state.bibleReference
@@ -78,9 +79,9 @@ class HomeFragment : Fragment() {
                                     state.featuredCourseImageURL
                                 ) {
                                     crossfade(true)
-                                    placeholder(R.drawable.home_fragment_courses_section_test_img)
                                     error(R.drawable.home_fragment_courses_section_test_img)
                                 }
+                                binding.ivNewText.visibility = View.VISIBLE
                                 val authorsAdapter = AuthorsAdapter {}
                                 binding.rvAuthors.adapter = authorsAdapter
                                 authorsAdapter.submitList(state.featuredCourseAuthors)
@@ -92,8 +93,15 @@ class HomeFragment : Fragment() {
                                     findNavController().navigate(action)
                                 }
                             }
-                            is HomeFragmentState.Error -> Log.d("COURSES", "ERROR")
-                            HomeFragmentState.Progress -> Log.d("COURSES", "PROGRESS")
+                            is HomeFragmentState.Error -> {
+                                binding.progressBar.visibility = View.INVISIBLE
+                                binding.errorTv1.visibility = View.VISIBLE
+                                binding.errorTv2.visibility = View.VISIBLE
+                                binding.playerView.visibility = View.INVISIBLE
+                            }
+                            HomeFragmentState.Progress -> {
+                                binding.progressBar.visibility = View.VISIBLE
+                            }
                         }
                     }
                 }

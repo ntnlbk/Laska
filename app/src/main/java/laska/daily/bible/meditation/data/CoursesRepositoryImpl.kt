@@ -27,10 +27,9 @@ class CoursesRepositoryImpl @Inject constructor(
     private val courseMapper: CoursesMapper,
     private val homePlacementMapper: HomePlacementMapper,
     private val application: Application,
-    private val gson: Gson // Инжектим Gson (обычно он предоставляется через AppModule)
+    private val gson: Gson
 ) : CoursesRepository {
 
-    // Вспомогательный метод для реализации логики Cache-First без проверки времени
     private suspend inline fun <reified T> fetchWithCache(
         cacheKey: String,
         crossinline apiCall: suspend () -> T
@@ -38,16 +37,12 @@ class CoursesRepositoryImpl @Inject constructor(
         val cacheDao = ReadingRoomDatabase.getDatabase(application).apiCacheDao()
 
         try {
-            // 1. Пытаемся сделать запрос в сеть
             val freshDto = apiCall()
             val freshJson = gson.toJson(freshDto)
 
-            // 2. Достаем текущий кеш для сравнения
             val cachedEntity = cacheDao.getCache(cacheKey)
 
-            // 3. Сравниваем сырые JSON-строки
             if (cachedEntity == null || cachedEntity.jsonResponse != freshJson) {
-                // Если кеша не было ИЛИ данные на сервере изменились — обновляем кеш
                 cacheDao.insertCache(
                     ApiCacheEntity(
                         endpointKey = cacheKey,
@@ -60,20 +55,16 @@ class CoursesRepositoryImpl @Inject constructor(
             return freshDto
 
         } catch (e: Exception) {
-            // 4. Если интернета нет (или ошибка сети) — ищем спасения в кеше
             val cachedEntity = cacheDao.getCache(cacheKey)
             if (cachedEntity != null) {
-                // Десериализуем старый JSON и отдаем пользователю
                 return gson.fromJson(cachedEntity.jsonResponse, T::class.java)
             }
 
-            // Если и кеша нет, и сеть упала — тогда уже пробрасываем ошибку на экран
             throw e
         }
     }
 
     override suspend fun getCourseForHomeScreen(language: Language): Course {
-        // Ключ для списка курсов общий, так как getCourses возвращает те же данные
         val coursesFromApi = fetchWithCache("courses_list") {
             CoursesApiService.CoursesApi.retrofitService.getCourses()
         }
@@ -98,7 +89,6 @@ class CoursesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getEpisodesByCourseId(courseId: Int): List<Episode> {
-        // Динамический ключ для списка эпизодов конкретного курса
         val cacheKey = "course_${courseId}_episodes"
 
         val episodesFromApi = fetchWithCache(cacheKey) {
@@ -137,7 +127,6 @@ class CoursesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getFeaturedSectionNameByLanguage(language: Language): String {
-        // Firestore вы оставляете как есть (это не Retrofit)
         val db = Firebase.firestore
         val featuredSectionNameDocument =
             db.collection("courses_android").document("featured_section_title").get().await()
@@ -148,7 +137,6 @@ class CoursesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCourse(courseId: Int): Course {
-        // Динамический ключ для деталки курса
         val cacheKey = "course_$courseId"
 
         val courseFromApi = fetchWithCache(cacheKey) {
@@ -161,7 +149,6 @@ class CoursesRepositoryImpl @Inject constructor(
         courseId: Int,
         episodeId: Int
     ): Episode {
-        // Динамический ключ для конкретного эпизода с двумя path-аргументами
         val cacheKey = "course_${courseId}_episode_$episodeId"
 
         val episodeFromApi = fetchWithCache(cacheKey) {
