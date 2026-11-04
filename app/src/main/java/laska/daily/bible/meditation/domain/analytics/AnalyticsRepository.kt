@@ -6,6 +6,6 @@ interface AnalyticsRepository {
 
     suspend fun startSession()
 
-
+    fun incrementCourseCounterWithCourseTitle(counter: CourseCounterType, title: String)
 
 }

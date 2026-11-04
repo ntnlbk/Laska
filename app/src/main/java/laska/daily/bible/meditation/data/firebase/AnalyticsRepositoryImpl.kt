@@ -11,6 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import laska.daily.bible.meditation.domain.analytics.AnalyticsRepository
 import laska.daily.bible.meditation.domain.analytics.CounterType
+import laska.daily.bible.meditation.domain.analytics.CourseCounterType
 import laska.daily.bible.meditation.domain.analytics.Platform
 import laska.daily.bible.meditation.presentation.supportfragment.PopUpPrefs
 import laska.daily.bible.meditation.presentation.supportfragment.SupportPaymentPrefs
@@ -123,10 +124,12 @@ class AnalyticsRepositoryImpl @Inject constructor(
                 )
                 updateUser(updates)
             }
+
             CounterType.POP_UP_LATER_CLICKED -> {
                 analytics.logEvent(POP_UP_LATER_CLICKED, null)
                 logPopUpOutcome("CLICKED_LATER")
             }
+
             CounterType.POP_UP_DISMISSED -> logPopUpOutcome("DISMISS")
             CounterType.POP_UP_ERIP_CLICKED -> logPopUpOutcome("ERIP_CLICKED")
         }
@@ -157,6 +160,28 @@ class AnalyticsRepositoryImpl @Inject constructor(
 
     override suspend fun startSession() {
         checkAndCreateUser(userID)
+    }
+
+    override fun incrementCourseCounterWithCourseTitle(
+        counter: CourseCounterType,
+        title: String
+    ) {
+        when (counter) {
+            CourseCounterType.COURSE_OPENED -> {
+                val name = "course_" + title + "_opened"
+                analytics.logEvent(name, null)
+            }
+
+            CourseCounterType.COURSE_STARTED -> {
+                val name = "course_" + title + "_started"
+                analytics.logEvent(name, null)
+            }
+
+            CourseCounterType.COURSE_COMPLETED -> {
+                val name = "course_" + title + "_completed"
+                analytics.logEvent(name, null)
+            }
+        }
     }
 
     private fun updateUser(updates: HashMap<String, Any>) {
@@ -195,7 +220,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
         } else {
             if (promptPrefs.sessionNumber == 0) {
                 promptPrefs.sessionNumber = documentSnapshot.getLong("session_count")?.toInt() ?: 1
-            } else{
+            } else {
                 promptPrefs.sessionNumber += 1
             }
 
