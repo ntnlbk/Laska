@@ -49,8 +49,11 @@ class CourseAdapter(
         }
         holder.tvSessionsCount.text = course.episodeCount.toString() + " " + countString
         holder.tvCourseTitle.text = course.title
-        holder.tvCourseDescription.text = course.shortDescription
-
+        if (course.shortDescription == ""){
+            holder.tvCourseDescription.visibility = View.GONE
+        } else {
+            holder.tvCourseDescription.text = course.shortDescription
+        }
         val authorAdapter = AuthorsAdapter({
             onAuthorClick(it)
         })
