@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.domain.Language
+import laska.daily.bible.meditation.domain.analytics.CourseCounterType
+import laska.daily.bible.meditation.domain.analytics.IncrementCourseCounterUseCase
 import laska.daily.bible.meditation.domain.courses.GetCourseUseCase
 import laska.daily.bible.meditation.domain.courses.GetEpisodesByCourseIdUseCase
 import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
@@ -19,6 +21,7 @@ class CourseFragmentViewModel @Inject constructor(
     private val getCourseUseCase: GetCourseUseCase,
     private val getEpisodesByCourseIdUseCase: GetEpisodesByCourseIdUseCase,
     private val getSettingsUseCase: GetSettingsUseCase,
+    private val incrementCourseCounterUseCase: IncrementCourseCounterUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -46,6 +49,7 @@ class CourseFragmentViewModel @Inject constructor(
                 course = course,
                 episodes = episodes
             )
+            incrementCourseCounterUseCase(CourseCounterType.COURSE_OPENED, course.title)
         } catch (e: Exception) {
             _courseUIState.value = CourseFragmentState.Error(e.message.toString())
         }

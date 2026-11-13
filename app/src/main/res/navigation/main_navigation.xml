@@ -98,5 +98,14 @@
         <argument
             android:name="courseImageUrl"
             app:argType="string" />
+        <argument
+            android:name="number"
+            app:argType="integer" />
+        <argument
+            android:name="courseName"
+            app:argType="string" />
+        <argument
+            android:name="isThisLastEpisodeToComplete"
+            app:argType="boolean" />
     </fragment>
 </navigation>

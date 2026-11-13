@@ -109,22 +109,40 @@ class CourseFragment : Fragment() {
                                     state.course.episodeCount.toString() + " " + countString
                                 binding.containerEpisodes.removeAllViews()
 
+                                val isLastEpisodeToComplete = state.episodes.count {
+                                    it.state ==
+                                            EpisodeState.COMPLETED
+                                } == (state.episodes.size - 1)
+
                                 if (state.episodes[0].state == EpisodeState.COMPLETED) {
                                     binding.btnStartCourse.text =
                                         getString(R.string.course_main_continue)
                                     binding.btnStartCourse.setOnClickListener {
-                                        openEpisodeFragment(
-                                            state.episodes.first {
-                                                it.state == EpisodeState.AVAILABLE
-                                            },
-                                            state = state
-                                        )
+                                        try {
+                                            openEpisodeFragment(
+                                                state.episodes.first {
+                                                    it.state == EpisodeState.AVAILABLE
+                                                },
+                                                state = state,
+                                                isLastEpisodeToComplete
+                                            )
+                                        } catch (e: Exception){
+                                            openEpisodeFragment(
+                                                state.episodes.last(),
+                                                state = state,
+                                                isLastEpisodeToComplete
+                                            )
+                                        }
                                     }
                                 } else {
                                     binding.btnStartCourse.text =
                                         getString(R.string.course_main_start)
                                     binding.btnStartCourse.setOnClickListener {
-                                        openEpisodeFragment(state.episodes[0], state)
+                                        openEpisodeFragment(
+                                            state.episodes[0],
+                                            state,
+                                            isLastEpisodeToComplete
+                                        )
                                     }
                                 }
                                 for (episode in state.episodes) {
@@ -155,7 +173,11 @@ class CourseFragment : Fragment() {
                                             episodeView.findViewById<ImageView>(R.id.ivEpisodeStatus)
                                                 .setImageResource(R.drawable.ic_play)
                                             episodeView.setOnClickListener {
-                                                openEpisodeFragment(episode, state)
+                                                openEpisodeFragment(
+                                                    episode,
+                                                    state,
+                                                    isLastEpisodeToComplete
+                                                )
                                             }
                                         }
 
@@ -163,7 +185,11 @@ class CourseFragment : Fragment() {
                                             episodeView.findViewById<ImageView>(R.id.ivEpisodeStatus)
                                                 .setImageResource(R.drawable.ic_completed)
                                             episodeView.setOnClickListener {
-                                                openEpisodeFragment(episode, state)
+                                                openEpisodeFragment(
+                                                    episode,
+                                                    state,
+                                                    isLastEpisodeToComplete
+                                                )
                                             }
                                         }
 
@@ -202,13 +228,17 @@ class CourseFragment : Fragment() {
 
     private fun openEpisodeFragment(
         episode: Episode,
-        state: CourseFragmentState.Content
+        state: CourseFragmentState.Content,
+        isLastEpisode: Boolean
     ) {
         val action =
             CourseFragmentDirections.actionCourseFragmentToEpisodeFragment(
                 args.courseId,
                 episode.id,
-                state.course.imageURL
+                state.course.imageURL,
+                number = episode.number,
+                courseName = state.course.title,
+                isThisLastEpisodeToComplete = isLastEpisode
             )
         findNavController().navigate(action)
     }

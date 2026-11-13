@@ -11,6 +11,9 @@ data class DialogArguments(
     val songMaxProgress: Int = 0,
     val actualProgress: Int = 0,
     val date: String = "",
-    val episodeId: Int = 0
+    val episodeId: Int = 0,
+    val episodeNumber: Int = 0,
+    val isLastEpisodeToComplete: Boolean = false,
+    val courseTitle: String = ""
 ): Serializable
 

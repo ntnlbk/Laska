@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import laska.daily.bible.meditation.domain.analytics.CourseCounterType
+import laska.daily.bible.meditation.domain.analytics.IncrementCourseCounterUseCase
 import laska.daily.bible.meditation.domain.courses.MarkEpisodeAsCompletedUseCase
 import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
 import laska.daily.bible.meditation.domain.settings.Settings
@@ -18,9 +20,11 @@ import javax.inject.Inject
 class TextFragmentOptionsViewModel @Inject constructor(
     private val getSettingsUseCase: GetSettingsUseCase,
     private val updateSettingsUseCase: UpdateSettingsUseCase,
-    private val markEpisodeAsCompletedUseCase: MarkEpisodeAsCompletedUseCase
-): ViewModel() {
-    private val _state = MutableStateFlow<TextFragmentOptionsState>(TextFragmentOptionsState.Progress)
+    private val markEpisodeAsCompletedUseCase: MarkEpisodeAsCompletedUseCase,
+    private val incrementCourseCounterUseCase: IncrementCourseCounterUseCase
+) : ViewModel() {
+    private val _state =
+        MutableStateFlow<TextFragmentOptionsState>(TextFragmentOptionsState.Progress)
     val state = _state.asStateFlow()
 
     init {
@@ -56,9 +60,20 @@ class TextFragmentOptionsViewModel @Inject constructor(
         }
     }
 
-    fun episodeCompleted(episodeId: Int){
+    fun episodeCompleted(
+        episodeId: Int,
+        episodeNumber: Int,
+        isLastEpisodeToComplete: Boolean,
+        courseTitle: String
+    ) {
         viewModelScope.launch {
             markEpisodeAsCompletedUseCase(episodeId)
+            if (episodeNumber == 1) {
+                incrementCourseCounterUseCase(CourseCounterType.COURSE_STARTED, courseTitle)
+            }
+            if (isLastEpisodeToComplete) {
+                incrementCourseCounterUseCase(CourseCounterType.COURSE_COMPLETED, courseTitle)
+            }
         }
     }
 }

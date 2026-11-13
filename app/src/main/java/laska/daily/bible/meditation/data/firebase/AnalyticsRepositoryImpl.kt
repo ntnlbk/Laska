@@ -1,6 +1,7 @@
 package laska.daily.bible.meditation.data.firebase
 
 import android.content.Context
+import android.os.Bundle
 import androidx.core.content.edit
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -27,7 +28,8 @@ class AnalyticsRepositoryImpl @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val paymentPrefs: SupportPaymentPrefs,
     private val promptPrefs: SupportPromptPrefs,
-    private val popUpPrefs: PopUpPrefs
+    private val popUpPrefs: PopUpPrefs,
+    private val courseAnalyticsPrefs: CourseAnalyticsPrefs
 ) : AnalyticsRepository {
 
     private val prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
@@ -166,20 +168,32 @@ class AnalyticsRepositoryImpl @Inject constructor(
         counter: CourseCounterType,
         title: String
     ) {
+        val bundle = Bundle().apply {
+            putString("title", title)
+        }
         when (counter) {
             CourseCounterType.COURSE_OPENED -> {
-                val name = "course_" + title + "_opened"
-                analytics.logEvent(name, null)
+                val name = "course_" + title.replace(" ", "_") + "_opened"
+                if (!courseAnalyticsPrefs.isEventSent(name)) {
+                    analytics.logEvent("course_opened", bundle)
+                    courseAnalyticsPrefs.setEventSent(name, true)
+                }
             }
 
             CourseCounterType.COURSE_STARTED -> {
-                val name = "course_" + title + "_started"
-                analytics.logEvent(name, null)
+                val name = "course_" + title.replace(" ", "_") + "_started"
+                if (!courseAnalyticsPrefs.isEventSent(name)) {
+                    analytics.logEvent("course_started", bundle)
+                    courseAnalyticsPrefs.setEventSent(name, true)
+                }
             }
 
             CourseCounterType.COURSE_COMPLETED -> {
-                val name = "course_" + title + "_completed"
-                analytics.logEvent(name, null)
+                val name = "course_" + title.replace(" ", "_") + "_completed"
+                if (!courseAnalyticsPrefs.isEventSent(name)) {
+                    analytics.logEvent("course_completed", bundle)
+                    courseAnalyticsPrefs.setEventSent(name, true)
+                }
             }
         }
     }

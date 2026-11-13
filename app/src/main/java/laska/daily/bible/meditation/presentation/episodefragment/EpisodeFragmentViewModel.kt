@@ -23,6 +23,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
+import laska.daily.bible.meditation.domain.analytics.CourseCounterType
+import laska.daily.bible.meditation.domain.analytics.IncrementCourseCounterUseCase
 import laska.daily.bible.meditation.domain.audio.AudioDownloadState
 import laska.daily.bible.meditation.domain.audio.CheckAudioDownloadedUseCase
 import laska.daily.bible.meditation.domain.audio.DeleteAllCachedAudioUseCase
@@ -44,7 +46,8 @@ class EpisodeFragmentViewModel @Inject constructor(
     @param:ApplicationContext private val application: Context,
     private val connectionUtils: ConnectionUtils,
     private val markEpisodeAsCompletedUseCase: MarkEpisodeAsCompletedUseCase,
-    private val deleteAllCachedAudioUseCase: DeleteAllCachedAudioUseCase
+    private val deleteAllCachedAudioUseCase: DeleteAllCachedAudioUseCase,
+    private val incrementCourseCounterUseCase: IncrementCourseCounterUseCase
 ) : ViewModel() {
 
     private val args: EpisodeFragmentArgs =
@@ -149,7 +152,18 @@ class EpisodeFragmentViewModel @Inject constructor(
                         isMarkedCompleted = true
                         val episodeIdToComplete = currentEpisodeId!!
                         markEpisodeAsCompletedUseCase(episodeIdToComplete)
-
+                        if (args.number == 1) {
+                            incrementCourseCounterUseCase(
+                                CourseCounterType.COURSE_STARTED,
+                                args.courseName
+                            )
+                        }
+                        if (args.isThisLastEpisodeToComplete) {
+                            incrementCourseCounterUseCase(
+                                CourseCounterType.COURSE_COMPLETED,
+                                args.courseName
+                            )
+                        }
                     }
                 }
             }

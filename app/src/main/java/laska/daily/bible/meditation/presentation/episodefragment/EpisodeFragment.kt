@@ -18,6 +18,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import coil.load
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -40,6 +41,8 @@ class EpisodeFragment : Fragment() {
     private lateinit var gestureDetector: GestureDetector
     private var isSeekBarTouched = false
     private var textBottomSheetInstance: EpisodeTextFragmentBottomSheet? = null
+
+    private val args: EpisodeFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -180,7 +183,10 @@ class EpisodeFragment : Fragment() {
                                         DialogArguments(
                                             bibleRef = state.title,
                                             reflectionTextBody = state.text,
-                                            episodeId = state.episodeId
+                                            episodeId = state.episodeId,
+                                            episodeNumber = args.number,
+                                            isLastEpisodeToComplete = args.isThisLastEpisodeToComplete,
+                                            courseTitle = args.courseName
                                         )
                                     ).apply {
                                         // Привязываем клик к ViewModel родительского фрагмента
