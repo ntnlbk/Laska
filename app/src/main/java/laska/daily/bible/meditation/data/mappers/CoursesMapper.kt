@@ -2,6 +2,7 @@ package laska.daily.bible.meditation.data.mappers
 
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.data.retrofit.courses.AuthorDTO
+import laska.daily.bible.meditation.data.retrofit.courses.AuthorDetailedDTO
 import laska.daily.bible.meditation.data.retrofit.courses.AuthorShortDTO
 import laska.daily.bible.meditation.data.retrofit.courses.CourseDTO
 import laska.daily.bible.meditation.data.retrofit.courses.CourseShortDTO
@@ -17,6 +18,15 @@ class CoursesMapper @Inject constructor(
     private val languageMapper: LanguageMapper,
     private val homePlacementMapper: HomePlacementMapper
 ) {
+
+    fun mapAuthorDetailedDTOToAuthorDomainModel(authorDetailedDTO: AuthorDetailedDTO): Author {
+        return Author(
+            id = authorDetailedDTO.id,
+            name = authorDetailedDTO.name,
+            imageURL = authorDetailedDTO.photo.url,
+            description = authorDetailedDTO.description
+        )
+    }
 
     fun mapAuthorShortDTOToAuthorDataModel(authorShortDTO: AuthorShortDTO): Author {
         return Author(

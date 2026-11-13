@@ -81,11 +81,26 @@ class CoursesRepositoryImpl @Inject constructor(
             CoursesApiService.CoursesApi.retrofitService.getCourses()
         }
 
-        return coursesFromApi.items.filter {
+        val courses = coursesFromApi.items.filter {
             it.language == languageMapper.mapLanguageToString(language)
         }.map {
             courseMapper.mapCourseShortDtoToCourseDataModel(it)
         }
+        val updatedCourses = courses.map { course ->
+            course.copy(
+                authors = course.authors.map { author ->
+                    fetchWithCache("author_${author.id}") {
+                        courseMapper.mapAuthorDetailedDTOToAuthorDomainModel(
+                            CoursesApiService.CoursesApi.retrofitService.getAuthor(
+                                author.id
+                            )
+                        )
+                    }
+                }
+
+            )
+        }
+        return updatedCourses
     }
 
     override suspend fun getEpisodesByCourseId(courseId: Int): List<Episode> {
@@ -154,7 +169,19 @@ class CoursesRepositoryImpl @Inject constructor(
         val episodeFromApi = fetchWithCache(cacheKey) {
             CoursesApiService.CoursesApi.retrofitService.getEpisode(courseId, episodeId)
         }
-        return courseMapper.mapEpisodeDTOToEpisodeDataModel(episodeFromApi)
+        val episode = courseMapper.mapEpisodeDTOToEpisodeDataModel(episodeFromApi)
+        val updatedEpisode = episode.copy(
+            authors = episode.authors.map { author ->
+                courseMapper.mapAuthorDetailedDTOToAuthorDomainModel(
+                    fetchWithCache("author_${author.id}") {
+                        CoursesApiService.CoursesApi.retrofitService.getAuthor(
+                            author.id
+                        )
+                    }
+                )
+            }
+        )
+        return updatedEpisode
     }
 
     override suspend fun markEpisodeAsCompleted(episodeId: Int) {

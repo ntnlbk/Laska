@@ -44,6 +44,11 @@ class CoursesApiService {
             @Path("courseId") courseId: Int,
             @Path("episodeId") episodeId: Int
         ) : EpisodeDTO
+
+        @GET("authors/{authorId}")
+        suspend fun getAuthor(
+            @Path("authorId") authorId: Int
+        ): AuthorDetailedDTO
     }
 
     object CoursesApi {
