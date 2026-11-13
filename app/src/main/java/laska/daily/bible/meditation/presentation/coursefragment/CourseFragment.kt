@@ -80,7 +80,7 @@ class CourseFragment : Fragment() {
                                     error(R.drawable.home_fragment_courses_section_test_img)
                                 }
                                 binding.tvCourseTitle.text = state.course.title
-                                if(state.course.description == ""){
+                                if (state.course.description == "") {
                                     binding.informationTv.visibility = View.GONE
                                     binding.detailedInformationBtn.visibility = View.GONE
                                 } else {
@@ -100,8 +100,8 @@ class CourseFragment : Fragment() {
                                 })
                                 binding.rvAuthors.adapter = authorsAdapter
                                 authorsAdapter.submitList(state.course.authors)
-                                val countString = if (state.course.episodeCount < 5){
-                                     getString(R.string.course_main_sessions_number_24)
+                                val countString = if (state.course.episodeCount < 5) {
+                                    getString(R.string.course_main_sessions_number_24)
                                 } else {
                                     getString(R.string.course_main_sessions_number)
                                 }
@@ -109,6 +109,24 @@ class CourseFragment : Fragment() {
                                     state.course.episodeCount.toString() + " " + countString
                                 binding.containerEpisodes.removeAllViews()
 
+                                if (state.episodes[0].state == EpisodeState.COMPLETED) {
+                                    binding.btnStartCourse.text =
+                                        getString(R.string.course_main_continue)
+                                    binding.btnStartCourse.setOnClickListener {
+                                        openEpisodeFragment(
+                                            state.episodes.first {
+                                                it.state == EpisodeState.AVAILABLE
+                                            },
+                                            state = state
+                                        )
+                                    }
+                                } else {
+                                    binding.btnStartCourse.text =
+                                        getString(R.string.course_main_start)
+                                    binding.btnStartCourse.setOnClickListener {
+                                        openEpisodeFragment(state.episodes[0], state)
+                                    }
+                                }
                                 for (episode in state.episodes) {
                                     val episodeView = LayoutInflater.from(requireContext())
                                         .inflate(

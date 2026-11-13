@@ -70,4 +70,5 @@
     <string name="course_main_sessions_number_24">эпізоды</string>
     <string name="course_main_sessions_number">эпізодаў</string>
     <string name="min">" хв"</string>
+    <string name="course_main_continue">Адкрыць наступны эпізод</string>
 </resources>
