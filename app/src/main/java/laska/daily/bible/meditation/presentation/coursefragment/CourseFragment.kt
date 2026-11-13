@@ -110,7 +110,6 @@ class CourseFragment : Fragment() {
                                 binding.containerEpisodes.removeAllViews()
 
                                 for (episode in state.episodes) {
-                                    // Надуваем макет одного эпизода (item_episode.xml)
                                     val episodeView = LayoutInflater.from(requireContext())
                                         .inflate(
                                             R.layout.item_episode,
@@ -118,7 +117,6 @@ class CourseFragment : Fragment() {
                                             false
                                         )
 
-                                    // Наполняем данными
                                     episodeView.findViewById<TextView>(R.id.tvEpisodeTitle).text =
                                         "${episode.number} ${episode.title}"
 
@@ -132,7 +130,7 @@ class CourseFragment : Fragment() {
                                     episodeView.findViewById<TextView>(R.id.tvEpisodeTime).text = (
                                             (episode.duration.toFloat() / 60).roundToInt()
                                                 .toString()
-                                                    + " мин")
+                                                    + getString(R.string.min))
 
                                     when (episode.state) {
                                         EpisodeState.AVAILABLE -> {
@@ -200,6 +198,18 @@ class CourseFragment : Fragment() {
     private fun setupViews() {
         val detailedInformationButton = binding.detailedInformationBtn
         val informationTv = binding.informationTv
+        informationTv.setOnClickListener {
+            TransitionManager.beginDelayedTransition(binding.root, AutoTransition().apply {
+                duration = 300 // Длительность анимации в миллисекундах (можно поставить 200–400)
+            })
+            if (informationTv.maxLines == 2) {
+                informationTv.maxLines = Int.MAX_VALUE
+                detailedInformationButton.text = getString(R.string.course_main_about_hide)
+            } else {
+                informationTv.maxLines = 2
+                detailedInformationButton.text = getString(R.string.course_main_about)
+            }
+        }
         detailedInformationButton.setOnClickListener {
             TransitionManager.beginDelayedTransition(binding.root, AutoTransition().apply {
                 duration = 300 // Длительность анимации в миллисекундах (можно поставить 200–400)
