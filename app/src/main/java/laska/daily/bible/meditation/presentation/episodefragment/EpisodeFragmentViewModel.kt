@@ -152,16 +152,22 @@ class EpisodeFragmentViewModel @Inject constructor(
                         isMarkedCompleted = true
                         val episodeIdToComplete = currentEpisodeId!!
                         markEpisodeAsCompletedUseCase(episodeIdToComplete)
+                        incrementCourseCounterUseCase(
+                            CourseCounterType.EPISODE_COMPLETED, args.courseName,
+                            args.number
+                        )
                         if (args.number == 1) {
                             incrementCourseCounterUseCase(
                                 CourseCounterType.COURSE_STARTED,
-                                args.courseName
+                                args.courseName,
+                                args.number
                             )
                         }
                         if (args.isThisLastEpisodeToComplete) {
                             incrementCourseCounterUseCase(
                                 CourseCounterType.COURSE_COMPLETED,
-                                args.courseName
+                                args.courseName,
+                                args.number
                             )
                         }
                     }

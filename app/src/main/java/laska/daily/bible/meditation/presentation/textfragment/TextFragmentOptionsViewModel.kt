@@ -68,11 +68,12 @@ class TextFragmentOptionsViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             markEpisodeAsCompletedUseCase(episodeId)
+            incrementCourseCounterUseCase(CourseCounterType.EPISODE_COMPLETED, courseTitle, episodeNumber)
             if (episodeNumber == 1) {
-                incrementCourseCounterUseCase(CourseCounterType.COURSE_STARTED, courseTitle)
+                incrementCourseCounterUseCase(CourseCounterType.COURSE_STARTED, courseTitle, episodeNumber)
             }
             if (isLastEpisodeToComplete) {
-                incrementCourseCounterUseCase(CourseCounterType.COURSE_COMPLETED, courseTitle)
+                incrementCourseCounterUseCase(CourseCounterType.COURSE_COMPLETED, courseTitle, episodeNumber)
             }
         }
     }

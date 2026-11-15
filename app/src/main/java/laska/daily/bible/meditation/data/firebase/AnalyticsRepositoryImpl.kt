@@ -166,7 +166,8 @@ class AnalyticsRepositoryImpl @Inject constructor(
 
     override fun incrementCourseCounterWithCourseTitle(
         counter: CourseCounterType,
-        title: String
+        title: String,
+        episodeNumber: Int
     ) {
         val bundle = Bundle().apply {
             putString("title", title)
@@ -175,6 +176,12 @@ class AnalyticsRepositoryImpl @Inject constructor(
             CourseCounterType.COURSE_OPENED -> {
                 val name = "course_" + title.replace(" ", "_") + "_opened"
                 if (!courseAnalyticsPrefs.isEventSent(name)) {
+                    val updates = hashMapOf<String, Any>(
+                        "course_${title}_started" to hashMapOf<String, Any>(
+                            "date_started" to FieldValue.serverTimestamp()
+                        )
+                    )
+                    updateUser(updates)
                     analytics.logEvent("course_opened", bundle)
                     courseAnalyticsPrefs.setEventSent(name, true)
                 }
@@ -194,6 +201,15 @@ class AnalyticsRepositoryImpl @Inject constructor(
                     analytics.logEvent("course_completed", bundle)
                     courseAnalyticsPrefs.setEventSent(name, true)
                 }
+            }
+
+            CourseCounterType.EPISODE_COMPLETED -> {
+                val updates = hashMapOf<String, Any>(
+                    "course_${title}_started" to hashMapOf<String, Any>(
+                        "last_episode_completed" to episodeNumber
+                    )
+                )
+                updateUser(updates)
             }
         }
     }

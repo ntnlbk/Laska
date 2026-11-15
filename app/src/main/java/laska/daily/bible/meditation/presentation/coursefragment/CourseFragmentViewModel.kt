@@ -49,7 +49,7 @@ class CourseFragmentViewModel @Inject constructor(
                 course = course,
                 episodes = episodes
             )
-            incrementCourseCounterUseCase(CourseCounterType.COURSE_OPENED, course.title)
+            incrementCourseCounterUseCase(CourseCounterType.COURSE_OPENED, course.title, -1)
         } catch (e: Exception) {
             _courseUIState.value = CourseFragmentState.Error(e.message.toString())
         }
