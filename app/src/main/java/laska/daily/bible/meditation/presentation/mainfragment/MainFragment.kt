@@ -50,9 +50,6 @@ class MainFragment : Fragment() {
     private var hasInitializedRootView = false
     private var errorBlocking: Boolean = false
 
-    @Inject
-    lateinit var supportPromptManager: SupportPromptManager
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -266,7 +263,6 @@ class MainFragment : Fragment() {
 
                             is MainFragmentState.Progress -> {
                                 binding.progressBar.visibility = View.VISIBLE
-                                showDonationsPopup()
                             }
 
                             is MainFragmentState.Error -> {
@@ -358,17 +354,6 @@ class MainFragment : Fragment() {
                     }
                 }
             }
-        }
-    }
-
-    private suspend fun showDonationsPopup() {
-        if (supportPromptManager.shouldShowPrompt()) {
-            viewModel.popUpShown()
-            val introDialog = SupportIntroDialogFragment.newInstance()
-            introDialog.show(
-                parentFragmentManager,
-                SupportIntroDialogFragment.TAG
-            )
         }
     }
 

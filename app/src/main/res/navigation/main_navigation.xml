@@ -71,6 +71,9 @@
             app:destination="@id/courseFragment"
             app:launchSingleTop="true"
             app:popUpTo="@id/homeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_supportFragment"
+            app:destination="@id/supportFragment" />
     </fragment>
     <fragment
         android:id="@+id/courseFragment"

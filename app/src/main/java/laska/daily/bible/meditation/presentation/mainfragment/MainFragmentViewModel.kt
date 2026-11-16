@@ -56,8 +56,7 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
     @param:ApplicationContext private val application: Context,
     private val getSettingsUseCase: GetSettingsUseCase,
     private val incrementCounterUseCase: IncrementCounterUseCase,
-    private val getDonationsDataUseCase: GetDonationsDataUseCase,
-    private val popUpPrefs: PopUpPrefs
+    private val getDonationsDataUseCase: GetDonationsDataUseCase
 ) : ViewModel() {
 
     private val _mainUIState = MutableStateFlow<MainFragmentState>(MainFragmentState.Progress)
@@ -310,11 +309,6 @@ class MainFragmentViewModel @OptIn(UnstableApi::class) @Inject constructor(
                 }
             }
         }
-    }
-
-    fun popUpShown(){
-        popUpPrefs.lastPopupId = UUID.randomUUID().toString()
-        incrementCounterUseCase(CounterType.POP_UP_SHOWN)
     }
 
     private fun loadSongToPlayer(url: String) {

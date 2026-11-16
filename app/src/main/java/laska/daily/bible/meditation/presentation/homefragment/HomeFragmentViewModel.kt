@@ -11,10 +11,14 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.domain.GetReadingUseCase
 import laska.daily.bible.meditation.domain.Language
+import laska.daily.bible.meditation.domain.analytics.CounterType
+import laska.daily.bible.meditation.domain.analytics.IncrementCounterUseCase
 import laska.daily.bible.meditation.domain.courses.GetCourseForHomeScreenUseCase
 import laska.daily.bible.meditation.domain.courses.GetFeaturedSectionNameByLanguageUseCase
 import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
+import laska.daily.bible.meditation.presentation.supportfragment.PopUpPrefs
 import laska.daily.bible.meditation.presentation.uils.DateUtils.Companion.todayFormatted
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,7 +26,9 @@ class HomeFragmentViewModel @Inject constructor(
     private val getReadingUseCase: GetReadingUseCase,
     private val getCourseForHomeScreenUseCase: GetCourseForHomeScreenUseCase,
     private val getSettingsUseCase: GetSettingsUseCase,
-    private val getFeaturedSectionNameByLanguageUseCase: GetFeaturedSectionNameByLanguageUseCase
+    private val getFeaturedSectionNameByLanguageUseCase: GetFeaturedSectionNameByLanguageUseCase,
+    private val popUpPrefs: PopUpPrefs,
+    private val incrementCounterUseCase: IncrementCounterUseCase,
 ): ViewModel() {
     private val _homeUIState = MutableStateFlow<HomeFragmentState>(HomeFragmentState.Progress)
     val homeUIState = _homeUIState.asStateFlow()
@@ -60,6 +66,11 @@ class HomeFragmentViewModel @Inject constructor(
             _homeUIState.value = HomeFragmentState.Error("Failed to load content")
         }
 
+    }
+
+    fun popUpShown(){
+        popUpPrefs.lastPopupId = UUID.randomUUID().toString()
+        incrementCounterUseCase(CounterType.POP_UP_SHOWN)
     }
 
     private fun observeSettings() {

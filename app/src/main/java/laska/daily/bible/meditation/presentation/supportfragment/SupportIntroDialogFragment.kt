@@ -14,6 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.DialogSupportIntroBinding
+import laska.daily.bible.meditation.presentation.homefragment.HomeFragmentDirections
 import laska.daily.bible.meditation.presentation.mainfragment.MainFragmentDirections
 
 class SupportIntroDialogFragment : DialogFragment() {
@@ -41,7 +42,7 @@ class SupportIntroDialogFragment : DialogFragment() {
         binding.btnNext.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 findNavController().navigate(
-                    MainFragmentDirections.actionMainFragmentToSupportFragment(
+                    HomeFragmentDirections.actionHomeFragmentToSupportFragment(
                         LAUNCHMODE = SupportFragmentLaunchMode.FROM_POPUP
                     )
                 )
