@@ -5,6 +5,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.gson.Gson
 import kotlinx.coroutines.tasks.await
+import laska.daily.bible.meditation.data.donations.courses.CoursesDonationPrefs
 import laska.daily.bible.meditation.data.mappers.CoursesMapper
 import laska.daily.bible.meditation.data.mappers.HomePlacementMapper
 import laska.daily.bible.meditation.data.mappers.LanguageMapper
@@ -20,6 +21,7 @@ import laska.daily.bible.meditation.domain.courses.EpisodeState
 import laska.daily.bible.meditation.domain.courses.HomePlacement
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.roundToInt
 
 @Singleton
 class CoursesRepositoryImpl @Inject constructor(
@@ -27,7 +29,8 @@ class CoursesRepositoryImpl @Inject constructor(
     private val courseMapper: CoursesMapper,
     private val homePlacementMapper: HomePlacementMapper,
     private val application: Application,
-    private val gson: Gson
+    private val gson: Gson,
+    private val coursesDonationPrefs: CoursesDonationPrefs
 ) : CoursesRepository {
 
     private suspend inline fun <reified T> fetchWithCache(
@@ -138,7 +141,32 @@ class CoursesRepositoryImpl @Inject constructor(
             episode.copy(state = newState)
         }
 
+        if (!coursesDonationPrefs.checkIfCourseWasMarkedAsCompletedFor20(courseId)) {
+            val isCourseCompletedFor20 = isPercentCompleted(episodes, 20)
+            if (isCourseCompletedFor20){
+                coursesDonationPrefs.is20Completed = true
+                coursesDonationPrefs.markCourseAsCompletedFor20(courseId)
+            }
+        }
+
+        if (!coursesDonationPrefs.checkIfCourseWasMarkedAsCompletedFor75(courseId)) {
+            val isCourseCompletedFor75 = isPercentCompleted(episodes, 75)
+            if (isCourseCompletedFor75){
+                coursesDonationPrefs.is75Completed = true
+                coursesDonationPrefs.markCourseAsCompletedFor75(courseId)
+            }
+        }
+
         return episodes
+    }
+
+    private fun isPercentCompleted(episodes: List<Episode>, percentageToComplete: Int): Boolean {
+        if (episodes.isEmpty()) return false
+
+        val completedCount = episodes.count { it.state == EpisodeState.COMPLETED }
+        val percentage = (completedCount.toDouble() / episodes.size) * 100.0
+
+        return percentage.roundToInt() >= percentageToComplete
     }
 
     override suspend fun getFeaturedSectionNameByLanguage(language: Language): String {

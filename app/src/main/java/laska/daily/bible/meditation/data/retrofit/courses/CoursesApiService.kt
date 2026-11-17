@@ -10,7 +10,7 @@ import retrofit2.http.Path
 class CoursesApiService {
 
     companion object {
-        private const val BASE_URL = "https://alef.laska.mobi/wp-json/laska/v1/"
+        private const val BASE_URL = "https://laska.mobi/wp-json/laska/v1/"
 
         private val json = Json{
             ignoreUnknownKeys = true

@@ -23,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentHomeBinding
+import laska.daily.bible.meditation.domain.donations.courses.ShouldShowCoursesDonationPopUpUseCase
 import laska.daily.bible.meditation.domain.usecase.SupportPromptManager
 import laska.daily.bible.meditation.presentation.supportfragment.SupportIntroDialogFragment
 import javax.inject.Inject
@@ -42,6 +43,9 @@ class HomeFragment : Fragment() {
 
     @Inject
     lateinit var supportPromptManager: SupportPromptManager
+
+    @Inject
+    lateinit var showCoursesDonationPopUpUseCase: ShouldShowCoursesDonationPopUpUseCase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -102,6 +106,16 @@ class HomeFragment : Fragment() {
                                             state.featuredCourseId
                                         )
                                     findNavController().navigate(action)
+                                }
+                                viewLifecycleOwner.lifecycleScope.launch {
+                                    if (showCoursesDonationPopUpUseCase()){
+                                        viewModel.popUpShown()
+                                        val introDialog = SupportIntroDialogFragment.newInstance()
+                                        introDialog.show(
+                                            parentFragmentManager,
+                                            SupportIntroDialogFragment.TAG
+                                        )
+                                    }
                                 }
                             }
 

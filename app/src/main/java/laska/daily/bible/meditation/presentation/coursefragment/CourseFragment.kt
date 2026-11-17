@@ -154,7 +154,7 @@ class CourseFragment : Fragment() {
                                         )
 
                                     episodeView.findViewById<TextView>(R.id.tvEpisodeTitle).text =
-                                        "${episode.number} ${episode.title}"
+                                        "${episode.title}"
 
                                     if (episode.subtitle == "") {
                                         episodeView.findViewById<TextView>(R.id.tvEpisodeSubtitle).visibility =

@@ -56,15 +56,11 @@ class SupportIntroDialogFragment : DialogFragment() {
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
-            // 1. Force the dialog window to match parent screen bounds
             setLayout(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT
             )
-            // 2. Make system dialog background transparent
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-            // 3. Remove the dark dim overlay behind/above the window (including status bar)
             clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         }
 

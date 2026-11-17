@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.core.content.edit
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
@@ -18,8 +19,10 @@ import laska.daily.bible.meditation.presentation.supportfragment.PopUpPrefs
 import laska.daily.bible.meditation.presentation.supportfragment.SupportPaymentPrefs
 import laska.daily.bible.meditation.presentation.supportfragment.SupportPromptPrefs
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.maxByOrNull
 import kotlin.coroutines.cancellation.CancellationException
 
 @Singleton
@@ -215,13 +218,11 @@ class AnalyticsRepositoryImpl @Inject constructor(
     }
 
     private fun updateUser(updates: HashMap<String, Any>) {
-        // TODO("ПОМЕНЯТЬ НА users")
-        db.collection("users_dev").document(userID).set(updates, SetOptions.merge())
+        db.collection(FIRESTORE_BASE_COLLECTION_NAME).document(userID).set(updates, SetOptions.merge())
     }
 
     private suspend fun checkAndCreateUser(id: String) {
-        // TODO("ПОМЕНЯТЬ НА users")
-        val userRef = db.collection("users_dev").document(id)
+        val userRef = db.collection(FIRESTORE_BASE_COLLECTION_NAME).document(id)
         val documentSnapshot = try {
             userRef.get().await()
         } catch (e: Exception) {
@@ -281,7 +282,55 @@ class AnalyticsRepositoryImpl @Inject constructor(
         return id
     }
 
+    suspend fun hasNotFromBelarusField(): Boolean {
+        return try {
+            val document = db.collection(FIRESTORE_BASE_COLLECTION_NAME)
+                .document(userID)
+                .get()
+                .await()
+            document.exists() && document.contains("not_from_belarus")
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    suspend fun hasConfirmedDonationWithin30Days(): Boolean {
+        return try {
+            val document = db.collection(FIRESTORE_BASE_COLLECTION_NAME)
+                .document(userID)
+                .get()
+                .await()
+
+            if (!document.exists()) return false
+
+            val donationsMap = document.get("donations") as? Map<*, *> ?: return false
+
+            val latestConfirmedTimestamp = donationsMap.values
+                .mapNotNull { entry ->
+                    val donationData = entry as? Map<*, *> ?: return@mapNotNull null
+                    val isConfirmed = donationData["confirmed"] as? Boolean == true
+
+                    if (isConfirmed) {
+                        donationData["created_at"] as? Timestamp
+                    } else {
+                        null
+                    }
+                }
+                .maxByOrNull { it.seconds } ?: return false
+
+            val thirtyDaysInMillis = TimeUnit.DAYS.toMillis(30)
+            val nowMillis = System.currentTimeMillis()
+            val donationMillis = latestConfirmedTimestamp.toDate().time
+
+            (nowMillis - donationMillis) < thirtyDaysInMillis
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     companion object {
+
+        private const val FIRESTORE_BASE_COLLECTION_NAME = "users_dev"
         private const val DAILY_REFLECTION_AUDIO_PLAY = "daily_reflection_audio_play"
         private const val DAILY_REFLECTION_AUDIO_COMPLETED = "daily_reflection_audio_completed"
         private const val DAILY_REFLECTION_TEXT = "daily_reflection_text"

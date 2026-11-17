@@ -12,12 +12,14 @@ import dagger.hilt.components.SingletonComponent
 import laska.daily.bible.meditation.data.CoursesRepositoryImpl
 import laska.daily.bible.meditation.data.ReadingRepositoryImpl
 import laska.daily.bible.meditation.data.donations.DonationsRepositoryImpl
+import laska.daily.bible.meditation.data.donations.courses.CoursesDonationRepositoryImpl
 import laska.daily.bible.meditation.data.firebase.AnalyticsRepositoryImpl
 import laska.daily.bible.meditation.data.settings.SettingsRepositoryImpl
 import laska.daily.bible.meditation.domain.ReadingRepository
 import laska.daily.bible.meditation.domain.analytics.AnalyticsRepository
 import laska.daily.bible.meditation.domain.courses.CoursesRepository
 import laska.daily.bible.meditation.domain.donations.DonationsRepository
+import laska.daily.bible.meditation.domain.donations.courses.CoursesDonationRepository
 import laska.daily.bible.meditation.domain.settings.SettingsRepository
 import javax.inject.Singleton
 
@@ -64,6 +66,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideCoursesRepository(impl: CoursesRepositoryImpl): CoursesRepository {
+        return impl
+    }
+
+    @Provides
+    @Singleton
+    fun provideCoursesDonationRepository(impl: CoursesDonationRepositoryImpl): CoursesDonationRepository{
         return impl
     }
 
