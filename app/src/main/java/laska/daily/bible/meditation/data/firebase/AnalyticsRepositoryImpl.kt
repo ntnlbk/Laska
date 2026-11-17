@@ -330,7 +330,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
 
     companion object {
 
-        private const val FIRESTORE_BASE_COLLECTION_NAME = "users_dev"
+        private const val FIRESTORE_BASE_COLLECTION_NAME = "users"
         private const val DAILY_REFLECTION_AUDIO_PLAY = "daily_reflection_audio_play"
         private const val DAILY_REFLECTION_AUDIO_COMPLETED = "daily_reflection_audio_completed"
         private const val DAILY_REFLECTION_TEXT = "daily_reflection_text"

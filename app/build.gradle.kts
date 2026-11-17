@@ -17,8 +17,8 @@ android {
         applicationId = "laska.daily.bible.meditation"
         minSdk = 26
         targetSdk = 36
-        versionCode = 5
-        versionName = "1.3"
+        versionCode = 6
+        versionName = "1.4"
         resourceConfigurations.addAll(listOf("ru", "be"))
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
