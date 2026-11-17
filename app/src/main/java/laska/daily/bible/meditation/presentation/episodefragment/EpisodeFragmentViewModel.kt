@@ -77,8 +77,7 @@ class EpisodeFragmentViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            observeSettings()
-            loadEpisodeData()
+            observeSettingsAndLoadData()
             startProgressUpdater()
         }
     }
@@ -347,9 +346,10 @@ class EpisodeFragmentViewModel @Inject constructor(
             _episodeUIState.value = EpisodeFragmentState.Error(e.message.toString())
         }
     }
-    private fun observeSettings() {
+    private fun observeSettingsAndLoadData() {
         viewModelScope.launch {
             currentLanguage = getSettingsUseCase().first().language
+            loadEpisodeData()
             getSettingsUseCase().collect { settings ->
                 if (currentLanguage != settings.language) {
                     currentLanguage = settings.language
