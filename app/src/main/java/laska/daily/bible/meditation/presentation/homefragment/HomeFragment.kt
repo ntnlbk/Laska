@@ -25,6 +25,7 @@ import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentHomeBinding
 import laska.daily.bible.meditation.domain.donations.courses.ShouldShowCoursesDonationPopUpUseCase
 import laska.daily.bible.meditation.domain.usecase.SupportPromptManager
+import laska.daily.bible.meditation.presentation.coursefragment.AuthorDetailsDialogFragment
 import laska.daily.bible.meditation.presentation.supportfragment.SupportIntroDialogFragment
 import javax.inject.Inject
 
@@ -97,7 +98,16 @@ class HomeFragment : Fragment() {
                                     error(R.drawable.home_fragment_courses_section_test_img)
                                 }
                                 binding.ivNewText.visibility = View.VISIBLE
-                                val authorsAdapter = AuthorsAdapter {}
+                                val authorsAdapter = AuthorsAdapter {
+                                    AuthorDetailsDialogFragment.newInstance(
+                                        it.imageURL,
+                                        it.name,
+                                        it.description
+                                    ).show(
+                                        childFragmentManager,
+                                        AuthorDetailsDialogFragment.TAG
+                                    )
+                                }
                                 binding.rvAuthors.adapter = authorsAdapter
                                 authorsAdapter.submitList(state.featuredCourseAuthors)
                                 binding.btnToCourse.setOnClickListener {

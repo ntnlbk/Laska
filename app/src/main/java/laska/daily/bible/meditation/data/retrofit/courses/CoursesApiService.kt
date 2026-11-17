@@ -6,6 +6,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 class CoursesApiService {
 
@@ -47,7 +48,8 @@ class CoursesApiService {
 
         @GET("authors/{authorId}")
         suspend fun getAuthor(
-            @Path("authorId") authorId: Int
+            @Path("authorId") authorId: Int,
+            @Query("language") language: String
         ): AuthorDetailedDTO
     }
 

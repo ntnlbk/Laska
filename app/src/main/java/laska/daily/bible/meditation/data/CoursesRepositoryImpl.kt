@@ -76,7 +76,21 @@ class CoursesRepositoryImpl @Inject constructor(
             it.language == languageMapper.mapLanguageToString(language) &&
                     it.homePlacement == homePlacementMapper.mapHomePlacementToString(HomePlacement.FEATURED)
         }
-        return courseMapper.mapCourseShortDtoToCourseDataModel(featuredCourse)
+        val featuredCourseWithoutAuthors =
+            courseMapper.mapCourseShortDtoToCourseDataModel(featuredCourse)
+        val featuredCourseWithAuthors = featuredCourseWithoutAuthors.copy(
+            authors = featuredCourseWithoutAuthors.authors.map { author ->
+                fetchWithCache("author_${author.id}") {
+                    courseMapper.mapAuthorDetailedDTOToAuthorDomainModel(
+                        CoursesApiService.CoursesApi.retrofitService.getAuthor(
+                            author.id,
+                            languageMapper.mapLanguageToString(language)
+                        )
+                    )
+                }
+            }
+        )
+        return featuredCourseWithAuthors
     }
 
     override suspend fun getCourses(language: Language): List<Course> {
@@ -95,7 +109,8 @@ class CoursesRepositoryImpl @Inject constructor(
                     fetchWithCache("author_${author.id}") {
                         courseMapper.mapAuthorDetailedDTOToAuthorDomainModel(
                             CoursesApiService.CoursesApi.retrofitService.getAuthor(
-                                author.id
+                                author.id,
+                                languageMapper.mapLanguageToString(language)
                             )
                         )
                     }
@@ -143,7 +158,7 @@ class CoursesRepositoryImpl @Inject constructor(
 
         if (!coursesDonationPrefs.checkIfCourseWasMarkedAsCompletedFor20(courseId)) {
             val isCourseCompletedFor20 = isPercentCompleted(episodes, 20)
-            if (isCourseCompletedFor20){
+            if (isCourseCompletedFor20) {
                 coursesDonationPrefs.is20Completed = true
                 coursesDonationPrefs.markCourseAsCompletedFor20(courseId)
             }
@@ -151,7 +166,7 @@ class CoursesRepositoryImpl @Inject constructor(
 
         if (!coursesDonationPrefs.checkIfCourseWasMarkedAsCompletedFor75(courseId)) {
             val isCourseCompletedFor75 = isPercentCompleted(episodes, 75)
-            if (isCourseCompletedFor75){
+            if (isCourseCompletedFor75) {
                 coursesDonationPrefs.is75Completed = true
                 coursesDonationPrefs.markCourseAsCompletedFor75(courseId)
             }
@@ -190,7 +205,8 @@ class CoursesRepositoryImpl @Inject constructor(
 
     override suspend fun getEpisode(
         courseId: Int,
-        episodeId: Int
+        episodeId: Int,
+        language: Language
     ): Episode {
         val cacheKey = "course_${courseId}_episode_$episodeId"
 
@@ -203,7 +219,8 @@ class CoursesRepositoryImpl @Inject constructor(
                 courseMapper.mapAuthorDetailedDTOToAuthorDomainModel(
                     fetchWithCache("author_${author.id}") {
                         CoursesApiService.CoursesApi.retrofitService.getAuthor(
-                            author.id
+                            author.id,
+                            languageMapper.mapLanguageToString(language)
                         )
                     }
                 )

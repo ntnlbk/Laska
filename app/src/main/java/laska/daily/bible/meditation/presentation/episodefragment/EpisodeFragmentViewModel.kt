@@ -21,8 +21,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
+import laska.daily.bible.meditation.domain.Language
 import laska.daily.bible.meditation.domain.analytics.CourseCounterType
 import laska.daily.bible.meditation.domain.analytics.IncrementCourseCounterUseCase
 import laska.daily.bible.meditation.domain.audio.AudioDownloadState
@@ -32,6 +34,7 @@ import laska.daily.bible.meditation.domain.audio.DownloadAudioUseCase
 import laska.daily.bible.meditation.domain.audio.ObserveDownloadAudioUseCase
 import laska.daily.bible.meditation.domain.courses.GetEpisodeUseCase
 import laska.daily.bible.meditation.domain.courses.MarkEpisodeAsCompletedUseCase
+import laska.daily.bible.meditation.domain.settings.GetSettingsUseCase
 import laska.daily.bible.meditation.presentation.service.AudioPlaybackService
 import laska.daily.bible.meditation.presentation.uils.ConnectionUtils
 import javax.inject.Inject
@@ -47,7 +50,8 @@ class EpisodeFragmentViewModel @Inject constructor(
     private val connectionUtils: ConnectionUtils,
     private val markEpisodeAsCompletedUseCase: MarkEpisodeAsCompletedUseCase,
     private val deleteAllCachedAudioUseCase: DeleteAllCachedAudioUseCase,
-    private val incrementCourseCounterUseCase: IncrementCourseCounterUseCase
+    private val incrementCourseCounterUseCase: IncrementCourseCounterUseCase,
+    private val getSettingsUseCase: GetSettingsUseCase
 ) : ViewModel() {
 
     private val args: EpisodeFragmentArgs =
@@ -63,6 +67,8 @@ class EpisodeFragmentViewModel @Inject constructor(
 
     private var downloadJob: Job? = null
 
+    lateinit var currentLanguage: Language
+
     private var mediaControllerFuture: ListenableFuture<MediaController>? = null
     private var mediaController: MediaController? = null
 
@@ -71,7 +77,8 @@ class EpisodeFragmentViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            loadEpisodeData() // Было: setContent()
+            observeSettings()
+            loadEpisodeData()
             startProgressUpdater()
         }
     }
@@ -321,7 +328,7 @@ class EpisodeFragmentViewModel @Inject constructor(
             mediaController?.clearMediaItems()
             downloadJob?.cancel()
             _playerUIState.value = AudioPlayerState.Initial
-            val episode = getEpisodeUseCase(args.courseId, args.episodeId)
+            val episode = getEpisodeUseCase(args.courseId, args.episodeId, currentLanguage)
             _episodeUIState.value = EpisodeFragmentState.Content(
                 imageUrl = episode.imageURL,
                 title = episode.title,
@@ -338,6 +345,17 @@ class EpisodeFragmentViewModel @Inject constructor(
             initializeController(episode.audioURL, episode.title)
         } catch (e: Exception) {
             _episodeUIState.value = EpisodeFragmentState.Error(e.message.toString())
+        }
+    }
+    private fun observeSettings() {
+        viewModelScope.launch {
+            currentLanguage = getSettingsUseCase().first().language
+            getSettingsUseCase().collect { settings ->
+                if (currentLanguage != settings.language) {
+                    currentLanguage = settings.language
+                    loadEpisodeData()
+                }
+            }
         }
     }
 
