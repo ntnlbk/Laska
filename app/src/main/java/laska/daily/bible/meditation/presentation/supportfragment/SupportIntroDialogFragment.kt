@@ -14,6 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.DialogSupportIntroBinding
+import laska.daily.bible.meditation.domain.donations.popup.PopUpMode
 import laska.daily.bible.meditation.presentation.homefragment.HomeFragmentDirections
 import laska.daily.bible.meditation.presentation.mainfragment.MainFragmentDirections
 
@@ -22,9 +23,14 @@ class SupportIntroDialogFragment : DialogFragment() {
     private var _binding: DialogSupportIntroBinding? = null
     private val binding get() = _binding!!
 
+    private var mode = PopUpMode.FIRST_TIME
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialog)
+        arguments?.let {
+            mode = it.getSerializable(POP_UP_MODE_ARG_TAG) as PopUpMode
+        }
     }
 
     override fun onCreateView(
@@ -51,6 +57,17 @@ class SupportIntroDialogFragment : DialogFragment() {
             }
         }
 
+        if (mode == PopUpMode.FIRST_TIME) {
+            binding.tv1Mode2.visibility = View.GONE
+            binding.tv2Mode2.visibility = View.GONE
+            binding.tvDescription.visibility = View.VISIBLE
+
+        } else if (mode == PopUpMode.SECOND_TIME) {
+            binding.tv1Mode2.visibility = View.VISIBLE
+            binding.tv2Mode2.visibility = View.VISIBLE
+            binding.tvDescription.visibility = View.GONE
+        }
+
     }
 
     override fun onStart() {
@@ -72,7 +89,14 @@ class SupportIntroDialogFragment : DialogFragment() {
     }
 
     companion object {
+        private const val POP_UP_MODE_ARG_TAG = "pop_up_mode_arg_tag"
         const val TAG = "SupportIntroDialogFragment"
-        fun newInstance() = SupportIntroDialogFragment()
+        fun newInstance(
+            popUpMode: PopUpMode
+        ) = SupportIntroDialogFragment().apply {
+            arguments = Bundle().apply {
+                putSerializable(POP_UP_MODE_ARG_TAG, popUpMode)
+            }
+        }
     }
 }

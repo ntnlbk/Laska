@@ -71,4 +71,7 @@
     <string name="course_main_sessions_number">эпизодов</string>
     <string name="min">" мин"</string>
     <string name="course_main_continue">Открыть следующий эпизод</string>
+    <string name="donate_request_recurrent_title">Дзякуй за падтрымку</string>
+
+    <string name="donate_request_consecutive_main_subtitle">"Благодаря вашей поддержке мы ежедневно готовим размышления для тысяч пользователей. У нас много планов. Без вашей постоянной поддержки двигаться дальше будет сложно. "</string>
 </resources>

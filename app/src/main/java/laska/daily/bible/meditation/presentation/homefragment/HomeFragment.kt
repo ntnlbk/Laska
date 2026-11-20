@@ -24,6 +24,8 @@ import kotlinx.coroutines.launch
 import laska.daily.bible.meditation.R
 import laska.daily.bible.meditation.databinding.FragmentHomeBinding
 import laska.daily.bible.meditation.domain.donations.courses.ShouldShowCoursesDonationPopUpUseCase
+import laska.daily.bible.meditation.domain.donations.popup.GetPopUpStatusUseCase
+import laska.daily.bible.meditation.domain.donations.popup.PopUpMode
 import laska.daily.bible.meditation.domain.usecase.SupportPromptManager
 import laska.daily.bible.meditation.presentation.coursefragment.AuthorDetailsDialogFragment
 import laska.daily.bible.meditation.presentation.supportfragment.SupportIntroDialogFragment
@@ -47,6 +49,9 @@ class HomeFragment : Fragment() {
 
     @Inject
     lateinit var showCoursesDonationPopUpUseCase: ShouldShowCoursesDonationPopUpUseCase
+
+    @Inject
+    lateinit var getPopUpStatusUseCase: GetPopUpStatusUseCase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -118,13 +123,41 @@ class HomeFragment : Fragment() {
                                     findNavController().navigate(action)
                                 }
                                 viewLifecycleOwner.lifecycleScope.launch {
-                                    if (showCoursesDonationPopUpUseCase()){
+                                    if (showCoursesDonationPopUpUseCase()) {
                                         viewModel.popUpShown()
-                                        val introDialog = SupportIntroDialogFragment.newInstance()
+                                        val introDialog = SupportIntroDialogFragment.newInstance(
+                                            PopUpMode.FIRST_TIME
+                                        )
                                         introDialog.show(
                                             parentFragmentManager,
                                             SupportIntroDialogFragment.TAG
                                         )
+                                    } else {
+                                        when(getPopUpStatusUseCase()){
+                                            PopUpMode.FIRST_TIME -> {
+                                                viewModel.popUpShown()
+                                                val introDialog = SupportIntroDialogFragment.newInstance(
+                                                    PopUpMode.FIRST_TIME
+                                                )
+                                                introDialog.show(
+                                                    parentFragmentManager,
+                                                    SupportIntroDialogFragment.TAG
+                                                )
+                                            }
+                                            PopUpMode.SECOND_TIME -> {
+                                                viewModel.popUpShown()
+                                                val introDialog = SupportIntroDialogFragment.newInstance(
+                                                    PopUpMode.SECOND_TIME
+                                                )
+                                                introDialog.show(
+                                                    parentFragmentManager,
+                                                    SupportIntroDialogFragment.TAG
+                                                )
+                                            }
+                                            PopUpMode.DO_NOT_SHOW -> {
+                                                // ignore
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -150,7 +183,9 @@ class HomeFragment : Fragment() {
     private suspend fun showDonationsPopup() {
         if (supportPromptManager.shouldShowPrompt()) {
             viewModel.popUpShown()
-            val introDialog = SupportIntroDialogFragment.newInstance()
+            val introDialog = SupportIntroDialogFragment.newInstance(
+                PopUpMode.FIRST_TIME
+            )
             introDialog.show(
                 parentFragmentManager,
                 SupportIntroDialogFragment.TAG

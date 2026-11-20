@@ -170,11 +170,6 @@ class MainActivity : AppCompatActivity() {
 
         ReviewHelper(this).onAppLaunched(this)
 
-
-
-
-
-
     }
 
     private fun preloadDataAndManageSplash(splashOverlay: View) {

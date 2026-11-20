@@ -25,6 +25,7 @@ import javax.inject.Singleton
 import kotlin.collections.maxByOrNull
 import kotlin.coroutines.cancellation.CancellationException
 
+
 @Singleton
 class AnalyticsRepositoryImpl @Inject constructor(
     private val analytics: FirebaseAnalytics,
@@ -79,7 +80,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
             CounterType.DONATE_ERIP -> {
                 analytics.logEvent(DONATE_ERIP, null)
                 val updates = hashMapOf<String, Any>(
-                    "donations" to hashMapOf<String, Any>(
+                    FIELD_DONATIONS to hashMapOf<String, Any>(
                         paymentPrefs.lastDonationId to hashMapOf(
                             "created_at" to FieldValue.serverTimestamp(),
                             "sum" to paymentPrefs.lastDonationAmount
@@ -94,7 +95,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
             CounterType.DONATE_CLOSE -> analytics.logEvent(DONATE_CLOSE, null)
             CounterType.DONATE_CONFIRMED -> {
                 val updates = hashMapOf<String, Any>(
-                    "donations" to hashMapOf<String, Any>(
+                    FIELD_DONATIONS to hashMapOf<String, Any>(
                         paymentPrefs.lastDonationId to hashMapOf(
                             "confirmed" to true
                         )
@@ -106,7 +107,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
 
             CounterType.DONATE_UNCONFIRMED -> {
                 val updates = hashMapOf<String, Any>(
-                    "donations" to hashMapOf<String, Any>(
+                    FIELD_DONATIONS to hashMapOf<String, Any>(
                         paymentPrefs.lastDonationId to hashMapOf(
                             "confirmed" to false
                         )
@@ -121,7 +122,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
             CounterType.POP_UP_SHOWN -> {
                 analytics.logEvent(POP_UP_SHOWN, null)
                 val updates = hashMapOf<String, Any>(
-                    "donation_offer" to hashMapOf<String, Any>(
+                    FIELD_DONATION_OFFER to hashMapOf<String, Any>(
                         popUpPrefs.lastPopupId to hashMapOf(
                             "created_at" to FieldValue.serverTimestamp()
                         )
@@ -142,7 +143,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
 
     private fun logPopUpOutcome(outcome: String) {
         val updates = hashMapOf<String, Any>(
-            "donation_offer" to hashMapOf<String, Any>(
+            FIELD_DONATION_OFFER to hashMapOf<String, Any>(
                 popUpPrefs.lastPopupId to hashMapOf(
                     "outcome" to outcome
                 )
@@ -153,7 +154,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
 
     private fun logUserCountry(country: String) {
         val updates = hashMapOf<String, Any>(
-            "not_from_belarus" to hashMapOf<String, Any>(
+            NOT_FROM_BELARUS to hashMapOf<String, Any>(
                 UUID.randomUUID().toString() to hashMapOf(
                     "created_at" to FieldValue.serverTimestamp(),
                     "choice" to country
@@ -218,7 +219,8 @@ class AnalyticsRepositoryImpl @Inject constructor(
     }
 
     private fun updateUser(updates: HashMap<String, Any>) {
-        db.collection(FIRESTORE_BASE_COLLECTION_NAME).document(userID).set(updates, SetOptions.merge())
+        db.collection(FIRESTORE_BASE_COLLECTION_NAME).document(userID)
+            .set(updates, SetOptions.merge())
     }
 
     private suspend fun checkAndCreateUser(id: String) {
@@ -235,7 +237,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
             }
             userRef.set(
                 hashMapOf(
-                    "session_count" to 1,
+                    FIELD_SESSION_COUNT to 1,
                     "platform" to Platform.ANDROID,
                     "created_at" to FieldValue.serverTimestamp(),
                     "first_session" to FieldValue.serverTimestamp(),
@@ -250,14 +252,15 @@ class AnalyticsRepositoryImpl @Inject constructor(
             )
         } else {
             if (promptPrefs.sessionNumber == 0) {
-                promptPrefs.sessionNumber = documentSnapshot.getLong("session_count")?.toInt() ?: 1
+                promptPrefs.sessionNumber =
+                    documentSnapshot.getLong(FIELD_SESSION_COUNT)?.toInt() ?: 1
             } else {
                 promptPrefs.sessionNumber += 1
             }
 
             val updates = hashMapOf<String, Any>(
                 "last_session" to FieldValue.serverTimestamp(),
-                "session_count" to FieldValue.increment(1)
+                FIELD_SESSION_COUNT to FieldValue.increment(1)
             )
             updateUser(updates)
         }
@@ -288,7 +291,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
                 .document(userID)
                 .get()
                 .await()
-            document.exists() && document.contains("not_from_belarus")
+            document.exists() && document.contains(NOT_FROM_BELARUS)
         } catch (e: Exception) {
             false
         }
@@ -303,7 +306,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
 
             if (!document.exists()) return false
 
-            val donationsMap = document.get("donations") as? Map<*, *> ?: return false
+            val donationsMap = document.get(FIELD_DONATIONS) as? Map<*, *> ?: return false
 
             val latestConfirmedTimestamp = donationsMap.values
                 .mapNotNull { entry ->
@@ -330,12 +333,17 @@ class AnalyticsRepositoryImpl @Inject constructor(
 
     companion object {
 
-        private const val FIRESTORE_BASE_COLLECTION_NAME = "users"
+        const val FIELD_SESSION_COUNT = "session_count"
+        const val NOT_FROM_BELARUS = "not_from_belarus"
+        const val FIRESTORE_BASE_COLLECTION_NAME = "users"
         private const val DAILY_REFLECTION_AUDIO_PLAY = "daily_reflection_audio_play"
         private const val DAILY_REFLECTION_AUDIO_COMPLETED = "daily_reflection_audio_completed"
         private const val DAILY_REFLECTION_TEXT = "daily_reflection_text"
-        private const val SHARED_PREFERENCES_NAME = "app_preferences"
-        private const val USER_ID_PREFERENCE_NAME = "user_id"
+        const val SHARED_PREFERENCES_NAME = "app_preferences"
+        const val USER_ID_PREFERENCE_NAME = "user_id"
+        const val FIELD_DONATION_OFFER = "donation_offer"
+
+        const val FIELD_DONATIONS = "donations"
 
         private const val DONATE_MAIN_SCREEN = "donate_main_screen"
 
